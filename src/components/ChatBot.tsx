@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
 
 const ChatBot: React.FC = () => {
@@ -20,30 +20,34 @@ const ChatBot: React.FC = () => {
     'Horaires d\'ouverture'
   ];
 
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
+  const handleSendMessage = useCallback((messageText?: string) => {
+    const text = messageText ?? inputText;
+    if (!text.trim()) return;
 
-    const newMessage = {
-      id: messages.length + 1,
-      text: inputText,
-      isBot: false,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, newMessage]);
+    setMessages(prev => {
+      const newMessage = {
+        id: prev.length + 1,
+        text,
+        isBot: false,
+        timestamp: new Date()
+      };
+      return [...prev, newMessage];
+    });
     setInputText('');
 
     // Simulate bot response
     setTimeout(() => {
-      const botResponse = {
-        id: messages.length + 2,
-        text: getBotResponse(inputText),
-        isBot: true,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, botResponse]);
+      setMessages(prev => [
+        ...prev,
+        {
+          id: prev.length + 1,
+          text: getBotResponse(text),
+          isBot: true,
+          timestamp: new Date()
+        }
+      ]);
     }, 1000);
-  };
+  }, [inputText]);
 
   const getBotResponse = (message: string): string => {
     const lowerMessage = message.toLowerCase();
@@ -62,8 +66,7 @@ const ChatBot: React.FC = () => {
   };
 
   const handleQuickReply = (reply: string) => {
-    setInputText(reply);
-    handleSendMessage();
+    handleSendMessage(reply);
   };
 
   return (
@@ -142,7 +145,7 @@ const ChatBot: React.FC = () => {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Tapez votre message..."
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />

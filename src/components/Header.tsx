@@ -24,18 +24,29 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
     <header className="bg-white shadow-lg relative z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center cursor-pointer" onClick={() => onNavigate('home')}>
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate('home');
+            }}
+            className="flex items-center"
+          >
             <Shield className="h-8 w-8 text-blue-700 mr-2" />
             <span className="text-2xl font-bold text-gray-900">SecunologieCI</span>
-          </div>
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navigation.map((item) => (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => onNavigate(item.id)}
+                  href={item.id === 'home' ? '/' : `/${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate(item.id);
+                  }}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                     currentPage === item.id
                       ? 'bg-blue-700 text-white'
@@ -43,7 +54,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   }`}
                 >
                   {item.name}
-                </button>
+                </a>
               ))}
             </div>
           </div>
@@ -54,8 +65,12 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               <Search className="h-5 w-5" />
             </button>
             
-            <button 
-              onClick={() => onNavigate('cart')}
+            <a
+              href="/cart"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('cart');
+              }}
               className="text-gray-700 hover:text-blue-700 transition-colors duration-200 relative"
             >
               <ShoppingCart className="h-5 w-5" />
@@ -64,14 +79,18 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   {state.items.length}
                 </span>
               )}
-            </button>
+            </a>
             
-            <button 
-              onClick={() => onNavigate('account')}
+            <a
+              href="/account"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('account');
+              }}
               className="text-gray-700 hover:text-blue-700 transition-colors duration-200"
             >
               <User className="h-5 w-5" />
-            </button>
+            </a>
 
             {/* Mobile menu button */}
             <div className="md:hidden">
@@ -90,9 +109,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
               {navigation.map((item) => (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => {
+                  href={item.id === 'home' ? '/' : `/${item.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
                     onNavigate(item.id);
                     setIsMenuOpen(false);
                   }}
@@ -103,7 +124,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   }`}
                 >
                   {item.name}
-                </button>
+                </a>
               ))}
             </div>
           </div>

@@ -1,23 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
-import Home from './pages/Home';
-import Catalog from './pages/Catalog';
-import Services from './pages/Services';
-import About from './pages/About';
-import Blog from './pages/Blog';
-import Contact from './pages/Contact';
-import Cart from './pages/Cart';
-import Account from './pages/Account';
 import { CartProvider } from './contexts/CartContext';
 import { Product } from './types';
 
+const Home = lazy(() => import('./pages/Home'));
+const Catalog = lazy(() => import('./pages/Catalog'));
+const Services = lazy(() => import('./pages/Services'));
+const About = lazy(() => import('./pages/About'));
+const Blog = lazy(() => import('./pages/Blog'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Cart = lazy(() => import('./pages/Cart'));
+const Account = lazy(() => import('./pages/Account'));
+
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState(() => {
+    const path = window.location.pathname.replace('/', '');
+    return path === '' ? 'home' : path;
+  });
+
+  useEffect(() => {
+    const onPopState = () => {
+      const path = window.location.pathname.replace('/', '') || 'home';
+      setCurrentPage(path);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
+    const url = page === 'home' ? '/' : `/${page}`;
+    window.history.pushState(null, '', url);
     window.scrollTo(0, 0);
   };
 
@@ -55,7 +70,9 @@ function App() {
       <div className="min-h-screen bg-white flex flex-col">
         <Header currentPage={currentPage} onNavigate={handleNavigate} />
         <main className="flex-1">
-          {renderPage()}
+          <Suspense fallback={<div className="p-4">Chargement...</div>}>
+            {renderPage()}
+          </Suspense>
         </main>
         <Footer />
         <ChatBot />

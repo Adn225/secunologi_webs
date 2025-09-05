@@ -2,9 +2,10 @@ import React, { useState, useMemo } from 'react';
 import { Filter, Grid, List, Search } from 'lucide-react';
 import { products } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import { Product } from '../types';
 
 interface CatalogProps {
-  onViewProduct: (product: any) => void;
+  onViewProduct: (product: Product) => void;
 }
 
 const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
