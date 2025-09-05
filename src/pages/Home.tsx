@@ -1,11 +1,12 @@
 import React from 'react';
-import { ArrowRight, Shield, Users, Wrench, Award, Play } from 'lucide-react';
+import { ArrowRight, Shield, Users, Wrench, Play } from 'lucide-react';
 import { products } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import { Product } from '../types';
 
 interface HomeProps {
   onNavigate: (page: string) => void;
-  onViewProduct: (product: any) => void;
+  onViewProduct: (product: Product) => void;
 }
 
 const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {

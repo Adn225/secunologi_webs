@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { CartItem, Product } from '../types';
 
 interface CartState {
@@ -17,6 +17,9 @@ const CartContext = createContext<{
   dispatch: React.Dispatch<CartAction>;
 } | null>(null);
 
+const calculateTotal = (items: CartItem[]) =>
+  items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM': {
@@ -29,13 +32,13 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         );
         return {
           items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+          total: calculateTotal(updatedItems)
         };
       } else {
         const newItems = [...state.items, { product: action.payload, quantity: 1 }];
         return {
           items: newItems,
-          total: newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+          total: calculateTotal(newItems)
         };
       }
     }
@@ -43,7 +46,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       const newItems = state.items.filter(item => item.product.id !== action.payload);
       return {
         items: newItems,
-        total: newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+        total: calculateTotal(newItems)
       };
     }
     case 'UPDATE_QUANTITY': {
@@ -51,7 +54,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         const newItems = state.items.filter(item => item.product.id !== action.payload.id);
         return {
           items: newItems,
-          total: newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+          total: calculateTotal(newItems)
         };
       }
       const updatedItems = state.items.map(item =>
@@ -61,7 +64,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       );
       return {
         items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0)
+        total: calculateTotal(updatedItems)
       };
     }
     case 'CLEAR_CART':
@@ -72,7 +75,22 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 };
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 });
+  const storedItems = (() => {
+    if (typeof window === 'undefined') return [] as CartItem[];
+    try {
+      return JSON.parse(localStorage.getItem('cartItems') || '[]') as CartItem[];
+    } catch {
+      return [] as CartItem[];
+    }
+  })();
+  const [state, dispatch] = useReducer(cartReducer, {
+    items: storedItems,
+    total: calculateTotal(storedItems)
+  });
+
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(state.items));
+  }, [state.items]);
 
   return (
     <CartContext.Provider value={{ state, dispatch }}>

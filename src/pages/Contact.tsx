@@ -9,6 +9,7 @@ const Contact: React.FC = () => {
     subject: '',
     message: ''
   });
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -17,11 +18,20 @@ const Contact: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission here
-    alert('Message envoyé avec succès !');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (!res.ok) throw new Error('Network response was not ok');
+      setStatus('success');
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
@@ -201,6 +211,12 @@ const Contact: React.FC = () => {
                   <Send className="h-5 w-5 mr-2" />
                   Envoyer le message
                 </button>
+                {status === 'success' && (
+                  <p className="text-green-600 text-center">Message envoyé avec succès !</p>
+                )}
+                {status === 'error' && (
+                  <p className="text-red-600 text-center">Une erreur est survenue. Veuillez réessayer.</p>
+                )}
               </form>
             </div>
 

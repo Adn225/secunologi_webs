@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 import { blogPosts } from '../data/blogPosts';
 
 const Blog: React.FC = () => {

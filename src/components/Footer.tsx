@@ -16,9 +16,30 @@ const Footer: React.FC = () => {
               en Côte d'Ivoire. Expertise, qualité et service client d'exception.
             </p>
             <div className="flex space-x-4">
-              <Facebook className="h-6 w-6 text-blue-400 hover:text-blue-300 cursor-pointer transition-colors" />
-              <Instagram className="h-6 w-6 text-pink-400 hover:text-pink-300 cursor-pointer transition-colors" />
-              <Linkedin className="h-6 w-6 text-blue-400 hover:text-blue-300 cursor-pointer transition-colors" />
+              <a
+                href="https://www.facebook.com"
+                aria-label="Facebook"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Facebook className="h-6 w-6 text-blue-400 hover:text-blue-300 transition-colors" />
+              </a>
+              <a
+                href="https://www.instagram.com"
+                aria-label="Instagram"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Instagram className="h-6 w-6 text-pink-400 hover:text-pink-300 transition-colors" />
+              </a>
+              <a
+                href="https://www.linkedin.com"
+                aria-label="LinkedIn"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Linkedin className="h-6 w-6 text-blue-400 hover:text-blue-300 transition-colors" />
+              </a>
             </div>
           </div>
 
