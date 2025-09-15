@@ -65,8 +65,8 @@ const About: React.FC = () => {
               }
             ].map((value, index) => (
               <div key={index} className="text-center">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <value.icon className="h-8 w-8 text-blue-700" />
+                <div className="bg-brand-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <value.icon className="h-8 w-8 text-brand-green-600" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">{value.title}</h3>
                 <p className="text-gray-600">{value.description}</p>
@@ -84,7 +84,7 @@ const About: React.FC = () => {
             { number: '24/7', label: 'Support technique' }
           ].map((stat, index) => (
             <div key={index} className="text-center bg-white p-6 rounded-lg shadow">
-              <div className="text-3xl font-bold text-blue-700 mb-2">{stat.number}</div>
+              <div className="text-3xl font-bold text-brand-green-700 mb-2">{stat.number}</div>
               <div className="text-gray-600">{stat.label}</div>
             </div>
           ))}
@@ -92,12 +92,12 @@ const About: React.FC = () => {
 
         {/* Mission & Vision */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          <div className="bg-blue-700 text-white p-8 rounded-lg">
+          <div className="bg-brand-green-600 text-white p-8 rounded-lg">
             <div className="flex items-center mb-4">
               <Target className="h-8 w-8 mr-3" />
               <h3 className="text-2xl font-bold">Notre mission</h3>
             </div>
-            <p className="text-blue-100">
+            <p className="text-brand-green-100">
               Protéger les biens et les personnes en fournissant des solutions de sécurité 
               électronique innovantes, fiables et adaptées aux besoins spécifiques de chaque client.
             </p>
@@ -154,14 +154,14 @@ const About: React.FC = () => {
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Nous trouver</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex items-center justify-center">
-              <MapPin className="h-6 w-6 text-blue-700 mr-3" />
+              <MapPin className="h-6 w-6 text-brand-green-600 mr-3" />
               <div>
                 <p className="font-semibold">Adresse</p>
                 <p className="text-gray-600">Abidjan, Cocody - Riviera Bonoumin</p>
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <Clock className="h-6 w-6 text-blue-700 mr-3" />
+              <Clock className="h-6 w-6 text-brand-green-600 mr-3" />
               <div>
                 <p className="font-semibold">Horaires</p>
                 <p className="text-gray-600">Lun-Ven: 8h-18h | Sam: 8h-13h</p>

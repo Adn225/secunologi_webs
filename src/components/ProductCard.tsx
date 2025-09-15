@@ -30,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-2 left-2">
-          <span className="bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium">
+          <span className="bg-brand-green-600 text-white px-2 py-1 rounded text-xs font-medium">
             {product.brand}
           </span>
         </div>
@@ -70,16 +70,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
         </p>
         
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-blue-700">
+          <span className="text-2xl font-bold text-brand-green-700">
             {formatPrice(product.price)}
           </span>
-          
+
           <button
             onClick={handleAddToCart}
             disabled={!product.inStock}
             className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
               product.inStock
-                ? 'bg-blue-700 text-white hover:bg-blue-800'
+                ? 'bg-brand-green-600 text-white hover:bg-brand-green-700'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >

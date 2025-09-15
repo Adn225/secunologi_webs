@@ -58,7 +58,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
               placeholder="Rechercher un produit..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green-500 focus:border-transparent"
             />
           </div>
           <div className="flex items-center gap-4">
@@ -72,13 +72,13 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
             <div className="flex border border-gray-300 rounded-lg overflow-hidden">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 ${viewMode === 'grid' ? 'bg-blue-700 text-white' : 'bg-white text-gray-600'}`}
+                className={`p-2 ${viewMode === 'grid' ? 'bg-brand-green-600 text-white' : 'bg-white text-gray-600'}`}
               >
                 <Grid className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 ${viewMode === 'list' ? 'bg-blue-700 text-white' : 'bg-white text-gray-600'}`}
+                className={`p-2 ${viewMode === 'list' ? 'bg-brand-green-600 text-white' : 'bg-white text-gray-600'}`}
               >
                 <List className="h-4 w-4" />
               </button>
@@ -100,7 +100,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
                 <select
                   value={selectedBrand}
                   onChange={(e) => setSelectedBrand(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent"
                 >
                   <option value="">Toutes les marques</option>
                   {brands.map(brand => (
@@ -117,7 +117,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-green-500 focus:border-transparent"
                 >
                   <option value="">Toutes les catégories</option>
                   {categories.map(category => (
@@ -150,7 +150,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
 
               <button
                 onClick={clearFilters}
-                className="w-full text-blue-700 hover:text-blue-800 font-medium"
+                className="w-full text-brand-green-600 hover:text-brand-green-700 font-medium"
               >
                 Réinitialiser les filtres
               </button>
