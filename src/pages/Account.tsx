@@ -173,7 +173,7 @@ const Account: React.FC = () => {
                         </div>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                           order.status === 'Livré' 
-                            ? 'bg-green-100 text-green-700'
+                            ? 'bg-brand-green-light text-brand-green-dark'
                             : 'bg-orange-100 text-orange-700'
                         }`}>
                           {order.status}
@@ -209,7 +209,7 @@ const Account: React.FC = () => {
                         </div>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                           quote.status === 'Approuvé' 
-                            ? 'bg-green-100 text-green-700'
+                            ? 'bg-brand-green-light text-brand-green-dark'
                             : 'bg-yellow-100 text-yellow-700'
                         }`}>
                           {quote.status}

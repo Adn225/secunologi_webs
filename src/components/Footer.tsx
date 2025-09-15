@@ -1,5 +1,6 @@
 import React from 'react';
-import { Shield, Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react';
+import logo from '../assets/logo.svg';
 
 const Footer: React.FC = () => {
   return (
@@ -8,8 +9,11 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              <Shield className="h-8 w-8 text-blue-400 mr-2" />
-              <span className="text-2xl font-bold">SecunologieCI</span>
+              <img
+                src={logo}
+                alt="Secunologie Côte d'Ivoire"
+                className="h-14 w-auto"
+              />
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
               Votre partenaire de confiance pour toutes vos solutions de sécurité électronique 
