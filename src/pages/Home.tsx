@@ -159,10 +159,22 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
             </p>
           </div>
           
-          <div className="flex justify-center items-center space-x-12 opacity-70">
-            <div className="text-4xl font-bold text-red-600">HIKVISION</div>
-            <div className="text-4xl font-bold text-red-500">HUAWEI</div>
-            <div className="text-4xl font-bold text-brand-green-600">EZVIZ</div>
+          <div className="flex flex-wrap justify-center items-center gap-12">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Hikvision_logo.svg"
+              alt="Logo Hikvision"
+              className="h-12 object-contain"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Huawei_logo.svg"
+              alt="Logo Huawei"
+              className="h-12 object-contain"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Ezviz_logo.svg"
+              alt="Logo EZVIZ"
+              className="h-12 object-contain"
+            />
           </div>
         </div>
       </section>
