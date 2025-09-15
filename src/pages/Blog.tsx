@@ -36,7 +36,7 @@ const Blog: React.FC = () => {
                   <Calendar className="h-4 w-4 mr-2" />
                   {formatDate(blogPosts[0].date)}
                   <span className="mx-2">•</span>
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
+                  <span className="bg-brand-green-100 text-brand-green-600 px-2 py-1 rounded-full text-xs">
                     {blogPosts[0].category}
                   </span>
                 </div>
@@ -46,7 +46,7 @@ const Blog: React.FC = () => {
                 <p className="text-gray-600 mb-6 text-lg">
                   {blogPosts[0].excerpt}
                 </p>
-                <button className="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center w-fit">
+                <button className="bg-brand-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-green-700 transition-colors flex items-center w-fit">
                   Lire la suite <ArrowRight className="ml-2 h-4 w-4" />
                 </button>
               </div>
@@ -68,7 +68,7 @@ const Blog: React.FC = () => {
                   <Calendar className="h-4 w-4 mr-2" />
                   {formatDate(post.date)}
                   <span className="mx-2">•</span>
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
+                  <span className="bg-brand-green-100 text-brand-green-600 px-2 py-1 rounded-full text-xs">
                     {post.category}
                   </span>
                 </div>
@@ -78,7 +78,7 @@ const Blog: React.FC = () => {
                 <p className="text-gray-600 mb-4 line-clamp-3">
                   {post.excerpt}
                 </p>
-                <button className="text-blue-700 font-semibold hover:text-blue-800 transition-colors flex items-center">
+                <button className="text-brand-green-600 font-semibold hover:text-brand-green-700 transition-colors flex items-center">
                   Lire la suite <ArrowRight className="ml-2 h-4 w-4" />
                 </button>
               </div>
@@ -93,7 +93,7 @@ const Blog: React.FC = () => {
             {['Guides', 'Actualités', 'Conseils', 'Nouveautés'].map((category, index) => (
               <button
                 key={index}
-                className="bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 px-4 py-3 rounded-lg font-medium transition-colors"
+                className="bg-gray-100 hover:bg-brand-green-50 text-gray-700 hover:text-brand-green-600 px-4 py-3 rounded-lg font-medium transition-colors"
               >
                 {category}
               </button>
@@ -102,9 +102,9 @@ const Blog: React.FC = () => {
         </section>
 
         {/* Newsletter Subscription */}
-        <section className="bg-blue-700 text-white rounded-lg p-8 text-center">
+        <section className="bg-brand-green-600 text-white rounded-lg p-8 text-center">
           <h2 className="text-3xl font-bold mb-4">Restez informé</h2>
-          <p className="text-blue-100 mb-6 text-lg">
+          <p className="text-brand-green-100 mb-6 text-lg">
             Abonnez-vous à notre newsletter pour recevoir nos derniers articles et conseils
           </p>
           <div className="max-w-md mx-auto flex gap-4">

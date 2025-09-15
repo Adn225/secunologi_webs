@@ -53,8 +53,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   }}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                     currentPage === item.id
-                      ? 'bg-blue-700 text-white'
-                      : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
+                      ? 'bg-brand-green-600 text-white'
+                      : 'text-gray-700 hover:bg-brand-green-50 hover:text-brand-green-600'
                   }`}
                 >
                   {item.name}
@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <button className="text-gray-700 hover:text-blue-700 transition-colors duration-200">
+            <button className="text-gray-700 hover:text-brand-green-600 transition-colors duration-200">
               <Search className="h-5 w-5" />
             </button>
             
@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 e.preventDefault();
                 onNavigate('cart');
               }}
-              className="text-gray-700 hover:text-blue-700 transition-colors duration-200 relative"
+              className="text-gray-700 hover:text-brand-green-600 transition-colors duration-200 relative"
             >
               <ShoppingCart className="h-5 w-5" />
               {state.items.length > 0 && (
@@ -91,7 +91,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                 e.preventDefault();
                 onNavigate('account');
               }}
-              className="text-gray-700 hover:text-blue-700 transition-colors duration-200"
+              className="text-gray-700 hover:text-brand-green-600 transition-colors duration-200"
             >
               <User className="h-5 w-5" />
             </a>
@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-gray-700 hover:text-blue-700 transition-colors duration-200"
+                className="text-gray-700 hover:text-brand-green-600 transition-colors duration-200"
               >
                 {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
@@ -123,8 +123,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
                   }}
                   className={`block w-full text-left px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                     currentPage === item.id
-                      ? 'bg-blue-700 text-white'
-                      : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
+                      ? 'bg-brand-green-600 text-white'
+                      : 'text-gray-700 hover:bg-brand-green-50 hover:text-brand-green-600'
                   }`}
                 >
                   {item.name}

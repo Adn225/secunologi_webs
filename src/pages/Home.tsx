@@ -15,7 +15,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 to-blue-700 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-r from-brand-green-800 to-brand-green-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -24,7 +24,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
                 Sécurisez votre monde avec 
                 <span className="text-orange-400"> SecunologieCI</span>
               </h1>
-              <p className="text-xl mb-8 text-blue-100">
+              <p className="text-xl mb-8 text-brand-green-100">
                 Solutions complètes de sécurité électronique : vidéosurveillance, 
                 contrôle d'accès, alarmes et plus encore. Revendeur officiel Hikvision.
               </p>
@@ -35,7 +35,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
                 >
                   Voir le catalogue <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
-                <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-900 transition-colors flex items-center justify-center">
+                <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-brand-green-800 transition-colors flex items-center justify-center">
                   <Play className="mr-2 h-5 w-5" /> Voir la vidéo
                 </button>
               </div>
@@ -62,7 +62,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
               { value: '24/7', label: 'Support technique' },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl font-bold text-blue-700 mb-2">{stat.value}</div>
+                <div className="text-3xl font-bold text-brand-green-700 mb-2">{stat.value}</div>
                 <div className="text-gray-600">{stat.label}</div>
               </div>
             ))}
@@ -94,9 +94,9 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
           </div>
           
           <div className="text-center">
-            <button 
+            <button
               onClick={() => onNavigate('catalog')}
-              className="bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors"
+              className="bg-brand-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-brand-green-700 transition-colors"
             >
               Voir tous les produits
             </button>
@@ -136,8 +136,8 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
               },
             ].map((service, index) => (
               <div key={index} className="text-center p-6 rounded-lg hover:shadow-lg transition-shadow">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <service.icon className="h-8 w-8 text-blue-700" />
+                <div className="bg-brand-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <service.icon className="h-8 w-8 text-brand-green-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
                 <p className="text-gray-600">{service.description}</p>
@@ -162,18 +162,18 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
           <div className="flex justify-center items-center space-x-12 opacity-70">
             <div className="text-4xl font-bold text-red-600">HIKVISION</div>
             <div className="text-4xl font-bold text-red-500">HUAWEI</div>
-            <div className="text-4xl font-bold text-blue-600">EZVIZ</div>
+            <div className="text-4xl font-bold text-brand-green-600">EZVIZ</div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-blue-700 text-white">
+      <section className="py-16 bg-brand-green-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-4">
             Prêt à sécuriser votre espace ?
           </h2>
-          <p className="text-xl mb-8 text-blue-100">
+          <p className="text-xl mb-8 text-brand-green-100">
             Contactez nos experts pour un devis gratuit et personnalisé
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -183,7 +183,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
             >
               Demander un devis
             </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-700 transition-colors">
+            <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-brand-green-600 transition-colors">
               Nous appeler
             </button>
           </div>
