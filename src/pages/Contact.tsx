@@ -54,7 +54,7 @@ const Contact: React.FC = () => {
               
               <div className="space-y-4">
                 <div className="flex items-start">
-                  <Phone className="h-5 w-5 text-blue-700 mr-3 mt-1" />
+                  <Phone className="h-5 w-5 text-olive-700 mr-3 mt-1" />
                   <div>
                     <p className="font-semibold text-gray-900">Téléphone</p>
                     <p className="text-gray-600">+225 07 123 456 78</p>
@@ -63,7 +63,7 @@ const Contact: React.FC = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <Mail className="h-5 w-5 text-blue-700 mr-3 mt-1" />
+                  <Mail className="h-5 w-5 text-olive-700 mr-3 mt-1" />
                   <div>
                     <p className="font-semibold text-gray-900">Email</p>
                     <p className="text-gray-600">contact@securologieci.com</p>
@@ -72,7 +72,7 @@ const Contact: React.FC = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <MapPin className="h-5 w-5 text-blue-700 mr-3 mt-1" />
+                  <MapPin className="h-5 w-5 text-olive-700 mr-3 mt-1" />
                   <div>
                     <p className="font-semibold text-gray-900">Adresse</p>
                     <p className="text-gray-600">
@@ -84,7 +84,7 @@ const Contact: React.FC = () => {
                 </div>
                 
                 <div className="flex items-start">
-                  <Clock className="h-5 w-5 text-blue-700 mr-3 mt-1" />
+                  <Clock className="h-5 w-5 text-olive-700 mr-3 mt-1" />
                   <div>
                     <p className="font-semibold text-gray-900">Horaires</p>
                     <p className="text-gray-600">
@@ -98,7 +98,7 @@ const Contact: React.FC = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-blue-700 text-white rounded-lg p-6">
+            <div className="bg-olive-700 text-white rounded-lg p-6">
               <h3 className="text-lg font-bold mb-4">Actions rapides</h3>
               <div className="space-y-3">
                 <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
@@ -131,7 +131,7 @@ const Contact: React.FC = () => {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     />
                   </div>
                   
@@ -146,7 +146,7 @@ const Contact: React.FC = () => {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -162,7 +162,7 @@ const Contact: React.FC = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     />
                   </div>
                   
@@ -176,7 +176,7 @@ const Contact: React.FC = () => {
                       required
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     >
                       <option value="">Choisir un sujet</option>
                       <option value="devis">Demande de devis</option>
@@ -199,14 +199,14 @@ const Contact: React.FC = () => {
                     rows={5}
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     placeholder="Décrivez votre projet ou votre question..."
                   ></textarea>
                 </div>
                 
                 <button
                   type="submit"
-                  className="w-full bg-blue-700 text-white py-4 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center"
+                  className="w-full bg-olive-700 text-white py-4 rounded-lg font-semibold hover:bg-olive-800 transition-colors flex items-center justify-center"
                 >
                   <Send className="h-5 w-5 mr-2" />
                   Envoyer le message

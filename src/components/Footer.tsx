@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              <Shield className="h-8 w-8 text-blue-400 mr-2" />
+              <Shield className="h-8 w-8 text-olive-400 mr-2" />
               <span className="text-2xl font-bold">SecunologieCI</span>
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Facebook className="h-6 w-6 text-blue-400 hover:text-blue-300 transition-colors" />
+                <Facebook className="h-6 w-6 text-olive-400 hover:text-olive-300 transition-colors" />
               </a>
               <a
                 href="https://www.instagram.com"
@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <Linkedin className="h-6 w-6 text-blue-400 hover:text-blue-300 transition-colors" />
+                <Linkedin className="h-6 w-6 text-olive-400 hover:text-olive-300 transition-colors" />
               </a>
             </div>
           </div>
@@ -58,15 +58,15 @@ const Footer: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <div className="space-y-3">
               <div className="flex items-center">
-                <Phone className="h-5 w-5 text-blue-400 mr-3" />
+                <Phone className="h-5 w-5 text-olive-400 mr-3" />
                 <span className="text-gray-300">+225 07 123 456 78</span>
               </div>
               <div className="flex items-center">
-                <Mail className="h-5 w-5 text-blue-400 mr-3" />
+                <Mail className="h-5 w-5 text-olive-400 mr-3" />
                 <span className="text-gray-300">contact@securologieci.com</span>
               </div>
               <div className="flex items-start">
-                <MapPin className="h-5 w-5 text-blue-400 mr-3 mt-1" />
+                <MapPin className="h-5 w-5 text-olive-400 mr-3 mt-1" />
                 <span className="text-gray-300">
                   Abidjan, Cocody<br />
                   Riviera Bonoumin

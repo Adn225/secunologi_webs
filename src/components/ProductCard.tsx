@@ -30,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-2 left-2">
-          <span className="bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium">
+          <span className="bg-olive-700 text-white px-2 py-1 rounded text-xs font-medium">
             {product.brand}
           </span>
         </div>
@@ -70,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
         </p>
         
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-blue-700">
+          <span className="text-2xl font-bold text-olive-700">
             {formatPrice(product.price)}
           </span>
           
@@ -79,7 +79,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
             disabled={!product.inStock}
             className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
               product.inStock
-                ? 'bg-blue-700 text-white hover:bg-blue-800'
+                ? 'bg-olive-700 text-white hover:bg-olive-800'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >

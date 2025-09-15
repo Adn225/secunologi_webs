@@ -54,8 +54,8 @@ const Account: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <User className="h-10 w-10 text-blue-700" />
+                <div className="w-20 h-20 bg-olive-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <User className="h-10 w-10 text-olive-700" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">Jean Kouassi</h2>
                 <p className="text-gray-600">Client Premium</p>
@@ -70,7 +70,7 @@ const Account: React.FC = () => {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center px-4 py-3 rounded-lg text-left transition-colors ${
                         activeTab === tab.id
-                          ? 'bg-blue-700 text-white'
+                          ? 'bg-olive-700 text-white'
                           : 'text-gray-700 hover:bg-gray-100'
                       }`}
                     >
@@ -102,7 +102,7 @@ const Account: React.FC = () => {
                       <input
                         type="text"
                         defaultValue="Jean"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                       />
                     </div>
                     <div>
@@ -112,7 +112,7 @@ const Account: React.FC = () => {
                       <input
                         type="text"
                         defaultValue="Kouassi"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -124,7 +124,7 @@ const Account: React.FC = () => {
                     <input
                       type="email"
                       defaultValue="jean.kouassi@email.com"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     />
                   </div>
                   
@@ -135,7 +135,7 @@ const Account: React.FC = () => {
                     <input
                       type="tel"
                       defaultValue="+225 07 123 456 78"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     />
                   </div>
                   
@@ -146,11 +146,11 @@ const Account: React.FC = () => {
                     <textarea
                       rows={3}
                       defaultValue="Abidjan, Cocody Riviera"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-transparent"
                     ></textarea>
                   </div>
                   
-                  <button className="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors">
+                  <button className="bg-olive-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-olive-800 transition-colors">
                     Mettre à jour
                   </button>
                 </form>
@@ -180,10 +180,10 @@ const Account: React.FC = () => {
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-blue-700">
+                        <span className="text-lg font-bold text-olive-700">
                           {order.total.toLocaleString()} FCFA
                         </span>
-                        <button className="text-blue-700 hover:text-blue-800 font-medium">
+                        <button className="text-olive-700 hover:text-olive-800 font-medium">
                           Voir détails
                         </button>
                       </div>
@@ -216,15 +216,15 @@ const Account: React.FC = () => {
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-blue-700">
+                        <span className="text-lg font-bold text-olive-700">
                           {quote.amount.toLocaleString()} FCFA
                         </span>
                         <div className="flex gap-2">
-                          <button className="text-blue-700 hover:text-blue-800 font-medium">
+                          <button className="text-olive-700 hover:text-olive-800 font-medium">
                             Télécharger
                           </button>
                           {quote.status === 'Approuvé' && (
-                            <button className="bg-blue-700 text-white px-4 py-2 rounded font-medium hover:bg-blue-800">
+                            <button className="bg-olive-700 text-white px-4 py-2 rounded font-medium hover:bg-olive-800">
                               Valider
                             </button>
                           )}
@@ -247,8 +247,8 @@ const Account: React.FC = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Notifications</h2>
                 
                 <div className="space-y-4">
-                  <div className="flex items-start p-4 bg-blue-50 rounded-lg">
-                    <Bell className="h-5 w-5 text-blue-700 mr-3 mt-1" />
+                  <div className="flex items-start p-4 bg-olive-50 rounded-lg">
+                    <Bell className="h-5 w-5 text-olive-700 mr-3 mt-1" />
                     <div>
                       <h3 className="font-semibold text-gray-900">Commande expédiée</h3>
                       <p className="text-gray-600">Votre commande CMD-2024-002 a été expédiée.</p>
