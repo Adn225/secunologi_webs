@@ -75,7 +75,7 @@ const ChatBot: React.FC = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 bg-blue-700 text-white p-4 rounded-full shadow-lg hover:bg-blue-800 transition-colors z-50 animate-pulse"
+          className="fixed bottom-6 right-6 bg-olive-700 text-white p-4 rounded-full shadow-lg hover:bg-olive-800 transition-colors z-50 animate-pulse"
         >
           <MessageCircle className="h-6 w-6" />
         </button>
@@ -85,7 +85,7 @@ const ChatBot: React.FC = () => {
       {isOpen && (
         <div className="fixed bottom-6 right-6 w-80 h-96 bg-white rounded-lg shadow-xl z-50 flex flex-col">
           {/* Header */}
-          <div className="bg-blue-700 text-white p-4 rounded-t-lg flex items-center justify-between">
+          <div className="bg-olive-700 text-white p-4 rounded-t-lg flex items-center justify-between">
             <div className="flex items-center">
               <Bot className="h-5 w-5 mr-2" />
               <span className="font-semibold">Assistant SecunologieCI</span>
@@ -110,7 +110,7 @@ const ChatBot: React.FC = () => {
                     className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
                       message.isBot
                         ? 'bg-gray-100 text-gray-800'
-                        : 'bg-blue-700 text-white'
+                        : 'bg-olive-700 text-white'
                     }`}
                   >
                     {message.text}
@@ -128,7 +128,7 @@ const ChatBot: React.FC = () => {
                     <button
                       key={index}
                       onClick={() => handleQuickReply(reply)}
-                      className="w-full text-left text-sm px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded text-blue-700 transition-colors"
+                      className="w-full text-left text-sm px-3 py-2 bg-olive-50 hover:bg-olive-100 rounded text-olive-700 transition-colors"
                     >
                       {reply}
                     </button>
@@ -147,11 +147,11 @@ const ChatBot: React.FC = () => {
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Tapez votre message..."
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-olive-500 focus:border-transparent"
               />
               <button
                 onClick={handleSendMessage}
-                className="bg-blue-700 text-white px-3 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                className="bg-olive-700 text-white px-3 py-2 rounded-lg hover:bg-olive-800 transition-colors"
               >
                 <Send className="h-4 w-4" />
               </button>

@@ -65,8 +65,8 @@ const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
           {services.map((service, index) => (
             <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
               <div className="p-8">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <service.icon className="h-8 w-8 text-blue-700" />
+                <div className="bg-olive-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                  <service.icon className="h-8 w-8 text-olive-700" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h3>
                 <p className="text-gray-600 mb-6">{service.description}</p>
@@ -81,10 +81,10 @@ const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
                 </ul>
                 
                 <div className="border-t pt-6">
-                  <p className="text-lg font-semibold text-blue-700 mb-4">{service.price}</p>
+                  <p className="text-lg font-semibold text-olive-700 mb-4">{service.price}</p>
                   <button 
                     onClick={() => onNavigate('contact')}
-                    className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors"
+                    className="w-full bg-olive-700 text-white py-3 rounded-lg font-semibold hover:bg-olive-800 transition-colors"
                   >
                     Demander un devis
                   </button>
@@ -124,7 +124,7 @@ const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
               }
             ].map((process, index) => (
               <div key={index} className="text-center">
-                <div className="bg-blue-700 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                <div className="bg-olive-700 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
                   {process.step}
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">{process.title}</h3>
@@ -135,7 +135,7 @@ const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
         </section>
 
         {/* Guarantees Section */}
-        <section className="bg-blue-700 text-white rounded-lg p-8 mb-16">
+        <section className="bg-olive-700 text-white rounded-lg p-8 mb-16">
           <h2 className="text-3xl font-bold text-center mb-12">Nos garanties</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -157,11 +157,11 @@ const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
               }
             ].map((guarantee, index) => (
               <div key={index} className="text-center">
-                <div className="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="bg-olive-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <guarantee.icon className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{guarantee.title}</h3>
-                <p className="text-blue-100">{guarantee.description}</p>
+                <p className="text-olive-100">{guarantee.description}</p>
               </div>
             ))}
           </div>
@@ -178,11 +178,11 @@ const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => onNavigate('contact')}
-              className="bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-800 transition-colors"
+              className="bg-olive-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-olive-800 transition-colors"
             >
               Nous contacter
             </button>
-            <button className="border-2 border-blue-700 text-blue-700 px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 hover:text-white transition-colors">
+            <button className="border-2 border-olive-700 text-olive-700 px-8 py-4 rounded-lg font-semibold hover:bg-olive-700 hover:text-white transition-colors">
               Télécharger notre brochure
             </button>
           </div>

@@ -30,7 +30,7 @@ const Cart: React.FC<CartProps> = ({ onNavigate }) => {
             <p className="text-gray-600 mb-8">Découvrez nos produits et ajoutez-les à votre panier</p>
             <button
               onClick={() => onNavigate('catalog')}
-              className="bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors"
+              className="bg-olive-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-olive-800 transition-colors"
             >
               Voir le catalogue
             </button>
@@ -60,7 +60,7 @@ const Cart: React.FC<CartProps> = ({ onNavigate }) => {
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">{item.product.name}</h3>
                     <p className="text-sm text-gray-600">{item.product.brand}</p>
-                    <p className="text-lg font-bold text-blue-700">
+                    <p className="text-lg font-bold text-olive-700">
                       {formatPrice(item.product.price)}
                     </p>
                   </div>
@@ -108,7 +108,7 @@ const Cart: React.FC<CartProps> = ({ onNavigate }) => {
               <div className="border-t pt-3">
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span className="text-blue-700">{formatPrice(state.total)}</span>
+                  <span className="text-olive-700">{formatPrice(state.total)}</span>
                 </div>
               </div>
             </div>
@@ -121,7 +121,7 @@ const Cart: React.FC<CartProps> = ({ onNavigate }) => {
                 Mobile Money
               </button>
               
-              <button className="w-full flex items-center justify-center gap-3 bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors">
+              <button className="w-full flex items-center justify-center gap-3 bg-olive-700 text-white py-3 rounded-lg font-semibold hover:bg-olive-800 transition-colors">
                 <CreditCard className="h-5 w-5" />
                 Carte bancaire
               </button>
