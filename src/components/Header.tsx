@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Menu, X, ShoppingCart, User, Search, Shield } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, Search } from 'lucide-react';
+import logo from '../assets/logo.svg';
 import { useCart } from '../contexts/CartContext';
 
 interface HeaderProps {
@@ -32,8 +33,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
             }}
             className="flex items-center"
           >
-            <Shield className="h-8 w-8 text-blue-700 mr-2" />
-            <span className="text-2xl font-bold text-gray-900">SecunologieCI</span>
+            <img
+              src={logo}
+              alt="Secunologie Côte d'Ivoire"
+              className="h-10 w-auto"
+            />
           </a>
 
           {/* Desktop Navigation */}

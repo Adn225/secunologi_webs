@@ -105,7 +105,7 @@ const Contact: React.FC = () => {
                   <Phone className="h-4 w-4 mr-2" />
                   Appeler maintenant
                 </button>
-                <button className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
+                <button className="w-full bg-brand-green hover:bg-brand-green-dark text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Chat WhatsApp
                 </button>
@@ -212,7 +212,7 @@ const Contact: React.FC = () => {
                   Envoyer le message
                 </button>
                 {status === 'success' && (
-                  <p className="text-green-600 text-center">Message envoyé avec succès !</p>
+                  <p className="text-brand-green text-center">Message envoyé avec succès !</p>
                 )}
                 {status === 'error' && (
                   <p className="text-red-600 text-center">Une erreur est survenue. Veuillez réessayer.</p>
