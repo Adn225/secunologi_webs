@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
 import { CartProvider } from './contexts/CartContext';
+import { ExperienceProvider, useExperience } from './contexts/ExperienceContext';
 import { Product } from './types';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -14,11 +15,12 @@ const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Account = lazy(() => import('./pages/Account'));
 
-function App() {
+const AppShell: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(() => {
     const path = window.location.pathname.replace('/', '');
     return path === '' ? 'home' : path;
   });
+  const { trackViewedProduct, setGlobalSearch } = useExperience();
 
   useEffect(() => {
     const onPopState = () => {
@@ -37,9 +39,12 @@ function App() {
   };
 
   const handleViewProduct = (product: Product) => {
-    // For now, just log the product. In a real app, you'd navigate to a product detail page
-    console.log('Viewing product:', product);
-    // You could set a product detail page here
+    trackViewedProduct(product);
+  };
+
+  const handleSearch = (term: string, category?: string | null) => {
+    setGlobalSearch(term, category ?? null);
+    handleNavigate('catalog');
   };
 
   const renderPage = () => {
@@ -66,18 +71,26 @@ function App() {
   };
 
   return (
-    <CartProvider>
-      <div className="min-h-screen bg-white flex flex-col">
-        <Header currentPage={currentPage} onNavigate={handleNavigate} />
-        <main className="flex-1">
-          <Suspense fallback={<div className="p-4">Chargement...</div>}>
-            {renderPage()}
-          </Suspense>
-        </main>
-        <Footer />
-        <ChatBot />
-      </div>
-    </CartProvider>
+    <div className="min-h-screen bg-white flex flex-col">
+      <Header currentPage={currentPage} onNavigate={handleNavigate} onSearch={handleSearch} />
+      <main className="flex-1">
+        <Suspense fallback={<div className="p-4">Chargement...</div>}>
+          {renderPage()}
+        </Suspense>
+      </main>
+      <Footer />
+      <ChatBot />
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <ExperienceProvider>
+      <CartProvider>
+        <AppShell />
+      </CartProvider>
+    </ExperienceProvider>
   );
 }
 

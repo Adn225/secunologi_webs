@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingCart, Eye, Star } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
+import { useExperience } from '../contexts/ExperienceContext';
 
 interface ProductCardProps {
   product: Product;
@@ -10,10 +11,12 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
   const { dispatch } = useCart();
+  const { trackAddedToCart } = useExperience();
 
   const handleAddToCart = () => {
     if (product.inStock) {
       dispatch({ type: 'ADD_ITEM', payload: product });
+      trackAddedToCart(product);
     }
   };
 

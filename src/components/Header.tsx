@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Menu, X, ShoppingCart, User, Search } from 'lucide-react';
 import logo from '../assets/logo.svg';
 import { useCart } from '../contexts/CartContext';
+import SmartSearchBar from './SmartSearchBar';
 
 interface HeaderProps {
   currentPage: string;
   onNavigate: (page: string) => void;
+  onSearch: (term: string, category?: string | null) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
+const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onSearch }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { state } = useCart();
 
@@ -24,14 +26,14 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
   return (
     <header className="bg-white shadow-lg relative z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 gap-4">
           <a
             href="/"
             onClick={(e) => {
               e.preventDefault();
               onNavigate('home');
             }}
-            className="flex items-center"
+            className="flex items-center flex-shrink-0"
           >
             <img
               src={logo}
@@ -39,6 +41,10 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
               className="h-10 w-auto"
             />
           </a>
+
+          <div className="hidden lg:flex flex-1 justify-center">
+            <SmartSearchBar onSearch={onSearch} />
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
@@ -65,9 +71,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <button className="text-gray-700 hover:text-brand-green-600 transition-colors duration-200">
-              <Search className="h-5 w-5" />
-            </button>
+            <div className="lg:hidden">
+              <button
+                className="text-gray-700 hover:text-brand-green-600 transition-colors duration-200"
+                onClick={() => setIsMenuOpen(true)}
+                aria-label="Ouvrir la recherche"
+              >
+                <Search className="h-5 w-5" />
+              </button>
+            </div>
             
             <a
               href="/cart"
@@ -112,6 +124,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate }) => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+              <div className="py-2">
+                <SmartSearchBar onSearch={onSearch} />
+              </div>
               {navigation.map((item) => (
                 <a
                   key={item.id}

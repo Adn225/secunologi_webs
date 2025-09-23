@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, Grid, List, Search } from 'lucide-react';
 import { products } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types';
+import { useExperience } from '../contexts/ExperienceContext';
 
 interface CatalogProps {
   onViewProduct: (product: Product) => void;
@@ -15,9 +16,17 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const { globalSearch, clearGlobalSearch, recentSearches, trackSearch } = useExperience();
 
   const brands = [...new Set(products.map(p => p.brand))];
   const categories = [...new Set(products.map(p => p.category))];
+
+  useEffect(() => {
+    if (!globalSearch) return;
+    setSearchTerm(globalSearch.term);
+    setSelectedCategory(globalSearch.category ?? '');
+    clearGlobalSearch();
+  }, [globalSearch, clearGlobalSearch]);
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
@@ -36,6 +45,11 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
     setSelectedCategory('');
     setPriceRange([0, 200000]);
     setSearchTerm('');
+  };
+
+  const handleApplyRecentSearch = (term: string) => {
+    setSearchTerm(term);
+    trackSearch(term);
   };
 
   return (
@@ -85,6 +99,24 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
             </div>
           </div>
         </div>
+
+        {recentSearches.length > 0 && (
+          <div className="mb-6">
+            <p className="text-xs uppercase tracking-wide text-gray-500 mb-2">Inspiré de vos recherches</p>
+            <div className="flex flex-wrap gap-2">
+              {recentSearches.map(recentTerm => (
+                <button
+                  key={recentTerm}
+                  onClick={() => handleApplyRecentSearch(recentTerm)}
+                  className="px-3 py-1 text-sm rounded-full border border-gray-200 bg-white text-gray-700 hover:border-brand-green-500 hover:text-brand-green-600 transition-colors"
+                  type="button"
+                >
+                  {recentTerm}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-8">
           {/* Filters Sidebar */}
