@@ -24,6 +24,9 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
 
    Vite est configuré pour proxyfier automatiquement les appels `/api` vers `http://localhost:5000`.
 
+   Lors d'un déploiement, vous pouvez définir `VITE_API_BASE_URL` pour pointer vers l'origine de votre API (exemple : `https://mon-backend.example.com`).
+   Le front tentera d'abord cet URL tel quel, puis réessaiera automatiquement avec le suffixe `/api` si nécessaire avant de revenir sur la valeur relative `/api`.
+
 ## Tests
 
 ```bash
