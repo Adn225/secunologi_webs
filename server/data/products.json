@@ -1,0 +1,104 @@
+[
+  {
+    "id": "1",
+    "name": "Caméra IP Hikvision DS-2CD2043G2-I",
+    "brand": "Hikvision",
+    "category": "Caméras IP",
+    "price": 85000,
+    "image": "https://images.pexels.com/photos/430208/pexels-photo-430208.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Caméra IP 4MP avec vision nocturne infrarouge jusqu'à 30m",
+    "features": [
+      "Résolution 4MP (2560 × 1440)",
+      "Vision nocturne IR 30m",
+      "Détection de mouvement",
+      "Audio bidirectionnel",
+      "Protection IP67"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "2",
+    "name": "NVR Hikvision DS-7608NI-I2/8P",
+    "brand": "Hikvision",
+    "category": "NVR",
+    "price": 125000,
+    "image": "https://images.pexels.com/photos/5474296/pexels-photo-5474296.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Enregistreur réseau 8 canaux avec ports PoE intégrés",
+    "features": [
+      "8 canaux réseau",
+      "Ports PoE intégrés",
+      "Sortie HDMI 4K",
+      "Détection de mouvement",
+      "Accès distant"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "3",
+    "name": "Interphone Hikvision DS-KV8113-WME1",
+    "brand": "Hikvision",
+    "category": "Interphones",
+    "price": 95000,
+    "image": "https://images.pexels.com/photos/8190841/pexels-photo-8190841.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Portier vidéo IP avec écran tactile 7 pouces",
+    "features": [
+      "Écran tactile 7 pouces",
+      "Caméra 2MP intégrée",
+      "Vision nocturne IR",
+      "Contrôle d'accès par carte",
+      "Communication bidirectionnelle"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "4",
+    "name": "Caméra WiFi EZVIZ C3W Pro",
+    "brand": "EZVIZ",
+    "category": "Caméras IP",
+    "price": 45000,
+    "image": "https://images.pexels.com/photos/8434791/pexels-photo-8434791.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Caméra extérieure WiFi 2MP avec sirène intégrée",
+    "features": [
+      "Résolution 2MP (1920x1080)",
+      "WiFi intégré",
+      "Sirène d'alarme",
+      "Vision nocturne couleur",
+      "Application mobile"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "5",
+    "name": "Switch PoE Huawei S1728GWR-4P",
+    "brand": "Huawei",
+    "category": "Accessoires",
+    "price": 65000,
+    "image": "https://images.pexels.com/photos/8199144/pexels-photo-8199144.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Switch PoE+ 24 ports Gigabit pour alimenter vos caméras",
+    "features": [
+      "24 ports Gigabit",
+      "PoE+ 370W",
+      "Gestion intelligente",
+      "VLAN support",
+      "Montage rack 1U"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "6",
+    "name": "Kit Alarme EZVIZ A1 Pro",
+    "brand": "EZVIZ",
+    "category": "Alarmes",
+    "price": 75000,
+    "image": "https://images.pexels.com/photos/8566472/pexels-photo-8566472.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Kit alarme sans fil avec centrale et détecteurs",
+    "features": [
+      "Centrale WiFi",
+      "4 détecteurs de mouvement",
+      "2 détecteurs d'ouverture",
+      "Sirène 110dB",
+      "Application mobile"
+    ],
+    "inStock": false
+  }
+]

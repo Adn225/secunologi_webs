@@ -1,20 +1,31 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Search, Mic, History, Sparkles } from 'lucide-react';
-import { products } from '../data/products';
 import { useExperience } from '../contexts/ExperienceContext';
+import { useData } from '../contexts/DataContext';
 
 interface SmartSearchBarProps {
   onSearch: (term: string, category?: string | null) => void;
 }
 
-const categories = ['Toutes les catégories', ...new Set(products.map(product => product.category))];
+const DEFAULT_CATEGORY = 'Toutes les catégories';
 
 const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
+  const { products, productsLoading, productsError } = useData();
   const { recentSearches, trackSearch } = useExperience();
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<string>(categories[0]);
+  const [category, setCategory] = useState<string>(DEFAULT_CATEGORY);
   const [showPanel, setShowPanel] = useState(false);
   const [voiceHint, setVoiceHint] = useState('');
+
+  const categories = useMemo(() => {
+    return [DEFAULT_CATEGORY, ...new Set(products.map(product => product.category))];
+  }, [products]);
+
+  useEffect(() => {
+    if (!categories.includes(category)) {
+      setCategory(DEFAULT_CATEGORY);
+    }
+  }, [categories, category]);
 
   useEffect(() => {
     if (!voiceHint) return;
@@ -23,8 +34,12 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
   }, [voiceHint]);
 
   const filteredSuggestions = useMemo(() => {
+    if (products.length === 0) {
+      return [];
+    }
+
     const normalizedQuery = query.trim().toLowerCase();
-    const normalizedCategory = category === categories[0] ? null : category;
+    const normalizedCategory = category === DEFAULT_CATEGORY ? null : category;
 
     if (!normalizedQuery) {
       return products
@@ -35,18 +50,18 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
     return products
       .filter(product => {
         const matchesCategory = !normalizedCategory || product.category === normalizedCategory;
-        const matchesQuery =
-          product.name.toLowerCase().includes(normalizedQuery) ||
-          product.description.toLowerCase().includes(normalizedQuery) ||
-          product.brand.toLowerCase().includes(normalizedQuery);
-        return matchesCategory && matchesQuery;
+        if (!matchesCategory) {
+          return false;
+        }
+        const haystack = `${product.name} ${product.description} ${product.brand}`.toLowerCase();
+        return haystack.includes(normalizedQuery);
       })
       .slice(0, 5);
-  }, [query, category]);
+  }, [products, query, category]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const normalizedCategory = category === categories[0] ? null : category;
+    const normalizedCategory = category === DEFAULT_CATEGORY ? null : category;
     onSearch(query.trim(), normalizedCategory);
     if (query.trim()) {
       trackSearch(query);
@@ -55,7 +70,7 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
   };
 
   const handleSuggestionClick = (term: string, suggestionCategory?: string) => {
-    const normalizedCategory = suggestionCategory ?? (category === categories[0] ? null : category);
+    const normalizedCategory = suggestionCategory ?? (category === DEFAULT_CATEGORY ? null : category);
     setQuery(term);
     onSearch(term, normalizedCategory);
     if (term.trim()) {
@@ -66,7 +81,7 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
 
   const handleRecentSearchClick = (recentTerm: string) => {
     setQuery(recentTerm);
-    onSearch(recentTerm, category === categories[0] ? null : category);
+    onSearch(recentTerm, category === DEFAULT_CATEGORY ? null : category);
     trackSearch(recentTerm);
     setShowPanel(false);
   };
@@ -86,6 +101,7 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
             value={category}
             onChange={(event) => setCategory(event.target.value)}
             className="bg-transparent focus:outline-none"
+            disabled={productsLoading}
           >
             {categories.map(option => (
               <option key={option} value={option}>
@@ -157,21 +173,30 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
             Suggestions intelligentes
           </div>
           <ul className="space-y-2">
-            {filteredSuggestions.length === 0 ? (
-              <li className="text-sm text-gray-500 px-2 py-2">Aucun produit correspondant. Essayez un autre terme.</li>
-            ) : (
-              filteredSuggestions.map(suggestion => (
-                <li key={suggestion.id}>
+            {productsError && (
+              <li className="text-sm text-red-600 text-center py-2">{productsError}</li>
+            )}
+            {!productsError && productsLoading && (
+              <li className="text-sm text-gray-500 text-center py-2">Chargement des suggestions...</li>
+            )}
+            {!productsError && !productsLoading && filteredSuggestions.length === 0 && (
+              <li className="text-sm text-gray-500 text-center py-2">
+                Aucun produit correspondant. Essayez un autre terme.
+              </li>
+            )}
+            {!productsError && filteredSuggestions.length > 0 && (
+              filteredSuggestions.map(product => (
+                <li key={product.id}>
                   <button
                     type="button"
                     onMouseDown={(event) => event.preventDefault()}
-                    onClick={() => handleSuggestionClick(suggestion.name, suggestion.category)}
+                    onClick={() => handleSuggestionClick(product.name, product.category)}
                     className="w-full text-left px-3 py-2 rounded-lg hover:bg-brand-green-50 transition-colors"
                   >
-                    <div className="text-sm font-medium text-gray-900">{suggestion.name}</div>
-                    <div className="text-xs text-gray-500">
-                      {suggestion.brand} · {suggestion.category}
-                    </div>
+                    <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                    <p className="text-xs text-gray-500">
+                      {product.brand} · {product.category}
+                    </p>
                   </button>
                 </li>
               ))

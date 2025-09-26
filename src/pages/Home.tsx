@@ -13,11 +13,11 @@ import {
   Zap,
   Package,
 } from 'lucide-react';
-import { products } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
 import { useExperience } from '../contexts/ExperienceContext';
+import { useData } from '../contexts/DataContext';
 
 interface HomeProps {
   onNavigate: (page: string) => void;
@@ -69,8 +69,9 @@ const bundleDefinitions: BundleDefinition[] = [
 const formatPrice = (price: number) => `${new Intl.NumberFormat('fr-FR').format(price)} FCFA`;
 
 const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
-  const featuredProducts = products.slice(0, 3);
-  const dealProduct = products[0];
+  const { products, productsLoading, productsError } = useData();
+  const featuredProducts = useMemo(() => products.slice(0, 3), [products]);
+  const dealProduct = products[0] ?? null;
   const dealDiscount = 0.18;
   const { dispatch } = useCart();
   const { recentlyViewedProducts, lastAddedProduct, trackAddedToCart, recentSearches } = useExperience();
@@ -131,7 +132,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
     products.forEach(product => pushProduct(product));
 
     return collection.slice(0, 6);
-  }, [preferredCategories]);
+  }, [preferredCategories, products]);
 
   const bundles = useMemo<HydratedBundle[]>(() => {
     return bundleDefinitions
@@ -155,9 +156,10 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
         };
       })
       .filter((bundle): bundle is HydratedBundle => Boolean(bundle));
-  }, []);
+  }, [products]);
 
   const handleDealAdd = () => {
+    if (!dealProduct) return;
     dispatch({ type: 'ADD_ITEM', payload: dealProduct });
     trackAddedToCart(dealProduct);
   };
@@ -279,57 +281,69 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
       {/* Deal of the day */}
       <section className="py-16 bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row gap-10 items-center">
-            <div className="flex-1">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-sm mb-4">
-                <Zap className="h-4 w-4 text-orange-400 mr-2" /> Offre du jour SecunoPrime
-              </div>
-              <h2 className="text-3xl font-bold mb-4">Caméra IP Hikvision DS-2CD2043G2-I</h2>
-              <p className="text-brand-green-100 mb-6 max-w-lg">
-                Profitez d'une remise exceptionnelle inspirée des "Deals of the Day" d'Amazon. Inclut la configuration à distance offerte et un rappel d'entretien automatisé.
-              </p>
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl font-extrabold text-orange-400">{formatPrice(Math.round(dealProduct.price * (1 - dealDiscount)))}</span>
-                <span className="text-lg text-brand-green-100 line-through">{formatPrice(dealProduct.price)}</span>
-                <span className="px-3 py-1 rounded-full bg-orange-500 text-sm font-semibold">-{Math.round(dealDiscount * 100)}%</span>
-              </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <button
-                  onClick={handleDealAdd}
-                  className="bg-orange-500 hover:bg-orange-600 transition-colors px-6 py-3 rounded-lg font-semibold text-white"
-                >
-                  Ajouter en 1-clic
-                </button>
-                <span className="text-sm text-brand-green-100">
-                  Expire dans <span className="font-semibold text-white">{dealCountdown}</span>
-                </span>
-              </div>
-              {lastAddedProduct && (
-                <p className="mt-4 text-xs uppercase tracking-wide text-brand-green-200">
-                  Dernier ajout au panier : {lastAddedProduct.name}
+          {productsError ? (
+            <div className="text-center text-red-200 py-12">
+              Impossible de charger l'offre du jour. Veuillez réessayer plus tard.
+            </div>
+          ) : !dealProduct ? (
+            <div className="text-center text-brand-green-100 py-12">
+              {productsLoading
+                ? 'Chargement de l’offre du jour...'
+                : 'Aucune offre exclusive n’est disponible pour le moment. Revenez bientôt !'}
+            </div>
+          ) : (
+            <div className="flex flex-col lg:flex-row gap-10 items-center">
+              <div className="flex-1">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 text-sm mb-4">
+                  <Zap className="h-4 w-4 text-orange-400 mr-2" /> Offre du jour SecunoPrime
+                </div>
+                <h2 className="text-3xl font-bold mb-4">{dealProduct.name}</h2>
+                <p className="text-brand-green-100 mb-6 max-w-lg">
+                  Profitez d'une remise exceptionnelle inspirée des "Deals of the Day" d'Amazon sur le modèle {dealProduct.brand}. Configuration à distance offerte et rappel d'entretien automatique inclus.
                 </p>
-              )}
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="text-3xl font-extrabold text-orange-400">{formatPrice(Math.round(dealProduct.price * (1 - dealDiscount)))}</span>
+                  <span className="text-lg text-brand-green-100 line-through">{formatPrice(dealProduct.price)}</span>
+                  <span className="px-3 py-1 rounded-full bg-orange-500 text-sm font-semibold">-{Math.round(dealDiscount * 100)}%</span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  <button
+                    onClick={handleDealAdd}
+                    className="bg-orange-500 hover:bg-orange-600 transition-colors px-6 py-3 rounded-lg font-semibold text-white"
+                  >
+                    Ajouter en 1-clic
+                  </button>
+                  <span className="text-sm text-brand-green-100">
+                    Expire dans <span className="font-semibold text-white">{dealCountdown}</span>
+                  </span>
+                </div>
+                {lastAddedProduct && (
+                  <p className="mt-4 text-xs uppercase tracking-wide text-brand-green-200">
+                    Dernier ajout au panier : {lastAddedProduct.name}
+                  </p>
+                )}
+              </div>
+              <div className="flex-1 bg-white text-gray-900 rounded-2xl shadow-2xl p-6 w-full">
+                <img
+                  src={dealProduct.image}
+                  alt={dealProduct.name}
+                  className="w-full h-56 object-cover rounded-xl mb-4"
+                />
+                <h3 className="text-xl font-semibold mb-3">Ce qui est inclus :</h3>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  {dealProduct.features.slice(0, 4).map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="mt-1 h-2 w-2 rounded-full bg-brand-green-600" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-sm text-gray-600">
+                  En bonus : audit de positionnement caméra + notifications automatisées en cas de maintenance, comme sur Amazon.
+                </p>
+              </div>
             </div>
-            <div className="flex-1 bg-white text-gray-900 rounded-2xl shadow-2xl p-6 w-full">
-              <img
-                src={dealProduct.image}
-                alt={dealProduct.name}
-                className="w-full h-56 object-cover rounded-xl mb-4"
-              />
-              <h3 className="text-xl font-semibold mb-3">Ce qui est inclus :</h3>
-              <ul className="space-y-2 text-sm text-gray-700">
-                {dealProduct.features.slice(0, 4).map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span className="mt-1 h-2 w-2 rounded-full bg-brand-green-600" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-sm text-gray-600">
-                En bonus : audit de positionnement caméra + notifications automatisées en cas de maintenance, comme sur Amazon.
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -344,9 +358,19 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {featuredProducts.map(product => (
-              <ProductCard key={product.id} product={product} onViewDetails={onViewProduct} />
-            ))}
+            {productsLoading ? (
+              <div className="md:col-span-3 text-center text-gray-500 py-8">Chargement des produits phares...</div>
+            ) : productsError ? (
+              <div className="md:col-span-3 text-center text-red-600 py-8">Impossible de charger les produits phares.</div>
+            ) : featuredProducts.length === 0 ? (
+              <div className="md:col-span-3 text-center text-gray-500 py-8">
+                Aucun produit disponible pour le moment.
+              </div>
+            ) : (
+              featuredProducts.map(product => (
+                <ProductCard key={product.id} product={product} onViewDetails={onViewProduct} />
+              ))
+            )}
           </div>
 
           <div className="text-center">
@@ -464,37 +488,47 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bundles.map(bundle => (
-              <div key={bundle.id} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col">
-                <div className="flex items-center gap-3 mb-4">
-                  <Sparkles className="h-5 w-5 text-orange-400" />
-                  <h3 className="text-xl font-semibold text-gray-900">{bundle.title}</h3>
-                </div>
-                <p className="text-sm text-gray-600 mb-4">{bundle.description}</p>
-                <ul className="space-y-2 text-sm text-gray-700 mb-4">
-                  {bundle.items.map(item => (
-                    <li key={item.id} className="flex items-center justify-between">
-                      <span>{item.name}</span>
-                      <span className="text-gray-500">{item.brand}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-auto">
-                  <p className="text-sm text-brand-green-600 font-semibold mb-2">{bundle.benefit}</p>
-                  <div className="flex items-end gap-3 mb-4">
-                    <span className="text-2xl font-bold text-brand-green-700">{formatPrice(bundle.discounted)}</span>
-                    <span className="text-sm text-gray-400 line-through">{formatPrice(bundle.total)}</span>
-                    <span className="text-xs font-semibold text-orange-500 bg-orange-50 px-2 py-1 rounded-full">-{Math.round(bundle.savings * 100)}%</span>
-                  </div>
-                  <button
-                    onClick={() => handleBundleAdd(bundle.items)}
-                    className="w-full bg-brand-green-600 text-white py-3 rounded-lg font-semibold hover:bg-brand-green-700 transition-colors"
-                  >
-                    Ajouter le pack au panier
-                  </button>
-                </div>
+            {productsLoading ? (
+              <div className="col-span-full text-center text-gray-500 py-8">Chargement des packs personnalisés...</div>
+            ) : productsError ? (
+              <div className="col-span-full text-center text-red-600 py-8">Impossible de charger les packs pour le moment.</div>
+            ) : bundles.length === 0 ? (
+              <div className="col-span-full text-center text-gray-500 py-8">
+                Aucun pack prêt à installer n'est disponible actuellement.
               </div>
-            ))}
+            ) : (
+              bundles.map(bundle => (
+                <div key={bundle.id} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm flex flex-col">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Sparkles className="h-5 w-5 text-orange-400" />
+                    <h3 className="text-xl font-semibold text-gray-900">{bundle.title}</h3>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">{bundle.description}</p>
+                  <ul className="space-y-2 text-sm text-gray-700 mb-4">
+                    {bundle.items.map(item => (
+                      <li key={item.id} className="flex items-center justify-between">
+                        <span>{item.name}</span>
+                        <span className="text-gray-500">{item.brand}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-auto">
+                    <p className="text-sm text-brand-green-600 font-semibold mb-2">{bundle.benefit}</p>
+                    <div className="flex items-end gap-3 mb-4">
+                      <span className="text-2xl font-bold text-brand-green-700">{formatPrice(bundle.discounted)}</span>
+                      <span className="text-sm text-gray-400 line-through">{formatPrice(bundle.total)}</span>
+                      <span className="text-xs font-semibold text-orange-500 bg-orange-50 px-2 py-1 rounded-full">-{Math.round(bundle.savings * 100)}%</span>
+                    </div>
+                    <button
+                      onClick={() => handleBundleAdd(bundle.items)}
+                      className="w-full bg-brand-green-600 text-white py-3 rounded-lg font-semibold hover:bg-brand-green-700 transition-colors"
+                    >
+                      Ajouter le pack au panier
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>

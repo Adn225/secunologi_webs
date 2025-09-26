@@ -9,7 +9,7 @@ import React, {
   useEffect,
 } from 'react';
 import { Product } from '../types';
-import { products } from '../data/products';
+import { useData } from './DataContext';
 
 type GlobalSearch = {
   term: string;
@@ -91,6 +91,7 @@ const dedupeWithLimit = (items: string[], item: string, limit = 6) => {
 };
 
 export const ExperienceProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { products } = useData();
   const [recentSearches, setRecentSearches] = useState<string[]>(() => loadArrayFromStorage(RECENT_SEARCHES_KEY));
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => loadArrayFromStorage(RECENTLY_VIEWED_KEY));
   const [lastAddedId, setLastAddedId] = useState<string | null>(() => loadValueFromStorage(LAST_ADDED_KEY));
@@ -134,12 +135,12 @@ export const ExperienceProvider: React.FC<{ children: ReactNode }> = ({ children
     return recentlyViewedIds
       .map(id => products.find(product => product.id === id))
       .filter((product): product is Product => Boolean(product));
-  }, [recentlyViewedIds]);
+  }, [recentlyViewedIds, products]);
 
   const lastAddedProduct = useMemo(() => {
     if (!lastAddedId) return null;
     return products.find(product => product.id === lastAddedId) ?? null;
-  }, [lastAddedId]);
+  }, [lastAddedId, products]);
 
   const value = useMemo<ExperienceContextValue>(() => ({
     recentSearches,
