@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
 import { CartProvider } from './contexts/CartContext';
+import { DataProvider } from './contexts/DataContext';
 import { ExperienceProvider, useExperience } from './contexts/ExperienceContext';
 import { Product } from './types';
 
@@ -86,11 +87,13 @@ const AppShell: React.FC = () => {
 
 function App() {
   return (
-    <ExperienceProvider>
-      <CartProvider>
-        <AppShell />
-      </CartProvider>
-    </ExperienceProvider>
+    <DataProvider>
+      <ExperienceProvider>
+        <CartProvider>
+          <AppShell />
+        </CartProvider>
+      </ExperienceProvider>
+    </DataProvider>
   );
 }
 

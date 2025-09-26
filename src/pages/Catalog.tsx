@@ -1,15 +1,16 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, Grid, List, Search } from 'lucide-react';
-import { products } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types';
 import { useExperience } from '../contexts/ExperienceContext';
+import { useData } from '../contexts/DataContext';
 
 interface CatalogProps {
   onViewProduct: (product: Product) => void;
 }
 
 const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
+  const { products, productsLoading, productsError } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -18,8 +19,8 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
   const [showFilters, setShowFilters] = useState(false);
   const { globalSearch, clearGlobalSearch, recentSearches, trackSearch } = useExperience();
 
-  const brands = [...new Set(products.map(p => p.brand))];
-  const categories = [...new Set(products.map(p => p.category))];
+  const brands = useMemo(() => [...new Set(products.map(p => p.brand))], [products]);
+  const categories = useMemo(() => [...new Set(products.map(p => p.category))], [products]);
 
   useEffect(() => {
     if (!globalSearch) return;
@@ -35,10 +36,10 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
       const matchesBrand = !selectedBrand || product.brand === selectedBrand;
       const matchesCategory = !selectedCategory || product.category === selectedCategory;
       const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-      
+
       return matchesSearch && matchesBrand && matchesCategory && matchesPrice;
     });
-  }, [searchTerm, selectedBrand, selectedCategory, priceRange]);
+  }, [products, searchTerm, selectedBrand, selectedCategory, priceRange]);
 
   const clearFilters = () => {
     setSelectedBrand('');
@@ -193,24 +194,31 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
           <div className="flex-1">
             <div className="mb-4 flex justify-between items-center">
               <p className="text-gray-600">
-                {filteredProducts.length} produit(s) trouvé(s)
+                {productsLoading ? 'Chargement des produits...' : `${filteredProducts.length} produit(s) trouvé(s)`}
               </p>
+              {productsError && <p className="text-sm text-red-600">{productsError}</p>}
             </div>
 
-            {filteredProducts.length === 0 ? (
+            {productsLoading ? (
+              <div className="text-center py-12 text-gray-500">Chargement du catalogue...</div>
+            ) : productsError ? (
+              <div className="text-center py-12 text-red-600">Impossible d'afficher les produits pour le moment.</div>
+            ) : filteredProducts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-500">Aucun produit trouvé avec ces critères.</p>
               </div>
             ) : (
-              <div className={`grid gap-6 ${
-                viewMode === 'grid' 
-                  ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
-                  : 'grid-cols-1'
-              }`}>
+              <div
+                className={`grid gap-6 ${
+                  viewMode === 'grid'
+                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                    : 'grid-cols-1'
+                }`}
+              >
                 {filteredProducts.map((product) => (
-                  <ProductCard 
-                    key={product.id} 
-                    product={product} 
+                  <ProductCard
+                    key={product.id}
+                    product={product}
                     onViewDetails={onViewProduct}
                   />
                 ))}

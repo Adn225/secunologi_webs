@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
+import { submitContact } from '../services/api';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,8 @@ const Contact: React.FC = () => {
     message: ''
   });
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -20,17 +23,19 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setStatus('idle');
+    setStatusMessage('');
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (!res.ok) throw new Error('Network response was not ok');
+      const response = await submitContact(formData);
       setStatus('success');
+      setStatusMessage(response.message);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    } catch {
+    } catch (error) {
       setStatus('error');
+      setStatusMessage(error instanceof Error ? error.message : 'Une erreur est survenue. Veuillez réessayer.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -206,16 +211,16 @@ const Contact: React.FC = () => {
                 
                 <button
                   type="submit"
-                  className="w-full bg-brand-green-600 text-white py-4 rounded-lg font-semibold hover:bg-brand-green-700 transition-colors flex items-center justify-center"
+                  className="w-full bg-brand-green-600 text-white py-4 rounded-lg font-semibold hover:bg-brand-green-700 transition-colors flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
                 >
                   <Send className="h-5 w-5 mr-2" />
-                  Envoyer le message
+                  {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
                 </button>
-                {status === 'success' && (
-                  <p className="text-brand-green text-center">Message envoyé avec succès !</p>
-                )}
-                {status === 'error' && (
-                  <p className="text-red-600 text-center">Une erreur est survenue. Veuillez réessayer.</p>
+                {status !== 'idle' && statusMessage && (
+                  <p className={`text-center ${status === 'success' ? 'text-brand-green' : 'text-red-600'}`}>
+                    {statusMessage}
+                  </p>
                 )}
               </form>
             </div>
