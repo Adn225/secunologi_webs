@@ -32,3 +32,25 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
 ```bash
 npm run lint
 ```
+
+## Déploiement de l'API sur Vercel
+
+1. **Préparer le projet**
+   - L'API est encapsulée dans `server/app.js` et exposée localement via `server/index.js`.
+   - Une fonction serverless compatible Vercel est disponible dans `api/index.js`; elle réutilise exactement les mêmes règles métier que le serveur local.
+
+2. **Déploiement avec l'interface Vercel**
+   - Poussez votre dépôt sur GitHub/GitLab/Bitbucket.
+   - Créez un nouveau projet Vercel en pointant sur ce dépôt et laissez les réglages par défaut (`npm install`, puis `npm run build`).
+   - Vercel détecte automatiquement le dossier `api/` et publie l'API en Node.js 18 grâce à la configuration `runtime` exportée.
+
+3. **Déploiement avec la CLI**
+   ```bash
+   npm i -g vercel
+   vercel login
+   vercel --prod
+   ```
+
+4. **Consommation**
+   - Les routes précédemment listées sont disponibles depuis `https://<votre-projet>.vercel.app/api/...`.
+   - Pour votre front, définissez `VITE_API_BASE_URL` sur l'URL de production si vous n'utilisez pas le proxy `/api`.
