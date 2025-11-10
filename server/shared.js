@@ -1,19 +1,27 @@
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
 
 const defaultHeaders = {
   'Content-Type': 'application/json; charset=utf-8',
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
 };
 
 const contactSubmissions = [];
 let productsCache;
 let blogPostsCache;
+let promotionsCache;
+let adminUsersCache;
 
 const loadJson = async (path) => {
   const file = await readFile(new URL(path, import.meta.url), 'utf-8');
   return JSON.parse(file);
+};
+
+const writeJson = async (path, data) => {
+  const fileUrl = new URL(path, import.meta.url);
+  const payload = JSON.stringify(data, null, 2);
+  await writeFile(fileUrl, `${payload}\n`, 'utf-8');
 };
 
 const getSingleValue = (value) => {
@@ -47,11 +55,33 @@ export const getProducts = async () => {
   return productsCache;
 };
 
+export const saveProducts = async (products) => {
+  productsCache = products;
+  await writeJson('./data/products.json', products);
+};
+
 export const getBlogPosts = async () => {
   if (!blogPostsCache) {
     blogPostsCache = await loadJson('./data/blogPosts.json');
   }
   return blogPostsCache;
+};
+
+export const saveBlogPosts = async (posts) => {
+  blogPostsCache = posts;
+  await writeJson('./data/blogPosts.json', posts);
+};
+
+export const getPromotions = async () => {
+  if (!promotionsCache) {
+    promotionsCache = await loadJson('./data/promotions.json');
+  }
+  return promotionsCache;
+};
+
+export const savePromotions = async (promotions) => {
+  promotionsCache = promotions;
+  await writeJson('./data/promotions.json', promotions);
 };
 
 export const getProductById = async (id) => {
@@ -62,6 +92,17 @@ export const getProductById = async (id) => {
 export const getBlogPostById = async (id) => {
   const posts = await getBlogPosts();
   return posts.find((item) => item.id === id);
+};
+
+export const getAdminUsers = async () => {
+  if (!adminUsersCache) {
+    adminUsersCache = await loadJson('./data/adminUsers.json');
+  }
+  return adminUsersCache;
+};
+
+export const resetAdminUsersCache = () => {
+  adminUsersCache = undefined;
 };
 
 export const filterProducts = (products, query) => {

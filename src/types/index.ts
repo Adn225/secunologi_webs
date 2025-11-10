@@ -40,3 +40,26 @@ export interface BlogPost {
   date: string;
   category: string;
 }
+
+export interface Promotion {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  startDate: string;
+  endDate: string | null;
+  discount: number | null;
+}
+
+export interface AdminAccount {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface AdminSession {
+  token: string;
+  expiresAt: string;
+  admin: AdminAccount;
+}
