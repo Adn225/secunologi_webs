@@ -1,0 +1,11 @@
+[
+  {
+    "id": "promo-1",
+    "title": "Pack Sécurité Entreprise",
+    "description": "Réduction de 15% sur l'achat simultané d'un système de vidéosurveillance et de contrôle d'accès.",
+    "image": "/images/promotions/promo-pack.jpg",
+    "startDate": "2024-01-01T00:00:00.000Z",
+    "endDate": "2024-03-31T23:59:59.000Z",
+    "discount": 15
+  }
+]
