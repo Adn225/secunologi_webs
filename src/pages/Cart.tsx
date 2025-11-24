@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trash2, Plus, Minus, CreditCard, Smartphone } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import TopologyPlanner from '../components/TopologyPlanner';
 
 interface CartProps {
   onNavigate: (page: string) => void;
@@ -140,6 +141,10 @@ const Cart: React.FC<CartProps> = ({ onNavigate }) => {
               <p>• Garantie constructeur</p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-10">
+          <TopologyPlanner items={state.items} total={state.total} />
         </div>
       </div>
     </div>
