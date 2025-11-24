@@ -252,59 +252,82 @@ const Admin: React.FC<AdminPageProps> = ({ onNavigate }) => {
   };
 
   const renderLogin = () => (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow p-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Espace administrateur</h1>
-      <p className="text-gray-600 text-center mb-6">
-        Connectez-vous pour gérer le catalogue, le blog et les offres promotionnelles de Secunologi.
-      </p>
-      {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
+    <div className="max-w-3xl mx-auto space-y-6">
+      <div className="bg-white rounded-xl shadow p-8">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Espace administrateur</h1>
+        <p className="text-gray-600 text-center mb-6">
+          Connectez-vous pour gérer le catalogue, le blog et les offres promotionnelles de Secunologi.
+        </p>
+        {error && (
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+        {feedback && feedback.type === 'success' && (
+          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            {feedback.message}
+          </div>
+        )}
+        <form onSubmit={handleLoginSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="admin-email">
+              Email professionnel
+            </label>
+            <input
+              id="admin-email"
+              type="email"
+              required
+              value={loginForm.email}
+              onChange={(event) => setLoginForm((prev) => ({ ...prev, email: event.target.value }))}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-brand-green-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="admin-password">
+              Mot de passe
+            </label>
+            <input
+              id="admin-password"
+              type="password"
+              required
+              value={loginForm.password}
+              onChange={(event) => setLoginForm((prev) => ({ ...prev, password: event.target.value }))}
+              className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-brand-green-500"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg bg-brand-green-600 px-4 py-2 font-semibold text-white transition hover:bg-brand-green-700 disabled:opacity-60"
+          >
+            {loading ? 'Connexion...' : 'Se connecter'}
+          </button>
+        </form>
+        <p className="mt-8 text-center text-sm text-gray-500">
+          Besoin d'aide ? <button onClick={() => onNavigate('contact')} className="font-medium text-brand-green-600 hover:text-brand-green-700">Contactez notre équipe.</button>
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-blue-100 bg-blue-50 p-6 text-sm text-blue-900 shadow">
+        <div className="flex items-start gap-3">
+          <div className="mt-1 h-10 w-10 rounded-full bg-brand-green-600/10 text-brand-green-700 flex items-center justify-center font-bold">
+            i
+          </div>
+          <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-gray-900">Comment nous sécurisons l'administration Secunologi</h2>
+            <ul className="list-disc space-y-2 pl-5 text-gray-700">
+              <li>URL d'accès réservée et authentification stricte (MFA, session courte, verrouillage en cas d'échecs répétés).</li>
+              <li>Back-office séparé du site public, avec filtrage réseau et journaux d'audit pour chaque action sensible.</li>
+              <li>Permissions par rôle (catalogue, support, marketing) pour limiter les droits de chaque compte.</li>
+              <li>Pas de lien visible depuis le front : l'accès se fait via un point d'entrée dédié et surveillé.</li>
+              <li>API internes et intégrations (ERP/CRM) pour automatiser sans exposer de fonctionnalités critiques au public.</li>
+            </ul>
+            <p className="text-gray-700">
+              Cette approche est la même que les grandes plateformes e-commerce : une interface graphique existe, mais elle reste invisible pour le grand public afin de protéger vos données et vos opérations.
+            </p>
+          </div>
         </div>
-      )}
-      {feedback && feedback.type === 'success' && (
-        <div className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-          {feedback.message}
-        </div>
-      )}
-      <form onSubmit={handleLoginSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="admin-email">
-            Email professionnel
-          </label>
-          <input
-            id="admin-email"
-            type="email"
-            required
-            value={loginForm.email}
-            onChange={(event) => setLoginForm((prev) => ({ ...prev, email: event.target.value }))}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-brand-green-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="admin-password">
-            Mot de passe
-          </label>
-          <input
-            id="admin-password"
-            type="password"
-            required
-            value={loginForm.password}
-            onChange={(event) => setLoginForm((prev) => ({ ...prev, password: event.target.value }))}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-brand-green-500"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-brand-green-600 px-4 py-2 font-semibold text-white transition hover:bg-brand-green-700 disabled:opacity-60"
-        >
-          {loading ? 'Connexion...' : 'Se connecter'}
-        </button>
-      </form>
-      <p className="mt-8 text-center text-sm text-gray-500">
-        Besoin d'aide ? <button onClick={() => onNavigate('contact')} className="font-medium text-brand-green-600 hover:text-brand-green-700">Contactez notre équipe.</button>
-      </p>
+      </div>
     </div>
   );
 
