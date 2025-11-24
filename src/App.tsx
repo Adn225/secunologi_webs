@@ -16,18 +16,24 @@ const Blog = lazy(() => import('./pages/Blog'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Account = lazy(() => import('./pages/Account'));
-const Admin = lazy(() => import('./pages/Admin'));
+
+const sanitizePage = (path: string) => {
+  if (path === 'admin') {
+    return 'home';
+  }
+  return path === '' ? 'home' : path;
+};
 
 const AppShell: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(() => {
     const path = window.location.pathname.replace('/', '');
-    return path === '' ? 'home' : path;
+    return sanitizePage(path);
   });
   const { trackViewedProduct, setGlobalSearch } = useExperience();
 
   useEffect(() => {
     const onPopState = () => {
-      const path = window.location.pathname.replace('/', '') || 'home';
+      const path = sanitizePage(window.location.pathname.replace('/', '') || 'home');
       setCurrentPage(path);
     };
     window.addEventListener('popstate', onPopState);
@@ -35,8 +41,9 @@ const AppShell: React.FC = () => {
   }, []);
 
   const handleNavigate = (page: string) => {
-    setCurrentPage(page);
-    const url = page === 'home' ? '/' : `/${page}`;
+    const safePage = sanitizePage(page);
+    setCurrentPage(safePage);
+    const url = safePage === 'home' ? '/' : `/${safePage}`;
     window.history.pushState(null, '', url);
     window.scrollTo(0, 0);
   };
@@ -68,8 +75,6 @@ const AppShell: React.FC = () => {
         return <Cart onNavigate={handleNavigate} />;
       case 'account':
         return <Account />;
-      case 'admin':
-        return <Admin onNavigate={handleNavigate} />;
       default:
         return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }

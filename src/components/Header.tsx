@@ -21,7 +21,6 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onNavigate, onSearch }) =>
     { name: 'À propos', id: 'about' },
     { name: 'Blog', id: 'blog' },
     { name: 'Contact', id: 'contact' },
-    { name: 'Administration', id: 'admin' },
   ];
 
   return (
