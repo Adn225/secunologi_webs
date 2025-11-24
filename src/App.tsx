@@ -16,13 +16,9 @@ const Blog = lazy(() => import('./pages/Blog'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Account = lazy(() => import('./pages/Account'));
+const Admin = lazy(() => import('./pages/Admin'));
 
-const sanitizePage = (path: string) => {
-  if (path === 'admin') {
-    return 'home';
-  }
-  return path === '' ? 'home' : path;
-};
+const sanitizePage = (path: string) => (path === '' ? 'home' : path);
 
 const AppShell: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(() => {
@@ -75,6 +71,8 @@ const AppShell: React.FC = () => {
         return <Cart onNavigate={handleNavigate} />;
       case 'account':
         return <Account />;
+      case 'admin':
+        return <Admin onNavigate={handleNavigate} />;
       default:
         return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }
