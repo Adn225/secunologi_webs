@@ -1,5 +1,4 @@
 import { createServer } from 'http';
-import { parse } from 'url';
 import {
   filterProducts,
   getBlogPostById,
@@ -38,7 +37,10 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  const { pathname, query } = parse(req.url, true);
+  const origin = `http://${req.headers.host ?? 'localhost'}`;
+  const url = new URL(req.url, origin);
+  const pathname = url.pathname;
+  const query = Object.fromEntries(url.searchParams.entries());
 
   if (req.method === 'GET' && pathname === '/health') {
     sendJson(res, 200, { status: 'ok', timestamp: new Date().toISOString() });
