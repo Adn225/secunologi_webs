@@ -59,6 +59,8 @@ const getApiBaseCandidates = (): string[] => {
 
 type Primitive = string | number | boolean | null | undefined;
 
+const REQUEST_TIMEOUT_MS = 8000;
+
 const buildUrl = (base: string, path: string, params?: Record<string, Primitive>) => {
   const normalizedBase = base ? trimTrailingSlash(base) : '';
   const normalizedPath = ensureLeadingSlash(path);
@@ -87,13 +89,21 @@ const request = async <T>(path: string, options?: {
   const errors: string[] = [];
 
   for (const base of candidates) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     try {
       const url = buildUrl(base, path, options?.params);
-      const response = await fetch(url, options?.init);
+      const response = await fetch(url, { ...options?.init, signal: controller.signal });
       return await parseResponse<T>(response);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Erreur inconnue';
-      errors.push(message);
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        errors.push('Délai d\'attente dépassé pour contacter le serveur API');
+      } else {
+        const message = error instanceof Error ? error.message : 'Erreur inconnue';
+        errors.push(message);
+      }
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
