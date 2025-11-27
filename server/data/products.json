@@ -100,5 +100,73 @@
       "Application mobile"
     ],
     "inStock": false
+  },
+  {
+    "id": "7",
+    "name": "Imprimante d'étiquettes LabelRetail LR-210",
+    "brand": "LabelRetail",
+    "category": "Imprimantes",
+    "price": 138000,
+    "image": "https://images.pexels.com/photos/4483774/pexels-photo-4483774.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Imprimante thermique haute résolution idéale pour l'étiquetage en boutique ou en entrepôt.",
+    "features": [
+      "Résolution d'impression 300 dpi",
+      "Vitesse jusqu'à 150 mm/s",
+      "Connectivité USB et réseau",
+      "Compatible étiquettes continues et prédécoupées",
+      "Pilotes Windows et Mac inclus"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "8",
+    "name": "Scanner code-barres LabelRetail ScanPro 2D",
+    "brand": "LabelRetail",
+    "category": "Lecteurs",
+    "price": 52000,
+    "image": "https://images.pexels.com/photos/4488656/pexels-photo-4488656.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Lecteur 2D filaire conçu pour les points de vente LabelRetail, fiable même sur écrans mobiles.",
+    "features": [
+      "Lecture 1D/2D et QR Code",
+      "Détection rapide en 0,3 s",
+      "Mode main-libre avec support",
+      "Câble USB amovible",
+      "Résiste aux chutes de 1,5 m"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "9",
+    "name": "Rouleaux d'étiquettes thermiques LabelRetail 58x40",
+    "brand": "LabelRetail",
+    "category": "Consommables",
+    "price": 18000,
+    "image": "https://images.pexels.com/photos/4481531/pexels-photo-4481531.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Pack de 20 rouleaux compatibles avec les imprimantes thermiques LabelRetail.",
+    "features": [
+      "Papier thermique premium",
+      "Largeur 58 mm, diamètre 40 mm",
+      "Mandrin universel 12 mm",
+      "Impression nette et durable",
+      "Résistant aux frottements"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "10",
+    "name": "Kit POS LabelRetail Lite",
+    "brand": "LabelRetail",
+    "category": "Solutions caisse",
+    "price": 275000,
+    "image": "https://images.pexels.com/photos/7567433/pexels-photo-7567433.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Solution de caisse légère comprenant écran tactile, imprimante tickets et tiroir-caisse.",
+    "features": [
+      "Écran tactile 15 pouces",
+      "Imprimante thermique tickets 80 mm",
+      "Tiroir-caisse sécurisé",
+      "Suite logicielle LabelRetail incluse",
+      "Support technique dédié"
+    ],
+    "inStock": true
   }
 ]
