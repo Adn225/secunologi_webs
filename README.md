@@ -17,6 +17,8 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
    - `GET /api/blog-posts/:id` – détail d'un article
    - `POST /api/contact` – enregistre une demande de contact (validation côté serveur)
 
+   Pour les déploiements Vercel en formule Hobby, toutes ces routes sont servies par une seule fonction serverless (`api/[...route].js`) afin de rester sous la limite des 12 fonctions.
+
 2. **Front-end (port 5173)**
    ```bash
    npm run dev
