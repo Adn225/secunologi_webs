@@ -178,6 +178,18 @@ export async function handleRequest(req, res) {
       return;
     }
 
+    if (req.method === 'GET' && pathname.startsWith('/api/admin/products/')) {
+      const id = pathname.split('/').pop();
+      const product = await getProductById(id ?? '');
+      if (!product) {
+        sendJson(res, 404, { error: 'Produit introuvable.' });
+        return;
+      }
+
+      sendJson(res, 200, { data: product });
+      return;
+    }
+
     if (req.method === 'POST' && pathname === '/api/admin/products') {
       try {
         const body = await parseBody(req);
@@ -379,6 +391,24 @@ export async function handleRequest(req, res) {
       return;
     }
 
+    if (req.method === 'GET' && pathname === '/api/admin/blog-posts') {
+      const posts = await getBlogPosts();
+      sendJson(res, 200, { data: posts, total: posts.length });
+      return;
+    }
+
+    if (req.method === 'GET' && pathname.startsWith('/api/admin/blog-posts/')) {
+      const id = pathname.split('/').pop();
+      const post = await getBlogPostById(id ?? '');
+      if (!post) {
+        sendJson(res, 404, { error: 'Article introuvable.' });
+        return;
+      }
+
+      sendJson(res, 200, { data: post });
+      return;
+    }
+
     if (req.method === 'POST' && pathname === '/api/admin/promotions') {
       try {
         const body = await parseBody(req);
@@ -411,6 +441,24 @@ export async function handleRequest(req, res) {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
         sendJson(res, 500, { error: message });
       }
+      return;
+    }
+
+    if (req.method === 'GET' && pathname === '/api/admin/promotions') {
+      const promotions = await getPromotions();
+      sendJson(res, 200, { data: promotions, total: promotions.length });
+      return;
+    }
+
+    if (req.method === 'GET' && pathname.startsWith('/api/admin/promotions/')) {
+      const id = pathname.split('/').pop();
+      const promotion = (await getPromotions()).find((item) => item.id === id);
+      if (!promotion) {
+        sendJson(res, 404, { error: 'Promotion introuvable.' });
+        return;
+      }
+
+      sendJson(res, 200, { data: promotion });
       return;
     }
 
