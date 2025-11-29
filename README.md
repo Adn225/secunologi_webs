@@ -16,6 +16,11 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
    - `GET /api/blog-posts` – articles du blog (`limit`)
    - `GET /api/blog-posts/:id` – détail d'un article
    - `POST /api/contact` – enregistre une demande de contact (validation côté serveur)
+   - Routes protégées administrateur pour gérer le contenu :
+     - `GET /api/admin/products` et `GET /api/admin/products/:id`
+     - `GET /api/admin/blog-posts` et `GET /api/admin/blog-posts/:id`
+     - `GET /api/admin/promotions` et `GET /api/admin/promotions/:id`
+     - Création, mise à jour et suppression via les méthodes POST/PUT/DELETE sur les mêmes segments
 
    Pour les déploiements Vercel en formule Hobby, toutes ces routes sont servies par une seule fonction serverless (`api/[...route].js`) afin de rester sous la limite des 12 fonctions.
 
