@@ -18,10 +18,28 @@ const Cart = lazy(() => import('./pages/Cart'));
 const Account = lazy(() => import('./pages/Account'));
 const Admin = lazy(() => import('./pages/Admin'));
 
-const sanitizePage = (path: string) => (path === '' ? 'home' : path);
+const VALID_PAGES = [
+  'home',
+  'catalog',
+  'services',
+  'about',
+  'blog',
+  'contact',
+  'cart',
+  'account',
+  'admin',
+] as const;
+
+type Page = (typeof VALID_PAGES)[number];
+
+const sanitizePage = (path: string): Page => {
+  const normalized = path.replace(/^\/+/, '').replace(/\/+$/, '').toLowerCase();
+  const candidate = (normalized === '' ? 'home' : normalized) as Page | string;
+  return (VALID_PAGES as readonly string[]).includes(candidate) ? (candidate as Page) : 'home';
+};
 
 const AppShell: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(() => {
+  const [currentPage, setCurrentPage] = useState<Page>(() => {
     const path = window.location.pathname.replace('/', '');
     return sanitizePage(path);
   });
