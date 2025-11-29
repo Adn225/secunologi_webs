@@ -59,7 +59,7 @@ const getApiBaseCandidates = (): string[] => {
 
 type Primitive = string | number | boolean | null | undefined;
 
-const REQUEST_TIMEOUT_MS = 8000;
+const REQUEST_TIMEOUT_MS = 5000;
 
 const buildUrl = (base: string, path: string, params?: Record<string, Primitive>) => {
   const normalizedBase = base ? trimTrailingSlash(base) : '';
@@ -85,6 +85,10 @@ const request = async <T>(path: string, options?: {
   params?: Record<string, Primitive>;
   init?: RequestInit;
 }): Promise<ApiResponse<T>> => {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    throw new Error('Aucune connexion internet. Vérifiez votre réseau puis réessayez.');
+  }
+
   const candidates = getApiBaseCandidates();
   const errors: string[] = [];
 
@@ -97,10 +101,10 @@ const request = async <T>(path: string, options?: {
       return await parseResponse<T>(response);
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
-        errors.push('Délai d\'attente dépassé pour contacter le serveur API');
+        errors.push(`Délai d'attente dépassé pour contacter le serveur API (${base}).`);
       } else {
         const message = error instanceof Error ? error.message : 'Erreur inconnue';
-        errors.push(message);
+        errors.push(`${message} (${base})`);
       }
     } finally {
       clearTimeout(timeout);
