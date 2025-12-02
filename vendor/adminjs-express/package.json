@@ -1,6 +1,6 @@
 {
   "name": "@adminjs/express",
-  "version": "5.3.1",
+  "version": "6.1.1",
   "description": "Local stub for @adminjs/express to satisfy deployment installs.",
   "main": "index.js",
   "license": "MIT"
