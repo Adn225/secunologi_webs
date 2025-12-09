@@ -50,16 +50,3 @@ export interface Promotion {
   endDate: string | null;
   discount: number | null;
 }
-
-export interface AdminAccount {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-export interface AdminSession {
-  token: string;
-  expiresAt: string;
-  admin: AdminAccount;
-}
