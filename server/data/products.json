@@ -168,5 +168,175 @@
       "Support technique dédié"
     ],
     "inStock": true
+  },
+  {
+    "id": "11",
+    "name": "Caméra IP Hikvision ColorVu DS-2CD2047G2-L",
+    "brand": "Hikvision",
+    "category": "Caméras IP",
+    "price": 98000,
+    "image": "https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Mini bullet ColorVu 4MP offrant une image en couleur 24/7 avec projecteur et micro intégré.",
+    "features": [
+      "Résolution 4MP avec ColorVu 24/7",
+      "Projecteur LED et sirène dissuasive",
+      "WDR 120 dB et compression H.265+",
+      "Microphone intégré pour l'audio",
+      "Protection IP67 pour extérieur"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "12",
+    "name": "Caméra turret Hikvision AcuSense DS-2CD2347G2-LSU/SL",
+    "brand": "Hikvision",
+    "category": "Caméras IP",
+    "price": 105000,
+    "image": "https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Caméra turret ColorVu avec technologie AcuSense pour la détection intelligente d'intrusion.",
+    "features": [
+      "Résolution 4MP ColorVu",
+      "Détection humaine/véhicule AcuSense",
+      "Sirène et lumière stroboscopique",
+      "Audio bidirectionnel",
+      "Vision nocturne couleur 30 m"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "13",
+    "name": "Caméra PTZ Hikvision DS-2DE4A425IW-DE(T5)",
+    "brand": "Hikvision",
+    "category": "Caméras PTZ",
+    "price": 320000,
+    "image": "https://images.pexels.com/photos/430210/pexels-photo-430210.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "PTZ 4MP avec zoom optique 25x, idéal pour la surveillance périmétrique et les parkings.",
+    "features": [
+      "Zoom optique 25x et 100 m IR",
+      "Suivi automatique des cibles",
+      "PoE+ et IP66",
+      "Rotation 360° continue",
+      "Détection de visage et intrusion"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "14",
+    "name": "NVR Hikvision DS-7732NXI-I4/16P/S",
+    "brand": "Hikvision",
+    "category": "NVR",
+    "price": 560000,
+    "image": "https://images.pexels.com/photos/8115877/pexels-photo-8115877.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Enregistreur réseau 32 canaux avec 16 ports PoE et analyse AcuSense intégrée.",
+    "features": [
+      "32 canaux IP jusqu'à 12MP",
+      "16 ports PoE avec gestion du budget",
+      "Détection humaine/véhicule AcuSense",
+      "2 sorties HDMI 4K",
+      "4 baies disques hot-swap"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "15",
+    "name": "NVR Hikvision DS-7608NXI-K1/8P",
+    "brand": "Hikvision",
+    "category": "NVR",
+    "price": 210000,
+    "image": "https://images.pexels.com/photos/5582596/pexels-photo-5582596.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "NVR 8 canaux PoE compact avec fonctions IA pour les petites installations.",
+    "features": [
+      "8 ports PoE auto-alimentés",
+      "Analyse intelligente AcuSense",
+      "Sortie HDMI 4K",
+      "Prise en charge H.265+",
+      "Gestion mobile via Hik-Connect"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "16",
+    "name": "Caméra bullet Hikvision DS-2CD2T87G2-L",
+    "brand": "Hikvision",
+    "category": "Caméras IP",
+    "price": 165000,
+    "image": "https://images.pexels.com/photos/430215/pexels-photo-430215.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Caméra ColorVu 8MP pour des images 4K en couleur de jour comme de nuit.",
+    "features": [
+      "Résolution 8MP 4K",
+      "Lumière blanche pour vision couleur",
+      "Détection intelligente mouvement",
+      "Slot carte microSD jusqu'à 256 Go",
+      "Indice de protection IP67"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "17",
+    "name": "Caméra dôme varifocale Hikvision DS-2CD2786G2-IZS",
+    "brand": "Hikvision",
+    "category": "Caméras IP",
+    "price": 245000,
+    "image": "https://images.pexels.com/photos/289682/pexels-photo-289682.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Dôme 8MP varifocal motorisé avec IR 40 m pour les environnements exigeants.",
+    "features": [
+      "Objectif motorisé 2,8-12 mm",
+      "WDR 120 dB et 4K",
+      "AcuSense pour détection précise",
+      "Boîtier IK10 anti-vandale",
+      "Alimentation PoE ou 12V"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "18",
+    "name": "Caméra mini dôme Hikvision DS-2CD2566G2-IS",
+    "brand": "Hikvision",
+    "category": "Caméras IP",
+    "price": 135000,
+    "image": "https://images.pexels.com/photos/278887/pexels-photo-278887.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Mini dôme 6MP compact avec audio intégré, idéal pour les intérieurs discrets.",
+    "features": [
+      "Résolution 6MP et WDR 120 dB",
+      "Micro et haut-parleur intégrés",
+      "Détection de mouvement intelligente",
+      "Slot carte SD jusqu'à 256 Go",
+      "IK08 et IP67"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "19",
+    "name": "Interphone vidéo Hikvision DS-KV6113-WPE1",
+    "brand": "Hikvision",
+    "category": "Interphones",
+    "price": 90000,
+    "image": "https://images.pexels.com/photos/4790265/pexels-photo-4790265.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Portier vidéo IP WiFi avec caméra 2MP et lecteur de badge pour le contrôle d'accès.",
+    "features": [
+      "Caméra 2MP grand angle 129°",
+      "WiFi ou PoE au choix",
+      "Lecteur RFID intégré",
+      "Vision nocturne IR",
+      "Intégration Hik-Connect"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "20",
+    "name": "Kit visiophone Hikvision DS-KH6320-WTE1 + DS-KD8003-IME1",
+    "brand": "Hikvision",
+    "category": "Interphones",
+    "price": 215000,
+    "image": "https://images.pexels.com/photos/4790267/pexels-photo-4790267.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Kit complet avec écran intérieur 7 pouces tactile et platine de rue modulaire PoE.",
+    "features": [
+      "Écran tactile 7 pouces capacitif",
+      "Connexion PoE et WiFi",
+      "Interphonie bidirectionnelle",
+      "Détection de mouvement vidéo",
+      "Mémoire interne pour snapshots"
+    ],
+    "inStock": true
   }
 ]
