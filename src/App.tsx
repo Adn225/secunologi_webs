@@ -4,7 +4,6 @@ import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
 import { CartProvider } from './contexts/CartContext';
 import { DataProvider } from './contexts/DataContext';
-import { AuthProvider } from './contexts/AuthContext';
 import { ExperienceProvider, useExperience } from './contexts/ExperienceContext';
 import { Product } from './types';
 
@@ -16,7 +15,6 @@ const Blog = lazy(() => import('./pages/Blog'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Account = lazy(() => import('./pages/Account'));
-const Admin = lazy(() => import('./pages/Admin'));
 
 const VALID_PAGES = [
   'home',
@@ -27,7 +25,6 @@ const VALID_PAGES = [
   'contact',
   'cart',
   'account',
-  'admin',
 ] as const;
 
 type Page = (typeof VALID_PAGES)[number];
@@ -89,8 +86,6 @@ const AppShell: React.FC = () => {
         return <Cart onNavigate={handleNavigate} />;
       case 'account':
         return <Account />;
-      case 'admin':
-        return <Admin onNavigate={handleNavigate} />;
       default:
         return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }
@@ -112,15 +107,13 @@ const AppShell: React.FC = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <DataProvider>
-        <ExperienceProvider>
-          <CartProvider>
-            <AppShell />
-          </CartProvider>
-        </ExperienceProvider>
-      </DataProvider>
-    </AuthProvider>
+    <DataProvider>
+      <ExperienceProvider>
+        <CartProvider>
+          <AppShell />
+        </CartProvider>
+      </ExperienceProvider>
+    </DataProvider>
   );
 }
 
