@@ -1,4 +1,5 @@
 import { BlogPost, Product, Promotion } from '../types';
+import fallbackProducts from '../data/fallbackProducts.json';
 
 const DEFAULT_API_BASE = '/api';
 
@@ -154,9 +155,61 @@ export interface ProductQuery {
   limit?: number;
 }
 
+const applyProductQuery = (products: Product[], query?: ProductQuery): Product[] => {
+  if (!query) return products;
+
+  const search = query.search?.trim().toLowerCase();
+  const brand = query.brand?.trim().toLowerCase();
+  const category = query.category?.trim().toLowerCase();
+  const inStock = query.inStock;
+  const minPrice = typeof query.minPrice === 'number' ? query.minPrice : undefined;
+  const maxPrice = typeof query.maxPrice === 'number' ? query.maxPrice : undefined;
+  const limit = typeof query.limit === 'number' ? query.limit : undefined;
+
+  let results = [...products];
+
+  if (search) {
+    results = results.filter((product) =>
+      product.name.toLowerCase().includes(search) ||
+      product.description.toLowerCase().includes(search)
+    );
+  }
+
+  if (brand) {
+    results = results.filter((product) => product.brand.toLowerCase() === brand);
+  }
+
+  if (category) {
+    results = results.filter((product) => product.category.toLowerCase() === category);
+  }
+
+  if (typeof inStock === 'boolean') {
+    results = results.filter((product) => product.inStock === inStock);
+  }
+
+  if (typeof minPrice === 'number') {
+    results = results.filter((product) => product.price >= minPrice);
+  }
+
+  if (typeof maxPrice === 'number') {
+    results = results.filter((product) => product.price <= maxPrice);
+  }
+
+  if (typeof limit === 'number' && limit > 0) {
+    results = results.slice(0, limit);
+  }
+
+  return results;
+};
+
 export const fetchProducts = async (query?: ProductQuery): Promise<Product[]> => {
-  const payload = await request<Product[]>('/products', { params: query });
-  return payload.data;
+  try {
+    const payload = await request<Product[]>('/products', { params: query });
+    return payload.data;
+  } catch (error) {
+    console.warn('API product fetch failed, falling back to local data:', error);
+    return applyProductQuery(fallbackProducts as Product[], query);
+  }
 };
 
 export const fetchProduct = async (id: string): Promise<Product> => {

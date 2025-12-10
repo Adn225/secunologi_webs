@@ -1,0 +1,172 @@
+[
+  {
+    "id": "1",
+    "name": "Caméra IP Hikvision DS-2CD2043G2-I",
+    "brand": "Hikvision",
+    "category": "Caméras IP",
+    "price": 85000,
+    "image": "https://images.pexels.com/photos/430208/pexels-photo-430208.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Caméra IP 4MP avec vision nocturne infrarouge jusqu'à 30m",
+    "features": [
+      "Résolution 4MP (2560 × 1440)",
+      "Vision nocturne IR 30m",
+      "Détection de mouvement",
+      "Audio bidirectionnel",
+      "Protection IP67"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "2",
+    "name": "NVR Hikvision DS-7608NI-I2/8P",
+    "brand": "Hikvision",
+    "category": "NVR",
+    "price": 125000,
+    "image": "https://images.pexels.com/photos/5474296/pexels-photo-5474296.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Enregistreur réseau 8 canaux avec ports PoE intégrés",
+    "features": [
+      "8 canaux réseau",
+      "Ports PoE intégrés",
+      "Sortie HDMI 4K",
+      "Détection de mouvement",
+      "Accès distant"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "3",
+    "name": "Interphone Hikvision DS-KV8113-WME1",
+    "brand": "Hikvision",
+    "category": "Interphones",
+    "price": 95000,
+    "image": "https://images.pexels.com/photos/8190841/pexels-photo-8190841.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Portier vidéo IP avec écran tactile 7 pouces",
+    "features": [
+      "Écran tactile 7 pouces",
+      "Caméra 2MP intégrée",
+      "Vision nocturne IR",
+      "Contrôle d'accès par carte",
+      "Communication bidirectionnelle"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "4",
+    "name": "Caméra WiFi EZVIZ C3W Pro",
+    "brand": "EZVIZ",
+    "category": "Caméras IP",
+    "price": 45000,
+    "image": "https://images.pexels.com/photos/8434791/pexels-photo-8434791.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Caméra extérieure WiFi 2MP avec sirène intégrée",
+    "features": [
+      "Résolution 2MP (1920x1080)",
+      "WiFi intégré",
+      "Sirène d'alarme",
+      "Vision nocturne couleur",
+      "Application mobile"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "5",
+    "name": "Switch PoE Huawei S1728GWR-4P",
+    "brand": "Huawei",
+    "category": "Accessoires",
+    "price": 65000,
+    "image": "https://images.pexels.com/photos/8199144/pexels-photo-8199144.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Switch PoE+ 24 ports Gigabit pour alimenter vos caméras",
+    "features": [
+      "24 ports Gigabit",
+      "PoE+ 370W",
+      "Gestion intelligente",
+      "VLAN support",
+      "Montage rack 1U"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "6",
+    "name": "Kit Alarme EZVIZ A1 Pro",
+    "brand": "EZVIZ",
+    "category": "Alarmes",
+    "price": 75000,
+    "image": "https://images.pexels.com/photos/8566472/pexels-photo-8566472.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Kit alarme sans fil avec centrale et détecteurs",
+    "features": [
+      "Centrale WiFi",
+      "4 détecteurs de mouvement",
+      "2 détecteurs d'ouverture",
+      "Sirène 110dB",
+      "Application mobile"
+    ],
+    "inStock": false
+  },
+  {
+    "id": "7",
+    "name": "Imprimante d'étiquettes LabelRetail LR-210",
+    "brand": "LabelRetail",
+    "category": "Imprimantes",
+    "price": 138000,
+    "image": "https://images.pexels.com/photos/4483774/pexels-photo-4483774.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Imprimante thermique haute résolution idéale pour l'étiquetage en boutique ou en entrepôt.",
+    "features": [
+      "Résolution d'impression 300 dpi",
+      "Vitesse jusqu'à 150 mm/s",
+      "Connectivité USB et réseau",
+      "Compatible étiquettes continues et prédécoupées",
+      "Pilotes Windows et Mac inclus"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "8",
+    "name": "Scanner code-barres LabelRetail ScanPro 2D",
+    "brand": "LabelRetail",
+    "category": "Lecteurs",
+    "price": 52000,
+    "image": "https://images.pexels.com/photos/4488656/pexels-photo-4488656.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Lecteur 2D filaire conçu pour les points de vente LabelRetail, fiable même sur écrans mobiles.",
+    "features": [
+      "Lecture 1D/2D et QR Code",
+      "Détection rapide en 0,3 s",
+      "Mode main-libre avec support",
+      "Câble USB amovible",
+      "Résiste aux chutes de 1,5 m"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "9",
+    "name": "Rouleaux d'étiquettes thermiques LabelRetail 58x40",
+    "brand": "LabelRetail",
+    "category": "Consommables",
+    "price": 18000,
+    "image": "https://images.pexels.com/photos/4481531/pexels-photo-4481531.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Pack de 20 rouleaux compatibles avec les imprimantes thermiques LabelRetail.",
+    "features": [
+      "Papier thermique premium",
+      "Largeur 58 mm, diamètre 40 mm",
+      "Mandrin universel 12 mm",
+      "Impression nette et durable",
+      "Résistant aux frottements"
+    ],
+    "inStock": true
+  },
+  {
+    "id": "10",
+    "name": "Kit POS LabelRetail Lite",
+    "brand": "LabelRetail",
+    "category": "Solutions caisse",
+    "price": 275000,
+    "image": "https://images.pexels.com/photos/7567433/pexels-photo-7567433.jpeg?auto=compress&cs=tinysrgb&w=500",
+    "description": "Solution de caisse légère comprenant écran tactile, imprimante tickets et tiroir-caisse.",
+    "features": [
+      "Écran tactile 15 pouces",
+      "Imprimante thermique tickets 80 mm",
+      "Tiroir-caisse sécurisé",
+      "Suite logicielle LabelRetail incluse",
+      "Support technique dédié"
+    ],
+    "inStock": true
+  }
+]
