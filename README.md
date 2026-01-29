@@ -39,3 +39,56 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
 ```bash
 npm run lint
 ```
+
+## Ajouter AdminJS au serveur actuel
+
+Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/index.js`). Pour brancher AdminJS, le plus simple est d'installer Express et de monter AdminJS sur un chemin dédié, tout en réutilisant la logique existante de `handleRequest` pour le reste des routes.
+
+1. **Installer les dépendances nécessaires**
+
+   ```bash
+   npm install adminjs @adminjs/express express
+   ```
+
+   > Remarque : le dépôt contient un stub local `@adminjs/express` dans `vendor/` pour certains déploiements. Pour utiliser AdminJS en local, il faut installer les vrais paquets comme ci‑dessus.
+
+2. **Adapter `server/index.js` pour Express**
+
+   Exemple minimal (à adapter selon vos ressources AdminJS) :
+
+   ```js
+   import express from 'express';
+   import AdminJS from 'adminjs';
+   import AdminJSExpress from '@adminjs/express';
+   import { handleRequest } from './router.js';
+
+   const app = express();
+
+   const admin = new AdminJS({
+     rootPath: '/admin',
+     resources: [
+       // Exemple : { resource: YourModel }
+     ],
+   });
+
+   const adminRouter = AdminJSExpress.buildRouter(admin);
+   app.use(admin.options.rootPath, adminRouter);
+
+   // Conserver toutes les routes existantes du serveur actuel
+   app.all('*', (req, res) => {
+     handleRequest(req, res);
+   });
+
+   const PORT = Number(process.env.PORT) || 5000;
+   app.listen(PORT, () => {
+     console.log(`API server listening on port ${PORT}`);
+   });
+   ```
+
+3. **Démarrer le serveur**
+
+   ```bash
+   npm run server
+   ```
+
+   Puis ouvrir `http://localhost:5000/admin`.
