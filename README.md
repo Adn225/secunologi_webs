@@ -122,29 +122,10 @@ Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/ind
    ```
 
 4. **Démarrer le serveur**
+3. **Démarrer le serveur**
 
    ```bash
    npm run server
    ```
 
    Puis ouvrir `http://localhost:5000/admin`.
-
-## Démarrer MongoDB en local
-
-Voici des commandes courantes pour lancer MongoDB selon votre OS (assurez‑vous d'avoir installé MongoDB au préalable).
-
-- **macOS (Homebrew)**
-  ```bash
-  brew services start mongodb-community
-  ```
-
-- **Ubuntu/Debian (service systemd)**
-  ```bash
-  sudo systemctl start mongod
-  sudo systemctl status mongod
-  ```
-
-- **Lancement manuel**
-  ```bash
-  mongod --dbpath /path/vers/data
-  ```
