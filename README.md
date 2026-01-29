@@ -44,6 +44,10 @@ npm run lint
 
 Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/index.js`). Pour brancher AdminJS, le plus simple est d'installer Express et de monter AdminJS sur un chemin dédié, tout en réutilisant la logique existante de `handleRequest` pour le reste des routes.
 
+1. **Installer les dépendances nécessaires (avec MongoDB)**
+
+   ```bash
+   npm install adminjs @adminjs/express express mongoose @adminjs/mongoose
 1. **Installer les dépendances nécessaires**
 
    ```bash
@@ -60,10 +64,44 @@ Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/ind
    import express from 'express';
    import AdminJS from 'adminjs';
    import AdminJSExpress from '@adminjs/express';
+   import AdminJSMongoose from '@adminjs/mongoose';
+   import mongoose from 'mongoose';
    import { handleRequest } from './router.js';
 
    const app = express();
 
+   AdminJS.registerAdapter({
+     Database: AdminJSMongoose.Database,
+     Resource: AdminJSMongoose.Resource,
+   });
+
+   await mongoose.connect(process.env.MONGO_URL ?? 'mongodb://localhost:27017/secunologi');
+
+   const Product = mongoose.model('Product', new mongoose.Schema({
+     name: String,
+     brand: String,
+     category: String,
+     price: Number,
+     image: String,
+     description: String,
+     features: [String],
+     inStock: Boolean,
+   }));
+
+   const BlogPost = mongoose.model('BlogPost', new mongoose.Schema({
+     title: String,
+     excerpt: String,
+     content: String,
+     image: String,
+     date: String,
+     category: String,
+   }));
+
+   const admin = new AdminJS({
+     rootPath: '/admin',
+     resources: [
+       { resource: Product },
+       { resource: BlogPost },
    const admin = new AdminJS({
      rootPath: '/admin',
      resources: [
@@ -85,6 +123,13 @@ Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/ind
    });
    ```
 
+3. **Définir la variable d'environnement MongoDB**
+
+   ```bash
+   export MONGO_URL="mongodb://localhost:27017/secunologi"
+   ```
+
+4. **Démarrer le serveur**
 3. **Démarrer le serveur**
 
    ```bash
