@@ -48,6 +48,10 @@ Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/ind
 
    ```bash
    npm install adminjs @adminjs/express express mongoose @adminjs/mongoose
+1. **Installer les dépendances nécessaires**
+
+   ```bash
+   npm install adminjs @adminjs/express express
    ```
 
    > Remarque : le dépôt contient un stub local `@adminjs/express` dans `vendor/` pour certains déploiements. Pour utiliser AdminJS en local, il faut installer les vrais paquets comme ci‑dessus.
@@ -98,6 +102,10 @@ Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/ind
      resources: [
        { resource: Product },
        { resource: BlogPost },
+   const admin = new AdminJS({
+     rootPath: '/admin',
+     resources: [
+       // Exemple : { resource: YourModel }
      ],
    });
 
@@ -122,6 +130,7 @@ Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/ind
    ```
 
 4. **Démarrer le serveur**
+3. **Démarrer le serveur**
 
    ```bash
    npm run server
