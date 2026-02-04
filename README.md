@@ -40,92 +40,28 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
 npm run lint
 ```
 
-## Ajouter AdminJS au serveur actuel
+## Activer AdminJS
 
-Le serveur Node de ce projet n'utilise pas Express par défaut (voir `server/index.js`). Pour brancher AdminJS, le plus simple est d'installer Express et de monter AdminJS sur un chemin dédié, tout en réutilisant la logique existante de `handleRequest` pour le reste des routes.
+Le serveur Node peut exposer AdminJS si vous activez explicitement la fonctionnalité. Par défaut, l'API démarre sans charger AdminJS.
 
 1. **Installer les dépendances nécessaires (avec MongoDB)**
 
    ```bash
-   npm install adminjs @adminjs/express express mongoose @adminjs/mongoose
+   npm install
    ```
 
-   > Remarque : le dépôt contient un stub local `@adminjs/express` dans `vendor/` pour certains déploiements. Pour utiliser AdminJS en local, il faut installer les vrais paquets comme ci‑dessus.
+   > Remarque : le dépôt contient un stub local `@adminjs/express` dans `vendor/` pour certains déploiements. Pour utiliser AdminJS en local, il faut installer les paquets depuis npm (la commande ci-dessus suffit avec le lockfile à jour).
 
-2. **Adapter `server/index.js` pour Express**
-
-   Exemple minimal (à adapter selon vos ressources AdminJS) :
-
-   ```js
-   import express from 'express';
-   import AdminJS from 'adminjs';
-   import AdminJSExpress from '@adminjs/express';
-   import AdminJSMongoose from '@adminjs/mongoose';
-   import mongoose from 'mongoose';
-   import { handleRequest } from './router.js';
-
-   const app = express();
-
-   AdminJS.registerAdapter({
-     Database: AdminJSMongoose.Database,
-     Resource: AdminJSMongoose.Resource,
-   });
-
-   await mongoose.connect(process.env.MONGO_URL ?? 'mongodb://localhost:27017/secunologi');
-
-   const Product = mongoose.model('Product', new mongoose.Schema({
-     name: String,
-     brand: String,
-     category: String,
-     price: Number,
-     image: String,
-     description: String,
-     features: [String],
-     inStock: Boolean,
-   }));
-
-   const BlogPost = mongoose.model('BlogPost', new mongoose.Schema({
-     title: String,
-     excerpt: String,
-     content: String,
-     image: String,
-     date: String,
-     category: String,
-   }));
-
-   const admin = new AdminJS({
-     rootPath: '/admin',
-     resources: [
-       { resource: Product },
-       { resource: BlogPost },
-     ],
-   });
-
-   const adminRouter = AdminJSExpress.buildRouter(admin);
-   app.use(admin.options.rootPath, adminRouter);
-
-   // Conserver toutes les routes existantes du serveur actuel
-   app.all('*', (req, res) => {
-     handleRequest(req, res);
-   });
-
-   const PORT = Number(process.env.PORT) || 5000;
-   app.listen(PORT, () => {
-     console.log(`API server listening on port ${PORT}`);
-   });
-   ```
-
-3. **Définir la variable d'environnement MongoDB**
+2. **Définir la variable d'environnement MongoDB**
 
    ```bash
    export MONGO_URL="mongodb://localhost:27017/secunologi"
    ```
 
-4. **Démarrer le serveur**
-3. **Démarrer le serveur**
+3. **Démarrer le serveur avec AdminJS**
 
    ```bash
-   npm run server
+   ENABLE_ADMINJS=true npm run server
    ```
 
    Puis ouvrir `http://localhost:5000/admin`.
