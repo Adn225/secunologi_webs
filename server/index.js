@@ -6,36 +6,36 @@ const PORT = Number(process.env.PORT) || 5000;
 
 const app = express();
 
-const Product = mongoose.model(
-  'Product',
-  new mongoose.Schema({
-    name: String,
-    brand: String,
-    category: String,
-    price: Number,
-    image: String,
-    description: String,
-    features: [String],
-    inStock: Boolean,
-  }),
-);
-
-const BlogPost = mongoose.model(
-  'BlogPost',
-  new mongoose.Schema({
-    title: String,
-    excerpt: String,
-    content: String,
-    image: String,
-    date: String,
-    category: String,
-  }),
-);
-
 const startServer = async () => {
-  await mongoose.connect(process.env.MONGO_URL ?? 'mongodb://localhost:27017/secunologi');
-
   if (process.env.ENABLE_ADMINJS === 'true') {
+    await mongoose.connect(process.env.MONGO_URL ?? 'mongodb://localhost:27017/secunologi');
+
+    const Product = mongoose.model(
+      'Product',
+      new mongoose.Schema({
+        name: String,
+        brand: String,
+        category: String,
+        price: Number,
+        image: String,
+        description: String,
+        features: [String],
+        inStock: Boolean,
+      }),
+    );
+
+    const BlogPost = mongoose.model(
+      'BlogPost',
+      new mongoose.Schema({
+        title: String,
+        excerpt: String,
+        content: String,
+        image: String,
+        date: String,
+        category: String,
+      }),
+    );
+
     const [{ default: AdminJS }, { default: AdminJSExpress }, { default: AdminJSMongoose }] =
       await Promise.all([import('adminjs'), import('@adminjs/express'), import('@adminjs/mongoose')]);
 
