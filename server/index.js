@@ -1,18 +1,10 @@
 import express from 'express';
-import AdminJS from 'adminjs';
-import AdminJSExpress from '@adminjs/express';
-import AdminJSMongoose from '@adminjs/mongoose';
 import mongoose from 'mongoose';
 import { handleRequest } from './router.js';
 
 const PORT = Number(process.env.PORT) || 5000;
 
 const app = express();
-
-AdminJS.registerAdapter({
-  Database: AdminJSMongoose.Database,
-  Resource: AdminJSMongoose.Resource,
-});
 
 const Product = mongoose.model(
   'Product',
@@ -43,13 +35,23 @@ const BlogPost = mongoose.model(
 const startServer = async () => {
   await mongoose.connect(process.env.MONGO_URL ?? 'mongodb://localhost:27017/secunologi');
 
-  const admin = new AdminJS({
-    rootPath: '/admin',
-    resources: [{ resource: Product }, { resource: BlogPost }],
-  });
+  if (process.env.ENABLE_ADMINJS === 'true') {
+    const [{ default: AdminJS }, { default: AdminJSExpress }, { default: AdminJSMongoose }] =
+      await Promise.all([import('adminjs'), import('@adminjs/express'), import('@adminjs/mongoose')]);
 
-  const adminRouter = AdminJSExpress.buildRouter(admin);
-  app.use(admin.options.rootPath, adminRouter);
+    AdminJS.registerAdapter({
+      Database: AdminJSMongoose.Database,
+      Resource: AdminJSMongoose.Resource,
+    });
+
+    const admin = new AdminJS({
+      rootPath: '/admin',
+      resources: [{ resource: Product }, { resource: BlogPost }],
+    });
+
+    const adminRouter = AdminJSExpress.buildRouter(admin);
+    app.use(admin.options.rootPath, adminRouter);
+  }
 
   app.all('*', async (req, res) => {
     await handleRequest(req, res);
