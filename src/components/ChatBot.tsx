@@ -1,16 +1,16 @@
 import React, { useState, useCallback } from 'react';
-import { MessageCircle, X, Send, Bot } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, RotateCcw } from 'lucide-react';
 
 const ChatBot: React.FC = () => {
+  const initialBotMessage = {
+    id: 1,
+    text: 'Bonjour ! Je suis votre assistant SecunologieCI. Comment puis-je vous aider aujourd\'hui ?',
+    isBot: true,
+    timestamp: new Date()
+  };
+
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: 'Bonjour ! Je suis votre assistant SecunologieCI. Comment puis-je vous aider aujourd\'hui ?',
-      isBot: true,
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState([initialBotMessage]);
   const [inputText, setInputText] = useState('');
 
   const quickReplies = [
@@ -67,6 +67,16 @@ const ChatBot: React.FC = () => {
 
   const handleQuickReply = (reply: string) => {
     handleSendMessage(reply);
+  };
+
+  const handleBackToMainMenu = () => {
+    setMessages([
+      {
+        ...initialBotMessage,
+        timestamp: new Date()
+      }
+    ]);
+    setInputText('');
   };
 
   return (
@@ -134,6 +144,18 @@ const ChatBot: React.FC = () => {
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {messages.length > 1 && (
+              <div className="mt-4">
+                <button
+                  onClick={handleBackToMainMenu}
+                  className="w-full flex items-center justify-center gap-2 text-sm px-3 py-2 border border-brand-green-200 text-brand-green-700 hover:bg-brand-green-50 rounded transition-colors"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  Revenir au menu principal
+                </button>
               </div>
             )}
           </div>
