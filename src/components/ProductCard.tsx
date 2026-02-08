@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { ShoppingCart, Eye, Star } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
@@ -10,15 +10,29 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
-  const { dispatch } = useCart();
+  const { state, dispatch } = useCart();
   const { trackAddedToCart } = useExperience();
 
-  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const [isQuantitySelectorOpen, setIsQuantitySelectorOpen] = useState(false);
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+
+  const quantityInCart = useMemo(() => {
+    return state.items.find((item) => item.product.id === product.id)?.quantity ?? 0;
+  }, [product.id, state.items]);
+
+  const handleShowQuantitySelector = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (product.inStock) {
-      dispatch({ type: 'ADD_ITEM', payload: product });
-      trackAddedToCart(product);
+      setSelectedQuantity(1);
+      setIsQuantitySelectorOpen(true);
     }
+  };
+
+  const handleConfirmAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    dispatch({ type: 'ADD_ITEM', payload: { product, quantity: selectedQuantity } });
+    trackAddedToCart(product);
+    setIsQuantitySelectorOpen(false);
   };
 
   const formatPrice = (price: number) => {
@@ -89,23 +103,63 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
           {product.description}
         </p>
 
+
+        {quantityInCart > 0 && (
+          <div className="mb-3 inline-flex items-center rounded-full bg-brand-green-100 px-3 py-1 text-xs font-semibold text-brand-green-700">
+            Déjà dans le panier : {quantityInCart}
+          </div>
+        )}
+
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-brand-green-700">
             {formatPrice(product.price)}
           </span>
 
-          <button
-            onClick={handleAddToCart}
-            disabled={!product.inStock}
-            className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
-              product.inStock
-                ? 'bg-brand-green-600 text-white hover:bg-brand-green-700'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Ajouter
-          </button>
+          {isQuantitySelectorOpen ? (
+            <div className="flex items-center gap-2" onClick={(event) => event.stopPropagation()}>
+              <div className="flex items-center border border-gray-300 rounded-lg">
+                <button
+                  type="button"
+                  className="px-2 py-1 text-gray-700 hover:bg-gray-100 rounded-l-lg"
+                  onClick={() => setSelectedQuantity((prev) => Math.max(1, prev - 1))}
+                  aria-label="Réduire la quantité"
+                >
+                  -
+                </button>
+                <span className="px-3 py-1 text-sm font-semibold">{selectedQuantity}</span>
+                <button
+                  type="button"
+                  className="px-2 py-1 text-gray-700 hover:bg-gray-100 rounded-r-lg"
+                  onClick={() => setSelectedQuantity((prev) => prev + 1)}
+                  aria-label="Augmenter la quantité"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleConfirmAddToCart}
+                className="flex items-center px-3 py-2 rounded-lg font-medium transition-colors bg-brand-green-600 text-white hover:bg-brand-green-700"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                OK
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleShowQuantitySelector}
+              disabled={!product.inStock}
+              className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
+                product.inStock
+                  ? 'bg-brand-green-600 text-white hover:bg-brand-green-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Ajouter
+            </button>
+          )}
         </div>
       </div>
     </div>

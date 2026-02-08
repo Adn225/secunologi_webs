@@ -160,12 +160,12 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
 
   const handleDealAdd = () => {
     if (!dealProduct) return;
-    dispatch({ type: 'ADD_ITEM', payload: dealProduct });
+    dispatch({ type: 'ADD_ITEM', payload: { product: dealProduct } });
     trackAddedToCart(dealProduct);
   };
 
   const handleBundleAdd = (items: Product[]) => {
-    items.forEach(item => dispatch({ type: 'ADD_ITEM', payload: item }));
+    items.forEach(item => dispatch({ type: 'ADD_ITEM', payload: { product: item } }));
     if (items[0]) {
       trackAddedToCart(items[0]);
     }
