@@ -3,6 +3,36 @@ import { User, ShoppingBag, Settings, LogOut, FileText, Bell } from 'lucide-reac
 
 const Account: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
+
+  const handleProfileImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setImageError('Veuillez sélectionner un fichier image valide.');
+      event.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setImageError('La taille de l\'image doit être inférieure à 5 Mo.');
+      event.target.value = '';
+      return;
+    }
+
+    setImageError(null);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setProfileImage(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const tabs = [
     { id: 'profile', name: 'Profil', icon: User },
@@ -54,9 +84,17 @@ const Account: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-brand-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <User className="h-10 w-10 text-brand-green-600" />
-                </div>
+                {profileImage ? (
+                  <img
+                    src={profileImage}
+                    alt="Photo de profil"
+                    className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-2 border-brand-green-100"
+                  />
+                ) : (
+                  <div className="w-20 h-20 bg-brand-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <User className="h-10 w-10 text-brand-green-600" />
+                  </div>
+                )}
                 <h2 className="text-xl font-bold text-gray-900">Jean Kouassi</h2>
                 <p className="text-gray-600">Client Premium</p>
               </div>
@@ -94,6 +132,35 @@ const Account: React.FC = () => {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Mon Profil</h2>
                 
                 <form className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Photo de profil
+                    </label>
+                    <div className="flex items-center gap-4">
+                      {profileImage ? (
+                        <img
+                          src={profileImage}
+                          alt="Aperçu de la photo de profil"
+                          className="w-16 h-16 rounded-full object-cover border"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center border">
+                          <User className="h-8 w-8 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="w-full">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleProfileImageUpload}
+                          className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-green-100 file:text-brand-green-700 hover:file:bg-brand-green-200"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">Formats acceptés: JPG, PNG, WEBP (max 5 Mo)</p>
+                        {imageError && <p className="text-sm text-red-600 mt-1">{imageError}</p>}
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
