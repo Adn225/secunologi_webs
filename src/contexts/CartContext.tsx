@@ -8,7 +8,7 @@ interface CartState {
 }
 
 type CartAction = 
-  | { type: 'ADD_ITEM'; payload: Product }
+  | { type: 'ADD_ITEM'; payload: { product: Product; quantity?: number } }
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR_CART' };
@@ -24,11 +24,12 @@ const calculateTotal = (items: CartItem[]) =>
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM': {
-      const existingItem = state.items.find(item => item.product.id === action.payload.id);
+      const quantityToAdd = Math.max(action.payload.quantity ?? 1, 1);
+      const existingItem = state.items.find(item => item.product.id === action.payload.product.id);
       if (existingItem) {
         const updatedItems = state.items.map(item =>
-          item.product.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
+          item.product.id === action.payload.product.id
+            ? { ...item, quantity: item.quantity + quantityToAdd }
             : item
         );
         return {
@@ -36,7 +37,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           total: calculateTotal(updatedItems)
         };
       } else {
-        const newItems = [...state.items, { product: action.payload, quantity: 1 }];
+        const newItems = [...state.items, { product: action.payload.product, quantity: quantityToAdd }];
         return {
           items: newItems,
           total: calculateTotal(newItems)
