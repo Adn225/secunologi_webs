@@ -13,7 +13,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
   const { dispatch } = useCart();
   const { trackAddedToCart } = useExperience();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     if (product.inStock) {
       dispatch({ type: 'ADD_ITEM', payload: product });
       trackAddedToCart(product);
@@ -25,10 +26,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
+    <div
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 group cursor-pointer"
+      onClick={() => onViewDetails(product)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onViewDetails(product);
+        }
+      }}
+      aria-label={`Voir les détails du produit ${product.name}`}
+    >
       <div className="relative overflow-hidden">
-        <img 
-          src={product.image} 
+        <img
+          src={product.image}
           alt={product.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -46,14 +59,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
         )}
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
-            onClick={() => onViewDetails(product)}
+            onClick={(event) => {
+              event.stopPropagation();
+              onViewDetails(product);
+            }}
             className="bg-white p-2 rounded-full shadow-lg hover:bg-gray-50 transition-colors"
+            aria-label={`Ouvrir les détails de ${product.name}`}
           >
             <Eye className="h-4 w-4 text-gray-600" />
           </button>
         </div>
       </div>
-      
+
       <div className="p-4">
         <div className="flex items-center mb-2">
           <div className="flex text-yellow-400">
@@ -63,15 +80,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
           </div>
           <span className="text-gray-500 text-sm ml-2">(4.8)</span>
         </div>
-        
+
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
           {product.name}
         </h3>
-        
+
         <p className="text-gray-600 text-sm mb-3 line-clamp-2">
           {product.description}
         </p>
-        
+
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-brand-green-700">
             {formatPrice(product.price)}

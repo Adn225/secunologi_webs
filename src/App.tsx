@@ -6,6 +6,7 @@ import { CartProvider } from './contexts/CartContext';
 import { DataProvider } from './contexts/DataContext';
 import { ExperienceProvider, useExperience } from './contexts/ExperienceContext';
 import { Product } from './types';
+import ProductDetailsModal from './components/ProductDetailsModal';
 
 const Home = lazy(() => import('./pages/Home'));
 const Catalog = lazy(() => import('./pages/Catalog'));
@@ -40,6 +41,7 @@ const AppShell: React.FC = () => {
     const path = window.location.pathname.replace('/', '');
     return sanitizePage(path);
   });
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { trackViewedProduct, setGlobalSearch } = useExperience();
 
   useEffect(() => {
@@ -61,6 +63,7 @@ const AppShell: React.FC = () => {
 
   const handleViewProduct = (product: Product) => {
     trackViewedProduct(product);
+    setSelectedProduct(product);
   };
 
   const handleSearch = (term: string, category?: string | null) => {
@@ -101,6 +104,7 @@ const AppShell: React.FC = () => {
       </main>
       <Footer />
       <ChatBot />
+      <ProductDetailsModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
     </div>
   );
 };
