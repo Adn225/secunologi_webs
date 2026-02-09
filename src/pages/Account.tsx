@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { User, ShoppingBag, Settings, LogOut, FileText, Bell } from 'lucide-react';
 
-const Account: React.FC = () => {
+interface AccountProps {
+  onLogout: () => void;
+}
+
+const Account: React.FC<AccountProps> = ({ onLogout }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageError, setImageError] = useState<string | null>(null);
@@ -117,7 +121,10 @@ const Account: React.FC = () => {
                     </button>
                   );
                 })}
-                <button className="w-full flex items-center px-4 py-3 rounded-lg text-left text-red-600 hover:bg-red-50 transition-colors">
+                <button
+                  onClick={onLogout}
+                  className="w-full flex items-center px-4 py-3 rounded-lg text-left text-red-600 hover:bg-red-50 transition-colors"
+                >
                   <LogOut className="h-5 w-5 mr-3" />
                   Déconnexion
                 </button>

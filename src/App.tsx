@@ -16,6 +16,7 @@ const Blog = lazy(() => import('./pages/Blog'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Account = lazy(() => import('./pages/Account'));
+const Auth = lazy(() => import('./pages/Auth'));
 
 const VALID_PAGES = [
   'home',
@@ -26,6 +27,7 @@ const VALID_PAGES = [
   'contact',
   'cart',
   'account',
+  'auth',
 ] as const;
 
 type Page = (typeof VALID_PAGES)[number];
@@ -71,6 +73,14 @@ const AppShell: React.FC = () => {
     handleNavigate('catalog');
   };
 
+  const handleLogout = () => {
+    handleNavigate('auth');
+  };
+
+  const handleLoginSuccess = () => {
+    handleNavigate('account');
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
@@ -88,7 +98,9 @@ const AppShell: React.FC = () => {
       case 'cart':
         return <Cart onNavigate={handleNavigate} />;
       case 'account':
-        return <Account />;
+        return <Account onLogout={handleLogout} />;
+      case 'auth':
+        return <Auth onLoginSuccess={handleLoginSuccess} />;
       default:
         return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }
