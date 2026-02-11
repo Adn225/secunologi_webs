@@ -65,29 +65,3 @@ Si l'insertion Supabase échoue (table absente/RLS), l'application retombe autom
 ```bash
 npm run lint
 ```
-
-## Activer AdminJS
-
-Le serveur Node peut exposer AdminJS si vous activez explicitement la fonctionnalité. Par défaut, l'API démarre sans charger AdminJS.
-
-1. **Installer les dépendances nécessaires (avec MongoDB)**
-
-   ```bash
-   npm install
-   ```
-
-   > Remarque : le dépôt contient un stub local `@adminjs/express` dans `vendor/` pour certains déploiements. Pour utiliser AdminJS en local, il faut installer les paquets depuis npm (la commande ci-dessus suffit avec le lockfile à jour).
-
-2. **Définir la variable d'environnement MongoDB**
-
-   ```bash
-   export MONGO_URL="mongodb://localhost:27017/secunologi"
-   ```
-
-3. **Démarrer le serveur avec AdminJS**
-
-   ```bash
-   ENABLE_ADMINJS=true npm run server
-   ```
-
-   Puis ouvrir `http://localhost:5000/admin`.
