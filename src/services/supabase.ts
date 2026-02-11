@@ -8,7 +8,7 @@ export interface ContactSubmissionPayload {
 
 const DEFAULT_SUPABASE_URL = 'https://hlaxbvzzrvvqsjhqgdnz.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = 'sb_publishable_nAkKEcUehmasWwkqcc9W5Q_4-IXmogP';
-const CONTACT_TABLE = 'contact_submissions';
+const DEFAULT_CONTACT_TABLE = 'contact_submissions';
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '');
 
@@ -19,6 +19,7 @@ const getEnvValue = (key: string, fallback = ''): string => {
 
 const supabaseUrl = trimTrailingSlash(getEnvValue('VITE_SUPABASE_URL', DEFAULT_SUPABASE_URL));
 const supabaseAnonKey = getEnvValue('VITE_SUPABASE_ANON_KEY', DEFAULT_SUPABASE_ANON_KEY);
+const contactTable = getEnvValue('VITE_SUPABASE_CONTACT_TABLE', DEFAULT_CONTACT_TABLE);
 
 export const isSupabaseConfigured = () => Boolean(supabaseUrl && supabaseAnonKey);
 
@@ -31,7 +32,7 @@ export const saveContactToSupabase = async (payload: ContactSubmissionPayload): 
     throw new Error('Supabase n\'est pas configuré.');
   }
 
-  const response = await fetch(`${supabaseUrl}/rest/v1/${CONTACT_TABLE}`, {
+  const response = await fetch(`${supabaseUrl}/rest/v1/${contactTable}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
