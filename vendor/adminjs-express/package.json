@@ -1,7 +1,0 @@
-{
-  "name": "@adminjs/express",
-  "version": "6.1.1",
-  "description": "Local stub for @adminjs/express to satisfy deployment installs.",
-  "main": "index.js",
-  "license": "MIT"
-}

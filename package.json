@@ -11,12 +11,7 @@
     "server": "node server/index.js"
   },
   "dependencies": {
-    "@adminjs/express": "^6.1.1",
-    "@adminjs/mongoose": "^3.0.2",
-    "adminjs": "^7.8.13",
-    "express": "^4.21.2",
     "lucide-react": "^0.344.0",
-    "mongoose": "^8.9.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
