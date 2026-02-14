@@ -49,8 +49,17 @@ Le front peut désormais enregistrer les demandes du formulaire de contact direc
 
    - `VITE_SUPABASE_URL=https://hlaxbvzzrvvqsjhqgdnz.supabase.co`
    - `VITE_SUPABASE_ANON_KEY=sb_publishable_nAkKEcUehmasWwkqcc9W5Q_4-IXmogP`
+   - `VITE_SUPABASE_CONTACT_TABLE=contact_submissions` (optionnel)
 
-3. Créez (ou adaptez) la table `contact_submissions` côté Supabase avec les colonnes :
+3. Exécutez le script SQL fourni pour créer la table et la policy d'insertion anonyme :
+
+   - Fichier : `supabase/contact_submissions.sql`
+
+   Vous pouvez le coller dans l'éditeur SQL de Supabase puis exécuter.
+
+4. Si vous utilisez un autre nom de table, mettez à jour `VITE_SUPABASE_CONTACT_TABLE`.
+
+Le script crée la table `contact_submissions` avec les colonnes :
 
    - `name` (text)
    - `email` (text)
