@@ -236,7 +236,27 @@ const parseProductsPayload = (payload: unknown): BackendProduct[] => {
     return Array.isArray(data) ? (data as BackendProduct[]) : [];
   }
 
+  if (payload && typeof payload === 'object' && 'results' in payload) {
+    const results = (payload as { results?: unknown }).results;
+    return Array.isArray(results) ? (results as BackendProduct[]) : [];
+  }
+
   return [];
+};
+
+const parseProductPayload = (payload: unknown): BackendProduct => {
+  if (payload && typeof payload === 'object' && 'data' in payload) {
+    const data = (payload as { data?: unknown }).data;
+    if (data && typeof data === 'object') {
+      return data as BackendProduct;
+    }
+  }
+
+  if (payload && typeof payload === 'object') {
+    return payload as BackendProduct;
+  }
+
+  throw new Error('Format de produit inattendu.');
 };
 
 const applyProductQuery = (products: Product[], query?: ProductQuery): Product[] => {
@@ -289,7 +309,7 @@ const applyProductQuery = (products: Product[], query?: ProductQuery): Product[]
 export const fetchProducts = async (query?: ProductQuery): Promise<Product[]> => {
   try {
     const payload = await request<unknown>('/products', { params: query });
-    const products = parseProductsPayload(payload.data)
+    const products = parseProductsPayload(payload)
       .map(mapBackendProduct)
       .filter((product) => product.inStock || query?.inStock === false)
       .filter(isAllowedBrand);
@@ -302,8 +322,8 @@ export const fetchProducts = async (query?: ProductQuery): Promise<Product[]> =>
 };
 
 export const fetchProduct = async (id: string): Promise<Product> => {
-  const payload = await request<BackendProduct>(`/products/${id}`);
-  return mapBackendProduct(payload.data);
+  const payload = await request<unknown>(`/products/${id}`);
+  return mapBackendProduct(parseProductPayload(payload));
 };
 
 export const fetchBlogPosts = async (limit?: number): Promise<BlogPost[]> => {
