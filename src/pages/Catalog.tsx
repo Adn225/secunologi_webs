@@ -14,7 +14,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 200000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const { globalSearch, clearGlobalSearch, recentSearches, trackSearch } = useExperience();
@@ -25,6 +25,24 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
 
   const brands = useMemo(() => [...new Set(products.map(p => p.brand))], [products]);
   const categories = useMemo(() => [...new Set(products.map(p => p.category))], [products]);
+  const maxProductPrice = useMemo(
+    () => products.reduce((currentMax, product) => Math.max(currentMax, product.price), 0),
+    [products],
+  );
+
+  useEffect(() => {
+    setPriceRange((currentPriceRange) => {
+      if (maxProductPrice === 0) {
+        return currentPriceRange;
+      }
+
+      if (currentPriceRange[1] === 0 || currentPriceRange[1] > maxProductPrice) {
+        return [0, maxProductPrice];
+      }
+
+      return currentPriceRange;
+    });
+  }, [maxProductPrice]);
 
   useEffect(() => {
     if (!globalSearch) return;
@@ -61,7 +79,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
   const clearFilters = () => {
     setSelectedBrand('');
     setSelectedCategory('');
-    setPriceRange([0, 200000]);
+    setPriceRange([0, maxProductPrice]);
     setSearchTerm('');
   };
 
@@ -182,7 +200,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
                   <input
                     type="range"
                     min="0"
-                    max="200000"
+                    max={maxProductPrice || 1}
                     step="5000"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
