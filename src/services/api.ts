@@ -231,9 +231,25 @@ const parseProductsPayload = (payload: unknown): BackendProduct[] => {
     return payload as BackendProduct[];
   }
 
+  if (payload && typeof payload === 'object' && 'products' in payload) {
+    const products = (payload as { products?: unknown }).products;
+    return Array.isArray(products) ? (products as BackendProduct[]) : [];
+  }
+
   if (payload && typeof payload === 'object' && 'data' in payload) {
     const data = (payload as { data?: unknown }).data;
-    return Array.isArray(data) ? (data as BackendProduct[]) : [];
+    if (Array.isArray(data)) {
+      return data as BackendProduct[];
+    }
+    if (data && typeof data === 'object' && 'results' in data) {
+      const nestedResults = (data as { results?: unknown }).results;
+      return Array.isArray(nestedResults) ? (nestedResults as BackendProduct[]) : [];
+    }
+    if (data && typeof data === 'object' && 'products' in data) {
+      const nestedProducts = (data as { products?: unknown }).products;
+      return Array.isArray(nestedProducts) ? (nestedProducts as BackendProduct[]) : [];
+    }
+    return [];
   }
 
   if (payload && typeof payload === 'object' && 'results' in payload) {
