@@ -5,6 +5,8 @@ import { CartItem, Product } from '../types';
 interface CartState {
   items: CartItem[];
   total: number;
+  lastAddedProduct: Product | null;
+  addEventId: number;
 }
 
 type CartAction = 
@@ -34,13 +36,17 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         );
         return {
           items: updatedItems,
-          total: calculateTotal(updatedItems)
+          total: calculateTotal(updatedItems),
+          lastAddedProduct: action.payload,
+          addEventId: state.addEventId + 1,
         };
       } else {
         const newItems = [...state.items, { product: action.payload.product, quantity: quantityToAdd }];
         return {
           items: newItems,
-          total: calculateTotal(newItems)
+          total: calculateTotal(newItems),
+          lastAddedProduct: action.payload,
+          addEventId: state.addEventId + 1,
         };
       }
     }
@@ -48,7 +54,9 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       const newItems = state.items.filter(item => item.product.id !== action.payload);
       return {
         items: newItems,
-        total: calculateTotal(newItems)
+        total: calculateTotal(newItems),
+        lastAddedProduct: state.lastAddedProduct,
+        addEventId: state.addEventId,
       };
     }
     case 'UPDATE_QUANTITY': {
@@ -56,7 +64,9 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         const newItems = state.items.filter(item => item.product.id !== action.payload.id);
         return {
           items: newItems,
-          total: calculateTotal(newItems)
+          total: calculateTotal(newItems),
+          lastAddedProduct: state.lastAddedProduct,
+          addEventId: state.addEventId,
         };
       }
       const updatedItems = state.items.map(item =>
@@ -66,11 +76,18 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       );
       return {
         items: updatedItems,
-        total: calculateTotal(updatedItems)
+        total: calculateTotal(updatedItems),
+        lastAddedProduct: state.lastAddedProduct,
+        addEventId: state.addEventId,
       };
     }
     case 'CLEAR_CART':
-      return { items: [], total: 0 };
+      return {
+        items: [],
+        total: 0,
+        lastAddedProduct: state.lastAddedProduct,
+        addEventId: state.addEventId,
+      };
     default:
       return state;
   }
@@ -87,7 +104,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   })();
   const [state, dispatch] = useReducer(cartReducer, {
     items: storedItems,
-    total: calculateTotal(storedItems)
+    total: calculateTotal(storedItems),
+    lastAddedProduct: null,
+    addEventId: 0,
   });
 
   useEffect(() => {
