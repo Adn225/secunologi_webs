@@ -5,6 +5,8 @@ import { saveContactToSupabase } from './supabase';
 const DEFAULT_API_BASE = '/api';
 const REMOTE_PRODUCTS_API_BASE = 'https://samr.pythonanywhere.com/api';
 const REMOTE_MEDIA_ORIGIN = 'https://samr.pythonanywhere.com';
+const CORS_PROXY_CODETABS = 'https://api.codetabs.com/v1/proxy?quest=';
+const CORS_PROXY_IO = 'https://corsproxy.io/?';
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '');
 
@@ -174,7 +176,57 @@ interface BackendProduct {
   stock_quantity?: number;
   is_online?: boolean;
   tech_specs_json?: Record<string, unknown> | null;
+  online?: boolean | number | string | null;
 }
+
+interface PaginatedProductsPayload {
+  count?: number;
+  next?: string | null;
+  previous?: string | null;
+  results?: BackendProduct[];
+}
+
+interface ProductSource {
+  name: string;
+  url: string;
+  parseMode: 'json' | 'text';
+  mediaBaseFallback: string;
+}
+
+const PRODUCTS_ENDPOINT = '/products/?page_size=100';
+
+const LOCAL_PRODUCTS_URL = `${DEFAULT_API_BASE}${PRODUCTS_ENDPOINT}`;
+const REMOTE_PRODUCTS_URL = `${REMOTE_PRODUCTS_API_BASE}${PRODUCTS_ENDPOINT}`;
+
+const API_SOURCES: ProductSource[] = [
+  {
+    name: 'local-api',
+    url: LOCAL_PRODUCTS_URL,
+    parseMode: 'json',
+    mediaBaseFallback: REMOTE_MEDIA_ORIGIN,
+  },
+  {
+    name: 'remote-api',
+    url: REMOTE_PRODUCTS_URL,
+    parseMode: 'json',
+    mediaBaseFallback: REMOTE_MEDIA_ORIGIN,
+  },
+  {
+    name: 'codetabs-proxy',
+    url: `${CORS_PROXY_CODETABS}${encodeURIComponent(REMOTE_PRODUCTS_URL)}`,
+    parseMode: 'text',
+    mediaBaseFallback: REMOTE_MEDIA_ORIGIN,
+  },
+  {
+    name: 'corsproxy-io',
+    url: `${CORS_PROXY_IO}${encodeURIComponent(REMOTE_PRODUCTS_URL)}`,
+    parseMode: 'text',
+    mediaBaseFallback: REMOTE_MEDIA_ORIGIN,
+  },
+];
+
+let productsCache: Product[] | null = null;
+let productsPromise: Promise<Product[]> | null = null;
 
 const normalizeCategory = (value: string | undefined) => {
   const category = value?.trim();
@@ -184,16 +236,84 @@ const normalizeCategory = (value: string | undefined) => {
   return category;
 };
 
-const resolveImage = (product: BackendProduct): string => {
-  const candidate = product.image_url || product.pending_image_url || '';
-  if (!candidate) {
+const parseOnlineValue = (value: unknown): boolean => {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  if (typeof value === 'number') {
+    return value === 1;
+  }
+
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    return ['1', 'true', 'yes', 'on'].includes(normalized);
+  }
+
+  return false;
+};
+
+const isProductOnline = (product: BackendProduct): boolean => {
+  if ('online' in product) {
+    return parseOnlineValue(product.online);
+  }
+  return parseOnlineValue(product.is_online);
+};
+
+const resolveAssetUrl = (asset: string | undefined | null, mediaBaseUrl: string): string => {
+  const raw = asset?.trim();
+  if (!raw) {
     return '/images/products/default.jpg';
   }
-  if (candidate.startsWith('http://') || candidate.startsWith('https://')) {
-    return candidate;
+
+  const protocolRelative = raw.startsWith('//') ? `https:${raw}` : raw;
+  let resolvedUrl = protocolRelative;
+
+  try {
+    resolvedUrl = new URL(protocolRelative, mediaBaseUrl).toString();
+  } catch {
+    return '/images/products/default.jpg';
   }
-  const normalizedPath = candidate.startsWith('/') ? candidate : `/${candidate}`;
-  return `${REMOTE_MEDIA_ORIGIN}${normalizedPath}`;
+
+  if (typeof window !== 'undefined' && window.location.protocol === 'https:' && resolvedUrl.startsWith('http://')) {
+    return resolvedUrl.replace(/^http:\/\//, 'https://');
+  }
+
+  return resolvedUrl;
+};
+
+const deriveMediaBaseUrl = (payload: unknown, sourceFallback: string): string => {
+  if (payload && typeof payload === 'object') {
+    const paginated = payload as PaginatedProductsPayload;
+    const link = paginated.next || paginated.previous;
+    if (link) {
+      try {
+        return new URL(link).origin;
+      } catch {
+        // Ignore and continue with next strategy
+      }
+    }
+  }
+
+  const products = parseProductsPayload(payload);
+  const absoluteImage = products
+    .map((product) => product.image_url)
+    .find((imageUrl) => typeof imageUrl === 'string' && /^https?:\/\//i.test(imageUrl));
+
+  if (absoluteImage) {
+    try {
+      return new URL(absoluteImage).origin;
+    } catch {
+      // Ignore and use source fallback
+    }
+  }
+
+  return sourceFallback;
+};
+
+const resolveImage = (product: BackendProduct, mediaBaseUrl: string): string => {
+  const candidate = product.image_url || product.pending_image_url || '';
+  return resolveAssetUrl(candidate, mediaBaseUrl);
 };
 
 const buildFeatures = (product: BackendProduct): string[] => {
@@ -207,7 +327,7 @@ const buildFeatures = (product: BackendProduct): string[] => {
     .slice(0, 8);
 };
 
-const mapBackendProduct = (product: BackendProduct): Product => {
+const mapBackendProduct = (product: BackendProduct, mediaBaseUrl: string): Product => {
   const rawPrice = product.sale_price ?? product.price ?? 0;
   const parsedPrice = Number(rawPrice);
 
@@ -217,7 +337,7 @@ const mapBackendProduct = (product: BackendProduct): Product => {
     brand: product.brand?.trim() || 'Générique',
     category: normalizeCategory(product.category),
     price: Number.isFinite(parsedPrice) ? parsedPrice : 0,
-    image: resolveImage(product),
+    image: resolveImage(product, mediaBaseUrl),
     description: product.short_description || product.description || product.long_description || 'Description indisponible.',
     features: buildFeatures(product),
     inStock: (product.stock_quantity ?? 0) > 0,
@@ -323,23 +443,53 @@ const applyProductQuery = (products: Product[], query?: ProductQuery): Product[]
 };
 
 export const fetchProducts = async (query?: ProductQuery): Promise<Product[]> => {
-  try {
-    const payload = await request<unknown>('/products', { params: query });
+  const fetchFromSource = async (source: ProductSource): Promise<Product[]> => {
+    const response = await fetch(source.url);
+    if (!response.ok) {
+      throw new Error(`[${source.name}] HTTP ${response.status}`);
+    }
+
+    const payload = source.parseMode === 'json'
+      ? await response.json()
+      : JSON.parse(await response.text());
+
+    const mediaBaseUrl = deriveMediaBaseUrl(payload, source.mediaBaseFallback);
     const products = parseProductsPayload(payload)
-      .map(mapBackendProduct)
-      .filter((product) => product.inStock || query?.inStock === false)
+      .filter(isProductOnline)
+      .map((product) => mapBackendProduct(product, mediaBaseUrl))
       .filter(isAllowedBrand);
 
-    return applyProductQuery(products, query);
-  } catch (error) {
-    console.warn('API product fetch failed, falling back to local data:', error);
-    return applyProductQuery((fallbackProducts as Product[]).filter(isAllowedBrand), query);
+    if (products.length === 0) {
+      throw new Error(`[${source.name}] Aucun produit exploitable.`);
+    }
+
+    return products;
+  };
+
+  if (!productsCache) {
+    if (!productsPromise) {
+      productsPromise = Promise.any(API_SOURCES.map((source) => fetchFromSource(source)))
+        .then((products) => {
+          productsCache = products;
+          return products;
+        })
+        .catch(() => {
+          throw new Error('Impossible de récupérer les produits pour le moment.');
+        })
+        .finally(() => {
+          productsPromise = null;
+        });
+    }
+    await productsPromise;
   }
+
+  const baseProducts = productsCache ?? (fallbackProducts as Product[]);
+  return applyProductQuery(baseProducts, query);
 };
 
 export const fetchProduct = async (id: string): Promise<Product> => {
   const payload = await request<unknown>(`/products/${id}`);
-  return mapBackendProduct(parseProductPayload(payload));
+  return mapBackendProduct(parseProductPayload(payload), REMOTE_MEDIA_ORIGIN);
 };
 
 export const fetchBlogPosts = async (limit?: number): Promise<BlogPost[]> => {
