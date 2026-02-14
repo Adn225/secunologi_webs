@@ -3,6 +3,8 @@ import fallbackProducts from '../data/fallbackProducts.json';
 import { saveContactToSupabase } from './supabase';
 
 const DEFAULT_API_BASE = '/api';
+const REMOTE_PRODUCTS_API_BASE = 'https://samr.pythonanywhere.com/api';
+const REMOTE_MEDIA_ORIGIN = 'https://samr.pythonanywhere.com';
 
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '');
 
@@ -55,6 +57,7 @@ const getApiBaseCandidates = (): string[] => {
     }
   }
 
+  bases.push(REMOTE_PRODUCTS_API_BASE);
   bases.push(DEFAULT_API_BASE);
   return Array.from(new Set(bases));
 };
@@ -156,6 +159,86 @@ export interface ProductQuery {
   limit?: number;
 }
 
+interface BackendProduct {
+  id: number | string;
+  name?: string;
+  description?: string;
+  short_description?: string;
+  long_description?: string;
+  brand?: string;
+  category?: string;
+  sale_price?: number | string;
+  price?: number | string;
+  image_url?: string | null;
+  pending_image_url?: string | null;
+  stock_quantity?: number;
+  is_online?: boolean;
+  tech_specs_json?: Record<string, unknown> | null;
+}
+
+const normalizeCategory = (value: string | undefined) => {
+  const category = value?.trim();
+  if (!category || category.toLowerCase() === 'all') {
+    return 'Autres produits';
+  }
+  return category;
+};
+
+const resolveImage = (product: BackendProduct): string => {
+  const candidate = product.image_url || product.pending_image_url || '';
+  if (!candidate) {
+    return '/images/products/default.jpg';
+  }
+  if (candidate.startsWith('http://') || candidate.startsWith('https://')) {
+    return candidate;
+  }
+  const normalizedPath = candidate.startsWith('/') ? candidate : `/${candidate}`;
+  return `${REMOTE_MEDIA_ORIGIN}${normalizedPath}`;
+};
+
+const buildFeatures = (product: BackendProduct): string[] => {
+  const specs = product.tech_specs_json;
+  if (!specs || typeof specs !== 'object') {
+    return [];
+  }
+
+  return Object.entries(specs)
+    .map(([key, value]) => `${key}: ${String(value)}`)
+    .slice(0, 8);
+};
+
+const mapBackendProduct = (product: BackendProduct): Product => {
+  const rawPrice = product.sale_price ?? product.price ?? 0;
+  const parsedPrice = Number(rawPrice);
+
+  return {
+    id: String(product.id),
+    name: product.name?.trim() || 'Produit sans nom',
+    brand: product.brand?.trim() || 'Générique',
+    category: normalizeCategory(product.category),
+    price: Number.isFinite(parsedPrice) ? parsedPrice : 0,
+    image: resolveImage(product),
+    description: product.short_description || product.description || product.long_description || 'Description indisponible.',
+    features: buildFeatures(product),
+    inStock: (product.stock_quantity ?? 0) > 0,
+  };
+};
+
+const isAllowedBrand = (product: Product) => product.brand.trim().toLowerCase() !== 'dahua';
+
+const parseProductsPayload = (payload: unknown): BackendProduct[] => {
+  if (Array.isArray(payload)) {
+    return payload as BackendProduct[];
+  }
+
+  if (payload && typeof payload === 'object' && 'data' in payload) {
+    const data = (payload as { data?: unknown }).data;
+    return Array.isArray(data) ? (data as BackendProduct[]) : [];
+  }
+
+  return [];
+};
+
 const applyProductQuery = (products: Product[], query?: ProductQuery): Product[] => {
   if (!query) return products;
 
@@ -205,17 +288,22 @@ const applyProductQuery = (products: Product[], query?: ProductQuery): Product[]
 
 export const fetchProducts = async (query?: ProductQuery): Promise<Product[]> => {
   try {
-    const payload = await request<Product[]>('/products', { params: query });
-    return payload.data;
+    const payload = await request<unknown>('/products', { params: query });
+    const products = parseProductsPayload(payload.data)
+      .map(mapBackendProduct)
+      .filter((product) => product.inStock || query?.inStock === false)
+      .filter(isAllowedBrand);
+
+    return applyProductQuery(products, query);
   } catch (error) {
     console.warn('API product fetch failed, falling back to local data:', error);
-    return applyProductQuery(fallbackProducts as Product[], query);
+    return applyProductQuery((fallbackProducts as Product[]).filter(isAllowedBrand), query);
   }
 };
 
 export const fetchProduct = async (id: string): Promise<Product> => {
-  const payload = await request<Product>(`/products/${id}`);
-  return payload.data;
+  const payload = await request<BackendProduct>(`/products/${id}`);
+  return mapBackendProduct(payload.data);
 };
 
 export const fetchBlogPosts = async (limit?: number): Promise<BlogPost[]> => {
@@ -266,4 +354,3 @@ export const submitContact = async (payload: ContactPayload): Promise<ContactRes
   });
   return { message: result.message ?? 'Message envoyé avec succès.' };
 };
-

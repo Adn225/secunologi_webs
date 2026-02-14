@@ -19,6 +19,10 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
   const [showFilters, setShowFilters] = useState(false);
   const { globalSearch, clearGlobalSearch, recentSearches, trackSearch } = useExperience();
 
+  useEffect(() => {
+    document.title = 'Catalogue produits par catégorie | SecunologieCI';
+  }, []);
+
   const brands = useMemo(() => [...new Set(products.map(p => p.brand))], [products]);
   const categories = useMemo(() => [...new Set(products.map(p => p.category))], [products]);
 
@@ -41,6 +45,19 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
     });
   }, [products, searchTerm, selectedBrand, selectedCategory, priceRange]);
 
+  const groupedProducts = useMemo(() => {
+    const grouped = new Map<string, Product[]>();
+    filteredProducts.forEach((product) => {
+      const key = product.category || 'Autres produits';
+      if (!grouped.has(key)) {
+        grouped.set(key, []);
+      }
+      grouped.get(key)?.push(product);
+    });
+
+    return Array.from(grouped.entries()).sort((a, b) => a[0].localeCompare(b[0], 'fr'));
+  }, [filteredProducts]);
+
   const clearFilters = () => {
     setSelectedBrand('');
     setSelectedCategory('');
@@ -60,7 +77,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Catalogue produits</h1>
           <p className="text-gray-600">
-            Découvrez notre gamme complète de solutions de sécurité électronique
+            Découvrez notre gamme complète de solutions de sécurité électronique, classée par catégorie.
           </p>
         </div>
 
@@ -124,8 +141,7 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
           <div className={`w-64 space-y-6 ${showFilters ? 'block' : 'hidden lg:block'}`}>
             <div className="bg-white p-6 rounded-lg shadow">
               <h3 className="font-semibold mb-4">Filtres</h3>
-              
-              {/* Brand Filter */}
+
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Marque
@@ -142,7 +158,6 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
                 </select>
               </div>
 
-              {/* Category Filter */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Catégorie
@@ -159,7 +174,6 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
                 </select>
               </div>
 
-              {/* Price Range */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Prix (FCFA)
@@ -190,7 +204,6 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
             </div>
           </div>
 
-          {/* Products Grid */}
           <div className="flex-1">
             <div className="mb-4 flex justify-between items-center">
               <p className="text-gray-600">
@@ -208,19 +221,26 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
                 <p className="text-gray-500">Aucun produit trouvé avec ces critères.</p>
               </div>
             ) : (
-              <div
-                className={`grid gap-6 ${
-                  viewMode === 'grid'
-                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-                    : 'grid-cols-1'
-                }`}
-              >
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onViewDetails={onViewProduct}
-                  />
+              <div className="space-y-8">
+                {groupedProducts.map(([category, categoryProducts]) => (
+                  <section key={category} aria-label={`Catégorie ${category}`}>
+                    <h2 className="text-xl font-bold text-gray-900 mb-4">{category}</h2>
+                    <div
+                      className={`grid gap-6 ${
+                        viewMode === 'grid'
+                          ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+                          : 'grid-cols-1'
+                      }`}
+                    >
+                      {categoryProducts.map((product) => (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          onViewDetails={onViewProduct}
+                        />
+                      ))}
+                    </div>
+                  </section>
                 ))}
               </div>
             )}
