@@ -10,6 +10,7 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => {
+  const whatsappPhoneNumber = '2250596322580';
   const { state, dispatch } = useCart();
   const { trackAddedToCart } = useExperience();
 
@@ -25,7 +26,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
     if (product.inStock) {
       setSelectedQuantity(1);
       setIsQuantitySelectorOpen(true);
+      return;
     }
+
+    const message = `Bonjour, "${product.name}" est-il disponible ?`;
+    const whatsappUrl = `https://wa.me/${whatsappPhoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleConfirmAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -144,11 +150,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
           ) : (
             <button
               onClick={handleShowQuantitySelector}
-              disabled={!product.inStock}
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
                 product.inStock
                   ? 'bg-brand-green-600 text-white hover:bg-brand-green-700'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
