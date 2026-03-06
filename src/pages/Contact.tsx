@@ -80,8 +80,8 @@ const Contact: React.FC = () => {
                   <div>
                     <p className="font-semibold text-gray-900">Adresse</p>
                     <p className="text-gray-600">
-                      Abidjan, Cocody<br />
-                      Riviera Bonoumin<br />
+                      Abidjan, Abobo<br />
+                      Abobo-Té<br />
                       Face à la station Shell
                     </p>
                   </div>
