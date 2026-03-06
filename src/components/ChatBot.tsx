@@ -53,7 +53,7 @@ const ChatBot: React.FC = () => {
     const lowerMessage = message.toLowerCase();
     
     if (lowerMessage.includes('devis')) {
-      return 'Pour obtenir un devis personnalisé, vous pouvez remplir notre formulaire de contact ou appeler directement au +225 07 123 456 78.';
+      return 'Pour obtenir un devis personnalisé, vous pouvez remplir notre formulaire de contact ou appeler directement au +225 05 963 225 80.';
     } else if (lowerMessage.includes('produit')) {
       return 'Nous proposons une large gamme de produits Hikvision, Huawei et EZVIZ : caméras IP, NVR, interphones, alarmes. Consultez notre catalogue !';
     } else if (lowerMessage.includes('horaire')) {
@@ -61,7 +61,7 @@ const ChatBot: React.FC = () => {
     } else if (lowerMessage.includes('installation')) {
       return 'Nos techniciens certifiés assurent l\'installation complète de vos équipements avec garantie. Contactez-nous pour planifier votre intervention.';
     } else {
-      return 'Je vous remercie pour votre message. Pour une assistance personnalisée, n\'hésitez pas à contacter notre équipe au +225 07 123 456 78 ou par email à contact@securologieci.com.';
+      return 'Je vous remercie pour votre message. Pour une assistance personnalisée, n\'hésitez pas à contacter notre équipe au +225 05 963 225 80 ou par email à contact@securologieci.com.';
     }
   };
 
