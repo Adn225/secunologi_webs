@@ -71,10 +71,16 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-start">
                 <MapPin className="h-5 w-5 text-brand-green-400 mr-3 mt-1" />
-                <span className="text-gray-300">
+                <a
+                  href="https://maps.app.goo.gl/bqtbr1VJoRret7Gf7"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-gray-300 hover:text-white transition-colors"
+                  aria-label="Ouvrir la localisation SecunologieCI"
+                >
                   Abidjan, Cocody<br />
                   Riviera Bonoumin
-                </span>
+                </a>
               </div>
             </div>
           </div>
