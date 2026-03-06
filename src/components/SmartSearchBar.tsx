@@ -91,16 +91,16 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <div className="relative w-full max-w-2xl">
+    <div className="relative w-full max-w-xl 2xl:max-w-2xl">
       <form
         onSubmit={handleSubmit}
         className="flex bg-white rounded-full shadow-inner focus-within:ring-2 focus-within:ring-brand-green-500 overflow-hidden"
       >
-        <div className="hidden lg:flex items-center px-4 text-sm text-gray-600 border-r border-gray-200 bg-gray-50">
+        <div className="hidden xl:flex items-center w-40 min-w-0 px-3 text-sm text-gray-600 border-r border-gray-200 bg-gray-50">
           <select
             value={category}
             onChange={(event) => setCategory(event.target.value)}
-            className="bg-transparent focus:outline-none"
+            className="w-full bg-transparent focus:outline-none truncate"
             disabled={productsLoading}
           >
             {categories.map(option => (
