@@ -26,7 +26,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, onCl
   const technicalRows: Array<{ label: string; value: string }> = [
     { label: 'Marque', value: product.brand },
     { label: 'Catégorie', value: product.category },
-    { label: 'Disponibilité', value: product.inStock ? 'En stock' : 'Rupture de stock' },
+    { label: 'Disponibilité', value: product.inStock ? 'En stock' : 'Vérifiez la disponibilité' },
     { label: 'Prix', value: formatPrice(product.price) },
   ];
 
@@ -37,7 +37,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, onCl
       `Marque: ${product.brand}`,
       `Catégorie: ${product.category}`,
       `Prix: ${formatPrice(product.price)}`,
-      `Disponibilité: ${product.inStock ? 'En stock' : 'Rupture de stock'}`,
+      `Disponibilité: ${product.inStock ? 'En stock' : 'Vérifiez la disponibilité'}`,
       '',
       'Description:',
       product.description,

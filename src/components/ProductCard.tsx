@@ -66,13 +66,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
             {product.brand}
           </span>
         </div>
-        {!product.inStock && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <span className="bg-red-500 text-white px-3 py-1 rounded font-medium">
-              Rupture de stock
-            </span>
-          </div>
-        )}
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
             onClick={(event) => {
@@ -159,7 +152,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
               }`}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              Ajouter
+              {product.inStock ? 'Ajouter' : 'Vérifiez la disponibilité'}
             </button>
           )}
         </div>
