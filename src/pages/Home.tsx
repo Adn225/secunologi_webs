@@ -189,7 +189,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
             <div>
               <div className="inline-flex items-center px-4 py-1 mb-4 rounded-full bg-white/10 text-sm">
                 <Sparkles className="h-4 w-4 text-orange-300 mr-2" />
-                SecunoPrime – expérience inspirée d'Amazon Prime
+                SecunoPrime – expérience Prime
               </div>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                 Sécurisez votre monde avec
@@ -299,7 +299,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
                 </div>
                 <h2 className="text-3xl font-bold mb-4">{dealProduct.name}</h2>
                 <p className="text-brand-green-100 mb-6 max-w-lg">
-                  Profitez d'une remise exceptionnelle inspirée des "Deals of the Day" d'Amazon sur le modèle {dealProduct.brand}. Configuration à distance offerte et rappel d'entretien automatique inclus.
+                  Profitez d'une remise exceptionnelle sur le modèle {dealProduct.brand}. Configuration à distance offerte et rappel d'entretien automatique inclus.
                 </p>
                 <div className="flex items-center gap-4 mb-6">
                   <span className="text-3xl font-extrabold text-orange-400">{formatPrice(Math.round(dealProduct.price * (1 - dealDiscount)))}</span>
@@ -339,7 +339,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
                   ))}
                 </ul>
                 <p className="mt-4 text-sm text-gray-600">
-                  En bonus : audit de positionnement caméra + notifications automatisées en cas de maintenance, comme sur Amazon.
+                  En bonus : audit de positionnement caméra + notifications automatisées en cas de maintenance.
                 </p>
               </div>
             </div>
@@ -438,7 +438,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Nos services intelligents</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Inspirés des standards Amazon : suivi en temps réel, maintenance prédictive et accompagnement personnalisé à chaque étape de votre projet de sécurité.
+              Inspirés des standards de qualité : suivi en temps réel, maintenance prédictive et accompagnement personnalisé à chaque étape de votre projet de sécurité.
             </p>
           </div>
 
@@ -477,7 +477,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
             <div>
               <h2 className="text-3xl font-bold text-gray-900">Packs prêts à installer</h2>
               <p className="text-gray-600">
-                Optimisez votre budget grâce à nos bundles inspirés des recommandations "Acheter avec" d'Amazon.
+                Optimisez votre budget grâce à nos bundles inspirés des recommandations.
               </p>
             </div>
             <button
@@ -545,7 +545,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
 
           <div className="flex flex-wrap justify-center items-center gap-12">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Hikvision_logo.svg"
+              src="https://commons.wikimedia.org/wiki/File:Hikvision_logo.svg"
               alt="Logo Hikvision"
               className="h-12 object-contain"
             />
