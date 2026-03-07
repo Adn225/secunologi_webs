@@ -82,7 +82,7 @@ const Contact: React.FC = () => {
                     <p className="text-gray-600">
                       Abidjan, Abobo<br />
                       Abobo-Té<br />
-                      Face à la station Shell
+                      Carrefour Menuiserie
                     </p>
                   </div>
                 </div>
@@ -92,7 +92,7 @@ const Contact: React.FC = () => {
                   <div>
                     <p className="font-semibold text-gray-900">Horaires</p>
                     <p className="text-gray-600">
-                      Lundi - Vendredi: 8h00 - 18h00<br />
+                      Lundi - Vendredi: 8h00 - 17h00<br />
                       Samedi: 8h00 - 13h00<br />
                       Dimanche: Fermé
                     </p>
