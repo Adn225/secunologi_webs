@@ -9,7 +9,7 @@ const About: React.FC = () => {
         <section className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">À propos de SecunologieCI</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Depuis 2019, nous sommes votre partenaire de confiance pour toutes vos solutions 
+            Depuis 2021, nous sommes votre partenaire de confiance pour toutes vos solutions 
             de sécurité électronique en Côte d'Ivoire.
           </p>
         </section>
@@ -27,7 +27,7 @@ const About: React.FC = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Notre histoire</h2>
             <div className="space-y-4 text-gray-600">
               <p>
-                SecunologieCI a été fondée en 2019 avec une vision claire : démocratiser l'accès 
+                SecunologieCI a été fondée en 2021 avec une vision claire : démocratiser l'accès 
                 aux technologies de sécurité électronique les plus avancées en Côte d'Ivoire.
               </p>
               <p>
@@ -157,14 +157,14 @@ const About: React.FC = () => {
               <MapPin className="h-6 w-6 text-brand-green-600 mr-3" />
               <div>
                 <p className="font-semibold">Adresse</p>
-                <p className="text-gray-600">Abidjan, Cocody - Riviera Bonoumin</p>
+                <p className="text-gray-600">Abidjan, Abobo - Abobo-Té</p>
               </div>
             </div>
             <div className="flex items-center justify-center">
               <Clock className="h-6 w-6 text-brand-green-600 mr-3" />
               <div>
                 <p className="font-semibold">Horaires</p>
-                <p className="text-gray-600">Lun-Ven: 8h-18h | Sam: 8h-13h</p>
+                <p className="text-gray-600">Lun-Ven: 8h-17h | Sam: 8h-13h</p>
               </div>
             </div>
           </div>
