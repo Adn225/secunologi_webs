@@ -78,8 +78,8 @@ const Footer: React.FC = () => {
                   className="text-gray-300 hover:text-white transition-colors"
                   aria-label="Ouvrir la localisation SecunologieCI"
                 >
-                  Abidjan, Cocody<br />
-                  Riviera Bonoumin
+                  Abidjan, Abobo<br />
+                  Abobo-Té
                 </a>
               </div>
             </div>
