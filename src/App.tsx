@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
+import CartAddFeedback from './components/CartAddFeedback';
 import { CartProvider } from './contexts/CartContext';
 import { DataProvider } from './contexts/DataContext';
 import { ExperienceProvider, useExperience } from './contexts/ExperienceContext';
@@ -104,6 +105,7 @@ const AppShell: React.FC = () => {
       </main>
       <Footer />
       <ChatBot />
+      <CartAddFeedback />
       <ProductDetailsModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
     </div>
   );
