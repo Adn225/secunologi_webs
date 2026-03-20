@@ -1,0 +1,27 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF6EB"/>
+      <stop offset="1" stop-color="#A6CFAE"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg3)"/>
+  <circle cx="560" cy="450" r="470" fill="#FFFFFF" fill-opacity="0.98"/>
+  <path d="M240 420L560 190L860 430L430 470Z" fill="#9BC9A2"/>
+  <path d="M492 382C540 382 585 412 604 455C579 438 549 428 520 428C496 428 470 434 444 449C456 404 482 382 492 382Z" fill="#7FB48B"/>
+  <rect x="612" y="280" width="62" height="62" fill="#A7D2AE"/>
+  <rect x="690" y="280" width="62" height="62" fill="#A7D2AE"/>
+  <rect x="612" y="358" width="62" height="62" fill="#A7D2AE"/>
+  <rect x="690" y="358" width="62" height="62" fill="#A7D2AE"/>
+  <text x="560" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="102" fill="#8AB894">SECUNOLOGIE</text>
+  <text x="560" y="670" text-anchor="middle" font-family="Arial, sans-serif" font-size="72" fill="#8AB894">Côte d’Ivoire</text>
+  <g opacity="0.15" stroke="#5A8763">
+    <path d="M950 180C1110 180 1180 280 1300 280C1420 280 1450 170 1560 170" stroke-width="4"/>
+    <path d="M930 360C1080 360 1140 470 1290 470C1440 470 1490 330 1600 330" stroke-width="4"/>
+    <path d="M980 580C1140 580 1210 700 1370 700C1480 700 1520 630 1600 620" stroke-width="4"/>
+    <circle cx="1100" cy="180" r="10" fill="#5A8763"/>
+    <circle cx="1300" cy="280" r="10" fill="#5A8763"/>
+    <circle cx="1140" cy="470" r="10" fill="#5A8763"/>
+    <circle cx="1370" cy="700" r="10" fill="#5A8763"/>
+  </g>
+</svg>

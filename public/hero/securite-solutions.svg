@@ -1,0 +1,63 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A8DB6"/>
+      <stop offset="0.55" stop-color="#0B2F57"/>
+      <stop offset="1" stop-color="#5BC7DF"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#12283C" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#0E1724" stop-opacity="0.35"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg1)"/>
+  <g opacity="0.18" stroke="#D7F9FF">
+    <path d="M0 140H1600"/>
+    <path d="M0 320H1600"/>
+    <path d="M0 500H1600"/>
+    <path d="M0 680H1600"/>
+    <path d="M220 0V900"/>
+    <path d="M520 0V900"/>
+    <path d="M860 0V900"/>
+    <path d="M1220 0V900"/>
+  </g>
+  <g opacity="0.55" stroke="#83F0FF" stroke-width="3">
+    <path d="M70 760C230 650 280 510 420 460C560 410 680 460 770 390C860 320 930 150 1080 170C1230 190 1330 360 1530 280"/>
+    <path d="M120 210C230 230 280 330 370 320C460 310 540 160 640 170C740 180 790 280 900 290C1010 300 1090 210 1170 180C1250 150 1370 180 1470 220"/>
+  </g>
+  <g filter="url(#glow)">
+    <polygon points="120,220 430,120 600,260 280,300" fill="#A2D94F"/>
+    <text x="385" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="74" font-weight="700" fill="#A7F14A">SECUNOLOGIE</text>
+    <text x="385" y="382" text-anchor="middle" font-family="Arial, sans-serif" font-size="46" fill="#C7FF6D">Côte d’Ivoire</text>
+  </g>
+  <g opacity="0.4" fill="#CFFFFF">
+    <circle cx="710" cy="228" r="8"/><circle cx="762" cy="250" r="8"/><circle cx="812" cy="212" r="8"/>
+    <circle cx="894" cy="268" r="8"/><circle cx="940" cy="220" r="8"/><circle cx="1040" cy="256" r="8"/>
+  </g>
+  <g>
+    <path d="M1180 0H1600V900H970L1180 0Z" fill="#0E2037" fill-opacity="0.65"/>
+    <path d="M1110 80H1480C1510 80 1535 105 1535 135V305C1535 335 1510 360 1480 360H1110C1080 360 1055 335 1055 305V135C1055 105 1080 80 1110 80Z" fill="url(#panel)" stroke="#B3EEFF" stroke-opacity="0.35"/>
+    <rect x="1090" y="110" width="170" height="54" rx="12" fill="#37485C"/>
+    <rect x="1285" y="110" width="180" height="54" rx="12" fill="#4E5E74"/>
+    <rect x="1090" y="192" width="120" height="120" rx="28" fill="#F6F9FA"/>
+    <rect x="1255" y="188" width="78" height="132" rx="18" fill="#FFFFFF"/>
+    <rect x="1365" y="188" width="120" height="132" rx="22" fill="#EEF4F7"/>
+    <circle cx="1150" cy="542" r="82" fill="#FFFFFF"/>
+    <circle cx="1150" cy="540" r="48" fill="#163B5B"/>
+    <circle cx="1150" cy="540" r="18" fill="#68D0FF"/>
+    <rect x="1035" y="630" width="210" height="62" rx="12" fill="#121C2B"/>
+    <rect x="1280" y="620" width="170" height="84" rx="18" fill="#0B1018"/>
+    <rect x="1288" y="648" width="154" height="10" rx="5" fill="#4DEB91" fill-opacity="0.7"/>
+    <rect x="1335" y="735" width="150" height="28" rx="14" fill="#1A2536"/>
+    <rect x="1350" y="762" width="12" height="64" rx="6" fill="#121925"/>
+    <rect x="1458" y="762" width="12" height="64" rx="6" fill="#121925"/>
+    <path d="M1422 762V724" stroke="#1E2B40" stroke-width="6"/>
+  </g>
+</svg>
