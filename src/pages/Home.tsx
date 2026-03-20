@@ -39,6 +39,13 @@ interface HydratedBundle extends BundleDefinition {
   discounted: number;
 }
 
+interface HeroSlide {
+  id: string;
+  image: string;
+  alt: string;
+  showCopy?: boolean;
+}
+
 const bundleDefinitions: BundleDefinition[] = [
   {
     id: 'bundle-pro',
@@ -68,6 +75,25 @@ const bundleDefinitions: BundleDefinition[] = [
 
 const formatPrice = (price: number) => `${new Intl.NumberFormat('fr-FR').format(price)} FCFA`;
 
+const heroSlides: HeroSlide[] = [
+  {
+    id: 'security-solutions',
+    image: '/hero/securite-solutions.svg',
+    alt: 'Montage de solutions de sécurité Secunologie',
+  },
+  {
+    id: 'smart-attendance',
+    image: '/hero/pointage-intelligent.svg',
+    alt: 'Visuel de pointage intelligent Secunologie',
+  },
+  {
+    id: 'secunologie-logo',
+    image: '/hero/secunologie-logo-slide.svg',
+    alt: 'Logo Secunologie Côte d’Ivoire',
+    showCopy: true,
+  },
+];
+
 const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
   const { products, productsLoading, productsError } = useData();
   const featuredProducts = useMemo(() => products.slice(0, 3), [products]);
@@ -76,6 +102,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
   const { dispatch } = useCart();
   const { recentlyViewedProducts, lastAddedProduct, trackAddedToCart, recentSearches } = useExperience();
   const [dealCountdown, setDealCountdown] = useState('00:00:00');
+  const [activeHeroIndex, setActiveHeroIndex] = useState(0);
 
   useEffect(() => {
     const updateCountdown = () => {
@@ -99,6 +126,14 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
 
     updateCountdown();
     const interval = window.setInterval(updateCountdown, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveHeroIndex(currentIndex => (currentIndex + 1) % heroSlides.length);
+    }, 3000);
+
     return () => window.clearInterval(interval);
   }, []);
 
@@ -182,40 +217,70 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-brand-green-900 via-brand-green-700 to-brand-green-600 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-20" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center px-4 py-1 mb-4 rounded-full bg-white/10 text-sm">
-                <Sparkles className="h-4 w-4 text-orange-300 mr-2" />
-                SecunoPrime – expérience Prime
+      <section className="relative min-h-[560px] overflow-hidden bg-brand-green-900 text-white">
+        <div className="absolute inset-0">
+          {heroSlides.map((slide, index) => (
+            <div
+              key={slide.id}
+              role="img"
+              aria-label={slide.alt}
+              className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
+                index === activeHeroIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{ backgroundImage: `url(${slide.image})` }}
+              aria-hidden={index !== activeHeroIndex}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/35" />
+        <div className="relative max-w-7xl mx-auto min-h-[560px] px-4 py-16 sm:px-6 lg:px-8">
+          <div className="flex min-h-[560px] flex-col justify-between">
+            <div className="grid flex-1 grid-cols-1 items-center lg:grid-cols-2">
+              <div className="max-w-2xl">
+                {heroSlides[activeHeroIndex].showCopy ? (
+                  <>
+                    <div className="inline-flex items-center px-4 py-1 mb-4 rounded-full bg-white/10 text-sm backdrop-blur-sm">
+                      <Sparkles className="h-4 w-4 text-orange-300 mr-2" />
+                      SecunoPrime – expérience Prime
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                      Sécurisez votre monde avec
+                      <span className="text-orange-300"> SecunologieCI</span>
+                    </h1>
+                    <p className="text-xl mb-8 max-w-xl text-brand-green-100">
+                      Livraison express, installation prioritaire et recommandations intelligentes : tout ce qui fait la force d&apos;Amazon, adapté à la sécurité électronique en Côte d&apos;Ivoire.
+                    </p>
+                  </>
+                ) : (
+                  <div className="hidden lg:block h-48" aria-hidden="true" />
+                )}
               </div>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                Sécurisez votre monde avec
-                <span className="text-orange-300"> SecunologieCI</span>
-              </h1>
-              <p className="text-xl mb-8 text-brand-green-100 max-w-xl">
-                Livraison express, installation prioritaire et recommandations intelligentes : tout ce qui fait la force d'Amazon, adapté à la sécurité électronique en Côte d'Ivoire.
-              </p>
+            </div>
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => onNavigate('catalog')}
-                  className="bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center"
+                  className="bg-orange-500 text-white px-8 py-4 rounded-lg font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center shadow-lg"
                 >
                   Voir le catalogue <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
-                <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-brand-green-800 transition-colors flex items-center justify-center">
+                <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-brand-green-800 transition-colors flex items-center justify-center backdrop-blur-sm">
                   <Play className="mr-2 h-5 w-5" /> Découvrir SecunoPrime
                 </button>
               </div>
-            </div>
-            <div className="hidden lg:block">
-              <img
-                src="https://images.pexels.com/photos/5380792/pexels-photo-5380792.jpeg?auto=compress&cs=tinysrgb&w=800"
-                alt="Système de sécurité"
-                className="rounded-lg shadow-2xl"
-              />
+              <div className="flex items-center gap-3">
+                {heroSlides.map((slide, index) => (
+                  <button
+                    key={slide.id}
+                    type="button"
+                    onClick={() => setActiveHeroIndex(index)}
+                    className={`h-2.5 rounded-full transition-all ${
+                      index === activeHeroIndex ? 'w-10 bg-white' : 'w-2.5 bg-white/50 hover:bg-white/80'
+                    }`}
+                    aria-label={`Afficher le slide ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
