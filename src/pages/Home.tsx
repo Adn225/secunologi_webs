@@ -132,7 +132,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onViewProduct }) => {
   useEffect(() => {
     const interval = window.setInterval(() => {
       setActiveHeroIndex(currentIndex => (currentIndex + 1) % heroSlides.length);
-    }, 3000);
+    }, 10000);
 
     return () => window.clearInterval(interval);
   }, []);
