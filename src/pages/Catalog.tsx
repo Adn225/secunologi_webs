@@ -156,8 +156,8 @@ const Catalog: React.FC<CatalogProps> = ({ onViewProduct }) => {
 
         <div className="flex gap-8">
           {/* Filters Sidebar */}
-          <div className={`w-64 space-y-6 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-            <div className="bg-white p-6 rounded-lg shadow">
+          <div className={`w-64 space-y-6 self-start lg:sticky lg:top-24 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+            <div className="bg-white p-6 rounded-lg shadow lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
               <h3 className="font-semibold mb-4">Filtres</h3>
 
               <div className="mb-6">
