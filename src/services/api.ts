@@ -233,7 +233,8 @@ const normalizeCategory = (value: string | undefined) => {
   if (!category || category.toLowerCase() === 'all') {
     return 'Autres produits';
   }
-  return category;
+  const normalized = category.toLocaleLowerCase('fr-FR');
+  return normalized.charAt(0).toLocaleUpperCase('fr-FR') + normalized.slice(1);
 };
 
 const parseOnlineValue = (value: unknown): boolean => {
