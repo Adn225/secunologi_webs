@@ -1,6 +1,5 @@
 import { BlogPost, Product, Promotion } from '../types';
 import fallbackProducts from '../data/fallbackProducts.json';
-import { saveContactToSupabase } from './supabase';
 
 const DEFAULT_API_BASE = '/api';
 const REMOTE_PRODUCTS_API_BASE = 'https://samr.pythonanywhere.com/api';
@@ -523,13 +522,6 @@ export interface ContactResponse {
 }
 
 export const submitContact = async (payload: ContactPayload): Promise<ContactResponse> => {
-  try {
-    await saveContactToSupabase(payload);
-    return { message: 'Message envoyé avec succès via Supabase.' };
-  } catch (supabaseError) {
-    console.warn('Supabase contact insert failed, falling back to API route:', supabaseError);
-  }
-
   const result = await request<{ message: string }>('/contact', {
     init: {
       method: 'POST',
