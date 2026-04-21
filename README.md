@@ -34,41 +34,6 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
    Lors d'un déploiement, vous pouvez définir `VITE_API_BASE_URL` pour pointer vers l'origine de votre API (exemple : `https://mon-backend.example.com`).
    Le front tentera d'abord cet URL tel quel, puis réessaiera automatiquement avec le suffixe `/api` si nécessaire avant de revenir sur la valeur relative `/api`.
 
-
-## Connexion Supabase
-
-Le front peut désormais enregistrer les demandes du formulaire de contact directement dans Supabase.
-
-1. Copiez les variables d'environnement :
-
-   ```bash
-   cp .env.example .env
-   ```
-
-2. Vérifiez les variables suivantes dans `.env` :
-
-   - `VITE_SUPABASE_URL=https://hlaxbvzzrvvqsjhqgdnz.supabase.co`
-   - `VITE_SUPABASE_ANON_KEY=sb_publishable_nAkKEcUehmasWwkqcc9W5Q_4-IXmogP`
-   - `VITE_SUPABASE_CONTACT_TABLE=contact_submissions` (optionnel)
-
-3. Exécutez le script SQL fourni pour créer la table et la policy d'insertion anonyme :
-
-   - Fichier : `supabase/contact_submissions.sql`
-
-   Vous pouvez le coller dans l'éditeur SQL de Supabase puis exécuter.
-
-4. Si vous utilisez un autre nom de table, mettez à jour `VITE_SUPABASE_CONTACT_TABLE`.
-
-Le script crée la table `contact_submissions` avec les colonnes :
-
-   - `name` (text)
-   - `email` (text)
-   - `phone` (text, nullable)
-   - `subject` (text)
-   - `message` (text)
-
-Si l'insertion Supabase échoue (table absente/RLS), l'application retombe automatiquement sur l'endpoint API local `/api/contact`.
-
 ## Tests
 
 ```bash

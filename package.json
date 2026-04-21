@@ -11,7 +11,10 @@
     "server": "node server/index.js"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@supabase/supabase-js": "^2.103.3",
+=======
+>>>>>>> 5bb15f26a7c299a9657baec3aa9a8413f6c4b451
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
