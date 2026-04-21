@@ -7,6 +7,7 @@ import { DataProvider } from './contexts/DataContext';
 import { ExperienceProvider, useExperience } from './contexts/ExperienceContext';
 import { Product } from './types';
 import ProductDetailsModal from './components/ProductDetailsModal';
+import { supabase } from './utils/supabase';
 
 const Home = lazy(() => import('./pages/Home'));
 const Catalog = lazy(() => import('./pages/Catalog'));
