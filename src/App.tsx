@@ -94,6 +94,11 @@ const AppShell: React.FC = () => {
         return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }
   };
+// N'oubliez pas d'importer votre client Supabase tout en haut du fichier
+// import { supabase } from './chemin/vers/votre/fichier/supabase';
+
+
+    // Remplacez 'utilisateurs' par le nom d'une table qui existe VRAIMENT dans votre base
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
