@@ -1,5 +1,7 @@
+import ProtectedRoute from './components/ProtectedRoute';
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './components/Header';
+import { AuthProvider } from './contexts/AuthContext';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
 import { CartProvider } from './contexts/CartContext';
@@ -87,7 +89,11 @@ const AppShell: React.FC = () => {
       case 'contact':
         return <Contact />;
       case 'cart':
-        return <Cart onNavigate={handleNavigate} />;
+        return (
+          <ProtectedRoute onNavigate="{handleNavigate}">
+            <Cart onNavigate={handleNavigate} />
+          </ProtectedRoute>
+        );
       case 'account':
         return <Account />;
       default:
@@ -117,13 +123,15 @@ const AppShell: React.FC = () => {
 
 function App() {
   return (
-    <DataProvider>
-      <ExperienceProvider>
-        <CartProvider>
-          <AppShell />
-        </CartProvider>
-      </ExperienceProvider>
-    </DataProvider>
+    <AuthProvider>
+      <DataProvider>
+        <ExperienceProvider>
+          <CartProvider>
+            <AppShell />
+          </CartProvider>
+        </ExperienceProvider>
+      </DataProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,18 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // 1. On a ajouté useEffect ici !
+import { useAuth } from '../contexts/AuthContext';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
 import { submitContact } from '../services/api';
 
 const Contact: React.FC = () => {
+  // 2. On récupère l'utilisateur en TOUT premier
+  const { user } = useAuth();
+
+  // 3. On initialise le formulaire avec l'email de l'utilisateur s'il existe
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    email: user?.email || '', 
     phone: '',
     subject: '',
     message: ''
   });
+
+  // 4. Il FAUT décommenter cette ligne, sinon setStatus() plus bas va faire planter la page !
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [statusMessage, setStatusMessage] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // 5. Si l'utilisateur met une demi-seconde à charger, on met à jour le formulaire
+  useEffect(() => {
+    if (user?.email) {
+      setFormData(prev => ({ ...prev, email: user.email }));
+    }
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
