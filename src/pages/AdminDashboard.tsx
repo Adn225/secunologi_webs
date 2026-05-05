@@ -113,11 +113,20 @@ const AdminDashboard: React.FC = () => {
                         <select
                           value={order.status || 'En attente de paiement'}
                           onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                          className="text-xs font-semibold rounded-full px-3 py-1 border border-gray-300 cursor-pointer outline-none focus:ring-2 focus:ring-brand-green-500"
+                          className={`text-xs font-semibold rounded-full px-3 py-1 border-0 cursor-pointer appearance-none outline-none ring-2 ring-transparent focus:ring-gray-300 transition-colors ${
+                            order.status?.toLowerCase().includes('attente') || order.status?.toLowerCase().includes('devis') || order.status?.toLowerCase().includes('préparation')
+                              ? 'bg-orange-100 text-orange-800'
+                              : order.status?.toLowerCase().includes('terminé') || order.status?.toLowerCase().includes('livré') || order.status?.toLowerCase().includes('payé')
+                              ? 'bg-green-100 text-green-800'
+                              : order.status?.toLowerCase().includes('annulé')
+                              ? 'bg-red-100 text-red-800'
+                              : 'bg-blue-100 text-blue-800'
+                          }`}
                         >
                           <option value="En attente de paiement">En attente de paiement</option>
                           <option value="Devis demandé">Devis demandé</option>
                           <option value="Payé">Payé</option>
+                          <option value="En préparation">En préparation</option>
                           <option value="En cours de livraison">En cours de livraison</option>
                           <option value="Terminé">Terminé</option>
                           <option value="Annulé">Annulé</option>
