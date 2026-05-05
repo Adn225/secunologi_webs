@@ -9,6 +9,7 @@ import { DataProvider } from './contexts/DataContext';
 import { ExperienceProvider, useExperience } from './contexts/ExperienceContext';
 import { Product } from './types';
 import ProductDetailsModal from './components/ProductDetailsModal';
+import AdminDashboard from './pages/AdminDashboard';
 import { supabase } from './utils/supabase';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -29,6 +30,7 @@ const VALID_PAGES = [
   'contact',
   'cart',
   'account',
+  'admin',
 ] as const;
 
 type Page = (typeof VALID_PAGES)[number];
@@ -90,12 +92,18 @@ const AppShell: React.FC = () => {
         return <Contact />;
       case 'cart':
         return (
-          <ProtectedRoute onNavigate="{handleNavigate}">
+          <ProtectedRoute onNavigate={handleNavigate}>
             <Cart onNavigate={handleNavigate} />
           </ProtectedRoute>
         );
       case 'account':
-        return <Account />;
+        return <Account onNavigate={handleNavigate} />; // <--- MODIFIEZ CETTE LIGNE
+      case 'admin':
+        return (
+          <ProtectedRoute onNavigate={handleNavigate} >
+            <AdminDashboard/>
+          </ProtectedRoute>
+           );
       default:
         return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }

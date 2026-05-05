@@ -2,9 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, User, ShieldCheck, Package } from 'lucide-react'; // AJOUT DE PACKAGE POUR L'ICÔNE DES COMMANDES
+import { LogOut, User, ShieldCheck, Package, ShieldAlert } from 'lucide-react'; // AJOUT DE PACKAGE POUR L'ICÔNE DES COMMANDES
 
-const Account = () => {
+// On indique au composant qu'il a le droit d'utiliser "onNavigate"
+interface AccountProps {
+  onNavigate: (page: string) => void;
+}
+
+const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   const { user, signOut } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -113,7 +118,16 @@ const Account = () => {
               )}
             </div>}
           </div>
-
+         {/* BOUTON ADMINISTRATEUR */}
+            {user?.email === 'anderson@label-ci.com' && (
+              <button
+                onClick={() => onNavigate('admin')}
+                className="w-full mb-4 flex items-center justify-center gap-2 bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+              >
+                <ShieldAlert className="w-5 h-5 flex-shrink-0" />
+                <span>Administration Secunologie</span>
+              </button>
+            )}
           <button
             onClick={signOut}
             className="flex items-center gap-2 px-6 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors"
