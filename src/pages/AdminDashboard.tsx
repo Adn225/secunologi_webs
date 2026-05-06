@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabase';
 import { 
   ShieldAlert, Package, Tag, Edit2, Save, X, Plus, Image as ImageIcon,
-  LayoutDashboard, TrendingUp, ShoppingCart, AlertCircle
+  LayoutDashboard, TrendingUp, ShoppingCart, AlertCircle, Trophy
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
@@ -22,9 +22,8 @@ const AdminDashboard: React.FC = () => {
   const initialFormState = { id: null, name: '', category: '', newCategory: '', price: 0, promo_price: 0, description: '', image: '', instock: true, brand: 'Hikvision' };
   const [formData, setFormData] = useState<any>(initialFormState);
 
-  // --- LE NOUVEAU VERT SAUGE/ÉMERAUDE ---
+  // LA COULEUR SECUNOLOGIE
   const BRAND_COLOR = '#5BA486';
-  const BRAND_HOVER = '#4A8C70';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,15 +42,16 @@ const AdminDashboard: React.FC = () => {
   }, [user]);
 
   // ==========================================
-  // LOGIQUE DES STATISTIQUES ET GRAPHIQUES
+  // CALCULS ET STATISTIQUES AVANCÉES
   // ==========================================
   
-  const totalRevenue = allOrders.filter(order => order.status === 'Payé' || order.status === 'Terminé').reduce((sum, order) => sum + (order.total || 0), 0);
+  const validOrders = allOrders.filter(order => order.status === 'Payé' || order.status === 'Terminé');
+  const totalRevenue = validOrders.reduce((sum, order) => sum + (order.total || 0), 0);
   const totalOrdersCount = allOrders.length;
   const outOfStockCount = products.filter(p => !p.instock).length;
   const totalProductsCount = products.length;
 
-  const processSalesData = () => {
+  const salesData = (() => {
     const salesMap: any = {};
     [...allOrders].reverse().forEach(order => {
       if (order.status === 'Payé' || order.status === 'Terminé') {
@@ -60,22 +60,43 @@ const AdminDashboard: React.FC = () => {
       }
     });
     return Object.keys(salesMap).map(date => ({ name: date, ventes: salesMap[date] }));
-  };
+  })();
 
-  const processCategoryData = () => {
+  const categoryData = (() => {
     const catMap: any = {};
     products.forEach(p => {
       const cat = p.category || 'Autre';
       catMap[cat] = (catMap[cat] || 0) + 1;
     });
-    // Tri pour que les plus grosses catégories soient en premier
     return Object.keys(catMap).map(cat => ({ name: cat, value: catMap[cat] })).sort((a, b) => b.value - a.value);
-  };
+  })();
 
-  const salesData = processSalesData();
-  const categoryData = processCategoryData();
+  // NOUVEAU : Calcul des produits les plus vendus (TOP 5)
+  const topSellingProducts = (() => {
+    const productStats: Record<string, { name: string, image: string, totalSold: number, revenue: number }> = {};
+    
+    validOrders.forEach(order => {
+      order.items?.forEach((item: any) => {
+        const prodId = item.product?.id || 'unknown';
+        if (!productStats[prodId]) {
+          productStats[prodId] = {
+            name: item.product?.name || 'Produit inconnu',
+            image: item.product?.image || '',
+            totalSold: 0,
+            revenue: 0
+          };
+        }
+        const qty = item.quantity || 1;
+        productStats[prodId].totalSold += qty;
+        productStats[prodId].revenue += (qty * (item.product?.promo_price || item.product?.price || 0));
+      });
+    });
+
+    return Object.values(productStats)
+      .sort((a, b) => b.totalSold - a.totalSold) // Trie par quantité vendue (décroissant)
+      .slice(0, 5); // Garde uniquement les 5 premiers
+  })();
   
-  // Nouveau dégradé basé sur la couleur de la barre de recherche
   const COLORS = ['#5BA486', '#6CB597', '#7DC7A9', '#8ED9BB', '#A0EBCD', '#468D72', '#36725B', '#275845'];
 
   // --- ACTIONS ---
@@ -153,7 +174,7 @@ const AdminDashboard: React.FC = () => {
         </header>
 
         <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50/50">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
 
             {/* ============================================== */}
             {/* VUE TABLEAU DE BORD                            */}
@@ -207,50 +228,90 @@ const AdminDashboard: React.FC = () => {
                         <div className="h-full flex items-center justify-center text-gray-400">Aucun produit</div>
                       )}
                     </div>
-                    {/* Légende simplifiée pour ne pas surcharger si beaucoup de catégories */}
                     <div className="mt-4 flex flex-wrap justify-center gap-x-3 gap-y-2 max-h-20 overflow-y-auto">
                       {categoryData.map((entry, index) => (
-                        <div key={index} className="flex items-center gap-1.5 text-xs text-gray-600 font-medium">
-                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                          <span className="capitalize">{entry.name}</span>
-                        </div>
+                        <div key={index} className="flex items-center gap-1.5 text-xs text-gray-600 font-medium"><span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span><span className="capitalize">{entry.name}</span></div>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* APERÇU DES COMMANDES RÉCENTES */}
-                <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
-                  <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                    <h3 className="text-lg font-bold text-gray-800">Commandes récentes</h3>
-                    <button onClick={() => setActiveTab('orders')} className="text-sm font-semibold hover:underline" style={{ color: BRAND_COLOR }}>Voir toutes</button>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-gray-50 border-b border-gray-100 text-xs uppercase tracking-wider text-gray-500">
-                          <th className="p-4 font-medium">ID Commande</th>
-                          <th className="p-4 font-medium">Date</th>
-                          <th className="p-4 font-medium">Statut</th>
-                          <th className="p-4 font-medium text-right">Total</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {allOrders.slice(0, 5).map((order) => (
-                          <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
-                            <td className="p-4 font-mono text-sm text-gray-600">#{order.id.split('-')[0].toUpperCase()}</td>
-                            <td className="p-4 text-sm text-gray-900">{order.date ? new Date(order.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '-'}</td>
-                            <td className="p-4">
-                              <span className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-full ${order.status?.toLowerCase().includes('attente') || order.status?.toLowerCase().includes('devis') ? 'bg-orange-50 text-orange-700' : order.status?.toLowerCase().includes('terminé') || order.status?.toLowerCase().includes('payé') ? 'bg-green-50 text-green-700' : order.status?.toLowerCase().includes('annulé') ? 'bg-red-50 text-red-700' : 'bg-[#5BA486]/10 text-[#5BA486]'}`}>
-                                {order.status || 'En attente'}
-                              </span>
-                            </td>
-                            <td className="p-4 text-right font-bold text-gray-900">{(order.total || 0).toLocaleString('fr-FR')} FCFA</td>
+                {/* DOUBLE GRILLE : COMMANDES RÉCENTES & PRODUITS LES PLUS VENDUS */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  
+                  {/* Commandes Récentes */}
+                  <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="text-lg font-bold text-gray-800">Commandes récentes</h3>
+                      <button onClick={() => setActiveTab('orders')} className="text-sm font-semibold hover:underline" style={{ color: BRAND_COLOR }}>Voir toutes</button>
+                    </div>
+                    <div className="overflow-x-auto flex-1">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-gray-50 border-b border-gray-100 text-xs uppercase tracking-wider text-gray-500">
+                            <th className="p-4 font-medium">Commande</th>
+                            <th className="p-4 font-medium">Statut</th>
+                            <th className="p-4 font-medium text-right">Total</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {allOrders.slice(0, 5).map((order) => (
+                            <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
+                              <td className="p-4">
+                                <div className="font-mono text-sm text-gray-900 font-medium">#{order.id.split('-')[0].toUpperCase()}</div>
+                                <div className="text-xs text-gray-500 mt-0.5">{order.date ? new Date(order.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : '-'}</div>
+                              </td>
+                              <td className="p-4">
+                                <span className={`inline-flex px-2 py-1 text-xs font-bold rounded-md ${order.status?.toLowerCase().includes('attente') || order.status?.toLowerCase().includes('devis') ? 'bg-orange-50 text-orange-700' : order.status?.toLowerCase().includes('terminé') || order.status?.toLowerCase().includes('payé') ? 'bg-green-50 text-green-700' : order.status?.toLowerCase().includes('annulé') ? 'bg-red-50 text-red-700' : 'bg-[#5BA486]/10 text-[#5BA486]'}`}>
+                                  {order.status || 'En attente'}
+                                </span>
+                              </td>
+                              <td className="p-4 text-right font-bold text-gray-900">{(order.total || 0).toLocaleString('fr-FR')} FCFA</td>
+                            </tr>
+                          ))}
+                          {allOrders.length === 0 && <tr><td colSpan={3} className="p-4 text-center text-gray-500 text-sm">Aucune commande</td></tr>}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
+
+                  {/* Produits les plus vendus */}
+                  <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                      <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <Trophy size={20} className="text-yellow-500" /> Les plus vendus
+                      </h3>
+                      <button onClick={() => setActiveTab('products')} className="text-sm font-semibold hover:underline" style={{ color: BRAND_COLOR }}>Catalogue</button>
+                    </div>
+                    <div className="p-2 flex-1">
+                      {topSellingProducts.length > 0 ? (
+                        <div className="divide-y divide-gray-100">
+                          {topSellingProducts.map((product, idx) => (
+                            <div key={idx} className="p-4 flex items-center justify-between hover:bg-gray-50/50 transition-colors rounded-lg">
+                              <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 rounded-lg border border-gray-100 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                                  {product.image ? <img src={product.image} alt={product.name} className="h-full w-full object-cover" /> : <ImageIcon size={20} className="text-gray-300" />}
+                                </div>
+                                <div>
+                                  <h4 className="font-bold text-gray-900 text-sm line-clamp-1" title={product.name}>{product.name}</h4>
+                                  <p className="text-xs text-gray-500 mt-0.5">{product.totalSold} vente{product.totalSold > 1 ? 's' : ''}</p>
+                                </div>
+                              </div>
+                              <div className="text-right font-bold text-gray-900 text-sm whitespace-nowrap pl-4">
+                                {product.revenue.toLocaleString('fr-FR')} F
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400 p-8">
+                          <Package size={32} className="mb-2 opacity-50" />
+                          <p className="text-sm text-center">Pas encore assez de ventes terminées pour établir un classement.</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
