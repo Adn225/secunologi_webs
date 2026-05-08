@@ -1,158 +1,124 @@
-import React, { useMemo } from 'react';
-import { Calendar, ArrowRight } from 'lucide-react';
-import { useData } from '../contexts/DataContext';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../utils/supabase';
+import { Calendar, ArrowRight, BookOpen } from 'lucide-react';
 
-const Blog: React.FC = () => {
-  const { blogPosts, blogPostsLoading, blogPostsError } = useData();
-  const featuredPost = blogPosts[0] ?? null;
-  const categories = useMemo(() => {
-    const unique = new Set(blogPosts.map(post => post.category));
-    return unique.size > 0 ? Array.from(unique) : ['Guides', 'Actualités', 'Conseils', 'Nouveautés'];
-  }, [blogPosts]);
+// On ajoute les Props
+interface BlogProps {
+  onNavigate: (page: string, id?: string) => void;
+}
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // La couleur de votre charte graphique
+  const BRAND_COLOR = '#5BA486';
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      // On ne récupère que les articles publiés (published = true)
+      // et on les trie du plus récent au plus ancien
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+      if (data) {
+        setPosts(data);
+      }
+      setLoading(false);
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-32 pb-12 flex justify-center items-center">
+        <div className="text-lg font-semibold animate-pulse" style={{ color: BRAND_COLOR }}>
+          Chargement des articles...
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-8">
+    <div className="min-h-screen bg-gray-50 pt-28 pb-20">
+      
+      {/* EN-TÊTE DE LA PAGE */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+          Actualités & Conseils <span style={{ color: BRAND_COLOR }}>Secunologie</span>
+        </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          Découvrez nos derniers articles, astuces et guides pour optimiser votre sécurité électronique et rester informé des nouvelles technologies.
+        </p>
+      </div>
+
+      {/* GRILLE DES ARTICLES */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Actualités, conseils et guides pratiques pour optimiser votre sécurité
-          </p>
-        </div>
-
-        {/* Featured Post */}
-        <div className="mb-12">
-          {blogPostsError ? (
-            <div className="text-center text-red-600 bg-white rounded-lg shadow-lg p-12">
-              Impossible de charger les articles pour le moment.
-            </div>
-          ) : blogPostsLoading ? (
-            <div className="text-center text-gray-500 bg-white rounded-lg shadow-lg p-12">
-              Chargement des articles en vedette...
-            </div>
-          ) : !featuredPost ? (
-            <div className="text-center text-gray-500 bg-white rounded-lg shadow-lg p-12">
-              Aucun article n'est disponible pour le moment.
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2">
-                <img
-                  src={featuredPost.image}
-                  alt={featuredPost.title}
-                  className="w-full h-64 lg:h-full object-cover"
-                />
-                <div className="p-8 flex flex-col justify-center">
-                  <div className="flex items-center mb-4 text-sm text-gray-600">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {formatDate(featuredPost.date)}
-                    <span className="mx-2">•</span>
-                    <span className="bg-brand-green-100 text-brand-green-600 px-2 py-1 rounded-full text-xs">
-                      {featuredPost.category}
-                    </span>
-                  </div>
-                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-                    {featuredPost.title}
-                  </h2>
-                  <p className="text-gray-600 mb-6 text-lg">
-                    {featuredPost.excerpt}
-                  </p>
-                  <button className="bg-brand-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-green-700 transition-colors flex items-center w-fit">
-                    Lire la suite <ArrowRight className="ml-2 h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Blog Posts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {blogPostsLoading && !blogPostsError ? (
-            <div className="col-span-full text-center text-gray-500 py-8">
-              Chargement des articles...
-            </div>
-          ) : blogPostsError ? (
-            <div className="col-span-full text-center text-red-600 py-8">
-              Les articles ne peuvent pas être affichés pour le moment.
-            </div>
-          ) : blogPosts.length <= 1 ? (
-            <div className="col-span-full text-center text-gray-500 py-8">
-              Plus d'articles arrivent très bientôt.
-            </div>
-          ) : (
-            blogPosts.slice(1).map((post) => (
-              <article key={post.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <div className="flex items-center mb-3 text-sm text-gray-600">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    {formatDate(post.date)}
-                    <span className="mx-2">•</span>
-                    <span className="bg-brand-green-100 text-brand-green-600 px-2 py-1 rounded-full text-xs">
+        {posts.length === 0 ? (
+          <div className="text-center bg-white p-16 rounded-2xl shadow-sm border border-gray-100">
+            <BookOpen size={64} className="mx-auto text-gray-200 mb-6" />
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Aucun article pour le moment</h3>
+            <p className="text-gray-500">Revenez très bientôt pour découvrir nos premières publications.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post) => (
+              <article key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col group">
+                
+                {/* Image de couverture */}
+                <div className="h-56 bg-gray-100 relative overflow-hidden">
+                  {post.image ? (
+                    <img 
+                      src={post.image} 
+                      alt={post.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-300">
+                      <BookOpen size={40} />
+                    </div>
+                  )}
+                  {/* Badge Catégorie */}
+                  {post.category && (
+                    <span className="absolute top-4 left-4 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md" style={{ backgroundColor: BRAND_COLOR }}>
                       {post.category}
                     </span>
+                  )}
+                </div>
+
+                {/* Contenu de la carte */}
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-4 font-medium">
+                    <Calendar size={16} />
+                    <time>
+                      {new Date(post.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </time>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                  
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 leading-tight">
                     {post.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">
+                  </h2>
+                  
+                  <p className="text-gray-600 text-sm mb-6 flex-1 line-clamp-3">
                     {post.excerpt}
                   </p>
-                  <button className="text-brand-green-600 font-semibold hover:text-brand-green-700 transition-colors flex items-center">
-                    Lire la suite <ArrowRight className="ml-2 h-4 w-4" />
-                  </button>
+                  
+                  {/* Bouton Lire la suite */}
+                  <div className="pt-4 border-t border-gray-100 mt-auto">
+                    <button onClick={() => onNavigate('blog-article', post.id)} className="flex items-center gap-2 font-bold transition-colors group/btn inline-flex text-left" style={{ color: BRAND_COLOR }}>
+                        Lire l'article 
+                      <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
                 </div>
               </article>
-            ))
-          )}
-        </div>
-
-        {/* Categories */}
-        <section className="bg-white rounded-lg shadow-lg p-8 mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Catégories</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((category, index) => (
-              <button
-                key={index}
-                className="bg-gray-100 hover:bg-brand-green-50 text-gray-700 hover:text-brand-green-600 px-4 py-3 rounded-lg font-medium transition-colors"
-              >
-                {category}
-              </button>
             ))}
           </div>
-        </section>
-
-        {/* Newsletter Subscription */}
-        <section className="bg-brand-green-600 text-white rounded-lg p-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Restez informé</h2>
-          <p className="text-brand-green-100 mb-6 text-lg">
-            Abonnez-vous à notre newsletter pour recevoir nos derniers articles et conseils
-          </p>
-          <div className="max-w-md mx-auto flex gap-4">
-            <input
-              type="email"
-              placeholder="Votre adresse email"
-              className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-orange-400 focus:outline-none"
-            />
-            <button className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors">
-              S'abonner
-            </button>
-          </div>
-        </section>
+        )}
       </div>
     </div>
   );
