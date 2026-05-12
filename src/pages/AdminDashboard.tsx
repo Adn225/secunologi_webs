@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
+import JoditEditor from 'jodit-react';
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ const AdminDashboard: React.FC = () => {
   const [blogData, setBlogData] = useState<any>(initialBlogState);
 
   const BRAND_COLOR = '#5BA486';
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,6 +72,7 @@ const AdminDashboard: React.FC = () => {
         salesMap[dateStr] = (salesMap[dateStr] || 0) + (order.total || 0);
       }
     });
+
     return Object.keys(salesMap).map(date => ({ name: date, ventes: salesMap[date] }));
   })();
 
@@ -351,7 +354,27 @@ const handleSaveBlog = async (e: React.FormEvent) => {
 
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1.5">Contenu complet de l'article *</label>
-                        <textarea required rows={10} value={blogData.content} onChange={e => setBlogData({...blogData, content: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} placeholder="Écrivez votre article ici..." />
+                        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden text-gray-900 shadow-sm">
+                          <JoditEditor
+                              value={blogData.content}
+                              config={{
+                                  readonly: false,
+                                  height: 600,
+                                  language: 'fr',
+                                  placeholder: 'Rédigez votre article avec style, comme sur Blogger...',
+                                  uploader: { insertImageAsBase64URI: true }, // Permet d'insérer des images facilement
+                                  buttons: [
+                                      'source', '|', // Voir le code HTML
+                                      'bold', 'italic', 'underline', 'strikethrough', '|',
+                                      'font', 'fontsize', 'brush', 'paragraph', '|', // Polices et couleurs
+                                      'image', 'video', 'table', 'link', '|', // Médias et Tableaux
+                                      'left', 'center', 'right', 'justify', '|', // Alignement
+                                      'undo', 'redo', 'hr', 'eraser', 'fullsize' // Plein écran et divers
+                                  ]
+                              }}
+                              onBlur={newContent => setBlogData({...blogData, content: newContent})}
+                          />
+                        </div>
                       </div>
 
                       <div className="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200">

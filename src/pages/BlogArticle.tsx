@@ -105,11 +105,11 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ articleId, onNavigate }) => {
           </p>
         </header>
 
-        {/* Corps du texte */}
-        {/* 'whitespace-pre-wrap' permet de respecter les sauts de ligne que vous faites dans le tableau de bord */}
-        <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed whitespace-pre-wrap">
-          {post.content}
-        </div>
+       {/* Corps du texte avec rendu HTML */}
+        <div 
+            className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: post.content }} 
+        />
 
         {/* Pied de page de l'article */}
         <footer className="mt-16 pt-8 border-t border-gray-200">

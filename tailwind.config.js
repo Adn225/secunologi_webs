@@ -22,5 +22,7 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'), // <-- LA LIGNE MAGIQUE À AJOUTER
+  ],
 };
