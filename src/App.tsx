@@ -21,10 +21,11 @@ const BlogArticle = lazy(() => import('./pages/BlogArticle')); // <-- NOUVEAU
 const Contact = lazy(() => import('./pages/Contact'));
 const Cart = lazy(() => import('./pages/Cart'));
 const Account = lazy(() => import('./pages/Account'));
+const Signup = lazy(() => import('./pages/Signup'));
 
 // On ajoute 'blog-article' aux pages valides
 const VALID_PAGES = [
-  'home', 'catalog', 'services', 'about', 'blog', 'blog-article', 'contact', 'cart', 'account', 'admin',
+  'home', 'catalog', 'services', 'about', 'blog', 'blog-article', 'contact', 'cart', 'account', 'admin','signup',
 ] as const;
 
 type Page = (typeof VALID_PAGES)[number];
@@ -107,6 +108,7 @@ const AppShell: React.FC = () => {
       case 'cart': return <ProtectedRoute onNavigate={handleNavigate}><Cart onNavigate={handleNavigate} /></ProtectedRoute>;
       case 'account': return <Account onNavigate={handleNavigate} />;
       case 'admin': return <ProtectedRoute onNavigate={handleNavigate}><AdminDashboard/></ProtectedRoute>;
+      case 'signup': return <Signup onNavigate={handleNavigate} />;
       default: return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }
   };
