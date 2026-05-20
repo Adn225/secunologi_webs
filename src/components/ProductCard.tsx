@@ -23,7 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
 
   const handleShowQuantitySelector = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    if (product.inStock) {
+    if (product.instock) {
       setSelectedQuantity(1);
       setIsQuantitySelectorOpen(true);
       return;
@@ -151,13 +151,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
             <button
               onClick={handleShowQuantitySelector}
               className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
-                product.inStock
+                product.instock
                   ? 'bg-brand-green-600 text-white hover:bg-brand-green-700'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
               }`}
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              {product.inStock ? 'Ajouter' : 'Vérifiez la disponibilité'}
+              {product.instock ? 'Ajouter' : 'Vérifiez la disponibilité'}
             </button>
           )}
         </div>

@@ -7,7 +7,7 @@ export interface Product {
   image: string;
   description: string;
   features: string[];
-  inStock: boolean;
+  instock: boolean;
 }
 
 export interface CartItem {
