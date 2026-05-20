@@ -23,6 +23,8 @@ const AdminDashboard: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const initialFormState = { id: null, name: '', category: '', newCategory: '', price: 0, promo_price: 0, description: '', image: '', instock: true, brand: 'Hikvision' };
   const [formData, setFormData] = useState<any>(initialFormState);
+  const [editingRowId, setEditingRowId] = useState<string | null>(null);
+  const [rowDraft, setRowDraft] = useState<any>({});
 
   // NOUVEAU : États pour le Blog
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
@@ -115,6 +117,39 @@ const AdminDashboard: React.FC = () => {
   // --- ACTIONS PRODUITS ---
   const openAddForm = () => { setFormData(initialFormState); setIsEditing(false); setShowForm(true); };
   const openEditForm = (product: any) => { setFormData({ ...product, newCategory: '', promo_price: product.promo_price || 0 }); setIsEditing(true); setShowForm(true); };
+
+  const startRowEdit = (product: any) => {
+    setEditingRowId(product.id);
+    setRowDraft({
+      name: product.name || '',
+      image: product.image || '',
+      price: Number(product.price) || 0,
+      promo_price: Number(product.promo_price) || 0,
+      instock: Boolean(product.instock),
+      category: product.category || '',
+      brand: product.brand || 'Hikvision',
+    });
+  };
+
+  const cancelRowEdit = () => {
+    setEditingRowId(null);
+    setRowDraft({});
+  };
+
+  const saveRowEdit = async (productId: string) => {
+    try {
+      const payload = {
+        ...rowDraft,
+        promo_price: rowDraft.promo_price > 0 ? rowDraft.promo_price : null,
+      };
+      const { error } = await supabase.from('products').update(payload).eq('id', productId);
+      if (error) throw error;
+      setProducts(current => current.map(p => p.id === productId ? { ...p, ...payload } : p));
+      cancelRowEdit();
+    } catch (error: any) {
+      alert(`Erreur: ${error.message}`);
+    }
+  };
 
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -308,11 +343,42 @@ const handleSaveBlog = async (e: React.FormEvent) => {
                 )}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                   <table className="w-full text-left border-collapse">
-                    <thead><tr className="bg-gray-50 border-b border-gray-100 text-sm uppercase tracking-wider text-gray-500"><th className="p-4 font-medium">Image & Nom</th><th className="p-4 font-medium text-center">Stock</th><th className="p-4 font-medium text-right">Prix</th><th className="p-4 font-medium text-center">Action</th></tr></thead>
+                    <thead><tr className="bg-gray-50 border-b border-gray-100 text-sm uppercase tracking-wider text-gray-500"><th className="p-4 font-medium">Image</th><th className="p-4 font-medium">Nom</th><th className="p-4 font-medium text-right">Prix</th><th className="p-4 font-medium text-right">Prix promo</th><th className="p-4 font-medium text-center">Stock</th><th className="p-4 font-medium text-center">Action</th></tr></thead>
                     <tbody className="divide-y divide-gray-100">
-                      {products.map((product) => (
-                        <tr key={product.id} className="hover:bg-gray-50/50"><td className="p-4"><div className="flex items-center gap-4"><div className="h-12 w-12 flex-shrink-0 bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">{product.image ? <img src={product.image} alt={product.name} className="h-full w-full object-cover" /> : <ImageIcon className="h-6 w-6 m-3 text-gray-300" />}</div><div className="font-bold text-gray-900">{product.name}</div></div></td><td className="p-4 text-center"><span className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-full ${product.instock ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>{product.instock ? 'En stock' : 'Rupture'}</span></td><td className="p-4 text-right"><span className="font-bold text-gray-900 text-base">{product.price.toLocaleString('fr-FR')} FCFA</span></td><td className="p-4 text-center"><button onClick={() => openEditForm(product)} className="p-2 text-gray-400 rounded-lg hover:bg-gray-100"><Edit2 size={18} className="mx-auto" /></button></td></tr>
-                      ))}
+                      {products.map((product) => {
+                        const isRowEditing = editingRowId === product.id;
+                        return (
+                        <tr key={product.id} className="hover:bg-gray-50/50">
+                          <td className="p-4">
+                            <div className="h-12 w-12 flex-shrink-0 bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+                              {product.image ? <img src={product.image} alt={product.name} className="h-full w-full object-cover" /> : <ImageIcon className="h-6 w-6 m-3 text-gray-300" />}
+                            </div>
+                          </td>
+                          <td className="p-4">
+                            {isRowEditing ? <input value={rowDraft.name} onChange={e => setRowDraft({...rowDraft, name: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-lg" /> : <div className="font-bold text-gray-900">{product.name}</div>}
+                          </td>
+                          <td className="p-4 text-right">
+                            {isRowEditing ? <input type="number" min="0" value={rowDraft.price} onChange={e => setRowDraft({...rowDraft, price: Number(e.target.value)})} className="w-32 ml-auto px-3 py-2 border border-gray-200 rounded-lg" /> : <span className="font-bold text-gray-900 text-base">{product.price.toLocaleString('fr-FR')} FCFA</span>}
+                          </td>
+                          <td className="p-4 text-right">
+                            {isRowEditing ? <input type="number" min="0" value={rowDraft.promo_price || 0} onChange={e => setRowDraft({...rowDraft, promo_price: Number(e.target.value)})} className="w-32 ml-auto px-3 py-2 border border-gray-200 rounded-lg" /> : <span className="font-semibold text-orange-600">{product.promo_price ? `${product.promo_price.toLocaleString('fr-FR')} FCFA` : '-'}</span>}
+                          </td>
+                          <td className="p-4 text-center">
+                            {isRowEditing ? <input type="checkbox" checked={rowDraft.instock} onChange={e => setRowDraft({...rowDraft, instock: e.target.checked})} className="w-5 h-5" style={{ accentColor: BRAND_COLOR }} /> : <span className={`inline-flex px-2.5 py-1 text-xs font-bold rounded-full ${product.instock ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>{product.instock ? 'En stock' : 'Rupture'}</span>}
+                          </td>
+                          <td className="p-4 text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              {isRowEditing ? (<>
+                                <button onClick={() => saveRowEdit(product.id)} className="p-2 text-green-600 rounded-lg hover:bg-green-50"><Save size={18} /></button>
+                                <button onClick={cancelRowEdit} className="p-2 text-gray-400 rounded-lg hover:bg-gray-100"><X size={18} /></button>
+                              </>) : (<>
+                                <button onClick={() => startRowEdit(product)} className="p-2 text-gray-400 rounded-lg hover:bg-gray-100"><Edit2 size={18} className="mx-auto" /></button>
+                                <button onClick={() => openEditForm(product)} className="text-xs px-2 py-1 rounded border border-gray-200 hover:bg-gray-50">Formulaire</button>
+                              </>)}
+                            </div>
+                          </td>
+                        </tr>
+                      )})}
                     </tbody>
                   </table>
                 </div>
