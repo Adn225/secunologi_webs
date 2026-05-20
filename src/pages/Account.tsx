@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, User, ShieldCheck, Package, ArrowRight, Mail, Lock } from 'lucide-react';
+import { LogOut, User, ShieldCheck, Package, ArrowRight, Mail, Lock, CheckCircle2, Clock3, AlertCircle } from 'lucide-react';
 
 interface AccountProps {
   onNavigate: (page: string) => void;
@@ -13,13 +13,29 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
-  const [orders, setOrders] = useState<any[]>([]);
+  type Order = {
+  id: string;
+  date: string;
+  total: number;
+  status?: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  items?: { name: string; quantity: number; price: number }[];
+};
+
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [profileName, setProfileName] = useState(user?.user_metadata?.full_name || '');
+  const [profilePhone, setProfilePhone] = useState(user?.user_metadata?.phone || '');
+  const [profileSaving, setProfileSaving] = useState(false);
 
   const ADMIN_EMAIL = 'anderson@label-ci.com';
 
   useEffect(() => {
     document.title = 'Mon Espace Client | SecunologieCI';
-    if (user) fetchOrders();
+    if (user) {
+      setProfileName(user.user_metadata?.full_name || '');
+      setProfilePhone(user.user_metadata?.phone || '');
+      fetchOrders();
+    }
   }, [user]);
 
   const fetchOrders = async () => {
@@ -38,11 +54,72 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
     });
   };
 
+
+
+  const authErrorMessage = (errorMessage: string) => {
+    const message = errorMessage.toLowerCase();
+    if (message.includes('invalid login credentials')) return "Email ou mot de passe incorrect.";
+    if (message.includes('email not confirmed')) return "Veuillez confirmer votre email avant de vous connecter.";
+    if (message.includes('too many requests')) return "Trop de tentatives. Réessayez dans quelques minutes.";
+    return "Connexion impossible pour le moment.";
+  };
+
+  const sendPasswordReset = async () => {
+    if (!email) {
+      setMessage({ text: 'Saisissez votre email puis cliquez à nouveau sur “Mot de passe oublié ?”.', type: 'error' });
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/`,
+    });
+
+    if (error) {
+      setMessage({ text: "Impossible d'envoyer l'email de réinitialisation.", type: 'error' });
+    } else {
+      setMessage({ text: 'Email de réinitialisation envoyé. Vérifiez votre boîte de réception.', type: 'success' });
+    }
+    setLoading(false);
+  };
+
+  const saveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileSaving(true);
+    const { error } = await supabase.auth.updateUser({
+      data: { full_name: profileName, phone: profilePhone }
+    });
+
+    if (error) {
+      setMessage({ text: "Impossible de mettre à jour votre profil.", type: 'error' });
+    } else {
+      setMessage({ text: 'Profil mis à jour avec succès.', type: 'success' });
+    }
+    setProfileSaving(false);
+  };
+
+  const statusMeta = (status?: Order['status']) => {
+    switch (status) {
+      case 'delivered':
+        return { label: 'Livrée', className: 'text-green-700 bg-green-50', icon: <CheckCircle2 size={16} /> };
+      case 'shipped':
+        return { label: 'Expédiée', className: 'text-blue-700 bg-blue-50', icon: <Package size={16} /> };
+      case 'confirmed':
+        return { label: 'Confirmée', className: 'text-brand-green-700 bg-brand-green-50', icon: <CheckCircle2 size={16} /> };
+      case 'cancelled':
+        return { label: 'Annulée', className: 'text-red-700 bg-red-50', icon: <AlertCircle size={16} /> };
+      default:
+        return { label: 'En attente', className: 'text-amber-700 bg-amber-50', icon: <Clock3 size={16} /> };
+    }
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setMessage({ text: "Identifiants invalides", type: 'error' });
+    if (error) {
+      setMessage({ text: authErrorMessage(error.message), type: 'error' });
+    }
     setLoading(false);
   };
 
@@ -50,6 +127,11 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
     return (
       <div className="min-h-screen bg-gray-50 pt-32 pb-12 px-4">
         <div className="max-w-4xl mx-auto space-y-6">
+          {message && (
+            <div className={`p-4 rounded-2xl border text-sm font-semibold ${message.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+              {message.text}
+            </div>
+          )}
           <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 rounded-full bg-brand-green-100 flex items-center justify-center text-brand-green-700">
@@ -73,6 +155,16 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
           </div>
 
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            <form onSubmit={saveProfile} className="p-6 border-b border-gray-100 bg-white">
+              <h2 className="font-bold text-gray-900 mb-4">Mon profil</h2>
+              <div className="grid md:grid-cols-2 gap-3">
+                <input value={profileName} onChange={e => setProfileName(e.target.value)} placeholder="Nom complet" className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl" />
+                <input value={profilePhone} onChange={e => setProfilePhone(e.target.value)} placeholder="Téléphone" className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl" />
+              </div>
+              <button disabled={profileSaving} type="submit" className="mt-4 px-5 py-2.5 bg-gray-900 text-white rounded-xl font-bold disabled:opacity-60">
+                {profileSaving ? 'Enregistrement...' : 'Enregistrer'}
+              </button>
+            </form>
             <div className="p-6 border-b border-gray-100 bg-gray-50/50 font-bold flex items-center gap-2">
               <Package className="text-brand-green-600" /> Historique de mes commandes
             </div>
@@ -81,20 +173,37 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
                 <p className="text-center text-gray-500">Aucune commande pour le moment.</p>
               ) : (
                 <div className="grid gap-4">
-                  {orders.map(order => (
-                    <div key={order.id} className="p-4 border border-gray-100 rounded-2xl flex justify-between items-center">
+                  {orders.map(order => {
+                    const meta = statusMeta(order.status);
+                    return (
+                    <button type="button" key={order.id} onClick={() => setSelectedOrder(order)} className="w-full text-left p-4 border border-gray-100 rounded-2xl flex justify-between items-center hover:border-brand-green-200 transition-all">
                       <div>
-                        <p className="font-bold text-gray-900">Commande #{order.id.slice(0,8).toUpperCase()}</p>
+                        <p className="font-bold text-gray-900">Commande #{order.id.slice(0, 8).toUpperCase()}</p>
                         <p className="text-xs text-gray-400">{new Date(order.date).toLocaleDateString('fr-FR')}</p>
                       </div>
-                      <p className="font-bold text-brand-green-700">{order.total.toLocaleString()} FCFA</p>
-                    </div>
-                  ))}
+                      <div className="flex flex-col items-end gap-2">
+                        <p className="font-bold text-brand-green-700">{order.total.toLocaleString()} FCFA</p>
+                        <div className={`px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1 ${meta.className}`}>{meta.icon}{meta.label}</div>
+                      </div>
+                    </button>
+                  );})}
                 </div>
               )}
             </div>
           </div>
         </div>
+
+          {selectedOrder && (
+            <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setSelectedOrder(null)}>
+              <div className="bg-white max-w-lg w-full rounded-3xl p-6" onClick={e => e.stopPropagation()}>
+                <h3 className="text-xl font-bold text-gray-900">Détail commande #{selectedOrder.id.slice(0,8).toUpperCase()}</h3>
+                <p className="text-sm text-gray-500 mt-1">Date: {new Date(selectedOrder.date).toLocaleDateString('fr-FR')}</p>
+                <p className="font-bold text-brand-green-700 mt-4">Total: {selectedOrder.total.toLocaleString()} FCFA</p>
+                <button type="button" onClick={() => setSelectedOrder(null)} className="mt-6 px-4 py-2 bg-gray-900 text-white rounded-xl">Fermer</button>
+              </div>
+            </div>
+          )}
+
       </div>
     );
   }
@@ -102,7 +211,8 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   return (
     <div className="min-h-screen bg-gray-50 pt-32 pb-12 px-4 flex items-center justify-center">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">Connexion</h2>
+        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-3">Connexion</h2>
+        {message && <p className={`mb-6 text-center text-sm font-semibold ${message.type === 'success' ? 'text-green-700' : 'text-red-600'}`}>{message.text}</p>}
 
         {/* BOUTONS SOCIAUX AVEC ICÔNES RÉELLES */}
         <div className="space-y-3 mb-8">
@@ -130,7 +240,8 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
         <form onSubmit={handleAuth} className="space-y-4">
           <input required type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green-500 outline-none" />
           <input required type="password" placeholder="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} className="w-full px-5 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-green-500 outline-none" />
-          <button type="submit" className="w-full bg-brand-green-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-brand-green-700 transition-all">Se connecter</button>
+          <button disabled={loading} type="submit" className="w-full bg-brand-green-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-brand-green-700 transition-all disabled:opacity-70">{loading ? 'Connexion...' : 'Se connecter'}</button>
+          <button type="button" onClick={sendPasswordReset} className="text-sm text-brand-green-700 font-semibold hover:underline">Mot de passe oublié ?</button>
         </form>
 
         <button onClick={() => onNavigate('signup')} className="w-full mt-8 text-[#4F8F73] font-extrabold text-lg flex items-center justify-center gap-2 hover:underline">
