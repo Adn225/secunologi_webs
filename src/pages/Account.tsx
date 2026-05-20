@@ -41,12 +41,34 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   }, [user]);
 
   const fetchOrders = async () => {
-    const { data } = await supabase
+    if (!user) return;
+    const { data, error } = await supabase
       .from('orders')
       .select('*')
-      .eq('user_id', user?.id)
-      .order('date', { ascending: false });
-    if (data) setOrders(data);
+      .or(`user_id.eq.${user.id},userId.eq.${user.id}`)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      setMessage({ text: "Impossible de charger votre historique pour le moment.", type: 'error' });
+      return;
+    }
+
+    if (data) {
+      const normalizedOrders: Order[] = data.map((order: any) => ({
+        id: String(order.id),
+        date: order.date || order.created_at || new Date().toISOString(),
+        total: Number(order.total || 0),
+        status: order.status,
+        items: Array.isArray(order.items)
+          ? order.items.map((item: any) => ({
+              name: item?.name || item?.product?.name || 'Produit',
+              quantity: Number(item?.quantity || 1),
+              price: Number(item?.price || item?.product?.price || 0),
+            }))
+          : [],
+      }));
+      setOrders(normalizedOrders);
+    }
   };
 
   const handleSocialLogin = async (provider: 'google' | 'facebook' | 'azure') => {
