@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, User, ShieldCheck, Package, ArrowRight, Mail, Lock, CheckCircle2, Clock3, AlertCircle } from 'lucide-react';
-
+import { LogOut, User, ShieldCheck, Package, ArrowRight, Mail, Lock, CheckCircle2, Clock3, AlertCircle, FileText } from 'lucide-react';
 interface AccountProps {
   onNavigate: (page: string) => void;
 }
@@ -18,17 +17,20 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   date: string;
   total: number;
   status?: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  payment_method?: string;
   items?: { name: string; quantity: number; price: number }[];
 };
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [activeTab,  setActiveTab] = useState<'orders' | 'quotes'>('orders');
   const [profileName, setProfileName] = useState(user?.user_metadata?.full_name || '');
   const [profilePhone, setProfilePhone] = useState(user?.user_metadata?.phone || '');
   const [profileSaving, setProfileSaving] = useState(false);
 
   const ADMIN_EMAIL = 'anderson@label-ci.com';
 
+  
   useEffect(() => {
     document.title = 'Mon Espace Client | SecunologieCI';
     if (user) {
@@ -124,6 +126,10 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   };
 
   if (user) {
+    const regularOrders = orders.filter(o => o.payment_method !== 'devis');
+    const quoteRequests = orders.filter(o => o.payment_method === 'devis');
+    const displayList = activeTab === 'orders' ? regularOrders : quoteRequests;
+
     return (
       <div className="min-h-screen bg-gray-50 pt-32 pb-12 px-4">
         <div className="max-w-4xl mx-auto space-y-6">
@@ -165,9 +171,75 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
                 {profileSaving ? 'Enregistrement...' : 'Enregistrer'}
               </button>
             </form>
-            <div className="p-6 border-b border-gray-100 bg-gray-50/50 font-bold flex items-center gap-2">
-              <Package className="text-brand-green-600" /> Historique de mes commandes
+            {/* ZONE HISTORIQUE (Commandes & Devis) */}
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+            
+            {/* Les Onglets (Tabs) */}
+            <div className="flex border-b border-gray-100 bg-gray-50/50">
+              <button 
+                onClick={() => setActiveTab('orders')}
+                className={`flex-1 py-5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${activeTab === 'orders' ? 'bg-white text-brand-green-700 border-b-2 border-brand-green-600' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                <Package size={18} /> 
+                Mes Commandes ({regularOrders.length})
+              </button>
+              <button 
+                onClick={() => setActiveTab('quotes')}
+                className={`flex-1 py-5 text-sm font-bold flex items-center justify-center gap-2 transition-all ${activeTab === 'quotes' ? 'bg-white text-blue-600 border-b-2 border-blue-500' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                <FileText size={18} /> 
+                Mes Demandes de Devis ({quoteRequests.length})
+              </button>
             </div>
+
+            <div className="p-8">
+              {displayList.length === 0 ? (
+                <div className="text-center py-10">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4 text-gray-300">
+                    {activeTab === 'orders' ? <Package size={32} /> : <FileText size={32} />}
+                  </div>
+                  <p className="text-gray-500 font-medium">
+                    Vous n'avez aucune {activeTab === 'orders' ? 'commande' : 'demande de devis'} pour le moment.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {displayList.map(order => (
+                    <div key={order.id} className="p-5 border border-gray-100 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-brand-green-200 hover:shadow-md transition-all cursor-pointer" onClick={() => setSelectedOrder(order)}>
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <p className="font-extrabold text-gray-900 text-lg">
+                            {activeTab === 'orders' ? 'Commande' : 'Devis'} #{order.id.slice(0,8).toUpperCase()}
+                          </p>
+                          <span className={`px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-lg ${getStatusColor(order.status)} flex items-center gap-1`}>
+                            {order.status === 'pending' && <Clock3 size={10} />}
+                            {order.status === 'confirmed' && <CheckCircle2 size={10} />}
+                            {order.status === 'shipped' && <Package size={10} />}
+                            {order.status === 'delivered' && <CheckCircle2 size={10} />}
+                            {order.status === 'cancelled' && <AlertCircle size={10} />}
+                            {order.status === 'pending' ? 'En attente' : order.status === 'confirmed' ? 'Confirmée' : order.status === 'shipped' ? 'Expédiée' : order.status === 'delivered' ? 'Livrée' : 'Annulée'}
+                          </span>
+                        </div>
+                        <p className="text-sm font-medium text-gray-400 flex items-center gap-1.5">
+                          <Clock3 size={14} /> 
+                          {new Date(order.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' })}
+                        </p>
+                      </div>
+                      
+                      <div className="text-right w-full sm:w-auto flex flex-row sm:flex-col items-center sm:items-end justify-between">
+                        <p className={`font-black text-xl ${activeTab === 'quotes' ? 'text-blue-600' : 'text-brand-green-700'}`}>
+                          {order.total.toLocaleString()} FCFA
+                        </p>
+                        <button className={`text-xs font-bold mt-1 flex items-center gap-1 ${activeTab === 'quotes' ? 'text-gray-400 hover:text-blue-600' : 'text-gray-400 hover:text-brand-green-600'}`}>
+                          Voir détails <ArrowRight size={12}/>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
             <div className="p-8">
               {orders.length === 0 ? (
                 <p className="text-center text-gray-500">Aucune commande pour le moment.</p>
