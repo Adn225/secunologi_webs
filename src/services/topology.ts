@@ -71,7 +71,16 @@ const formatCurrency = (amount: number) => `${new Intl.NumberFormat('fr-FR').for
 const escapePdfText = (value: string) => value.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
 
 const buildContentStream = (plan: TopologyPlan) => {
-  const lines: string[] = [];
+  const lines: string[] = [
+    'q',
+    '0.93 0.96 0.94 rg',
+    'BT /F1 56 Tf 45 425 Td (SECUNOLOGIE) Tj ET',
+    '0.88 0.93 0.9 rg',
+    '470 690 70 70 re f',
+    '0.93 0.96 0.94 rg',
+    'BT /F1 40 Tf 492 714 Td (S) Tj ET',
+    'Q',
+  ];
   let currentY = 800;
 
   const addLine = (text: string, size = 12) => {
@@ -83,6 +92,22 @@ const buildContentStream = (plan: TopologyPlan) => {
   addLine('Topologie intelligente Secunologi', 16);
   addLine(`Généré le ${new Date().toLocaleString('fr-FR')}`, 10);
   addLine(plan.summary, 12);
+  addLine('---', 10);
+  addLine('Visualisation de la topologie :', 12);
+
+  if (plan.flow.length) {
+    addLine(plan.flow.join('  |  '), 10);
+  } else {
+    addLine('Flux à confirmer selon l’architecture cible.', 10);
+  }
+
+  addLine('Légende :', 11);
+  addLine('[N] Noyau & enregistrement', 10);
+  addLine('[R] Réseau & distribution', 10);
+  addLine('[C] Capteurs & terminaux', 10);
+  addLine('[E] Énergie & continuité', 10);
+  addLine('[S] Supervision & services', 10);
+  addLine('[A] Câblage & accessoires', 10);
   addLine('---', 10);
 
   plan.layers.forEach(layer => {
