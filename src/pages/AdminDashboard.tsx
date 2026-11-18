@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { supabase } from '../utils/supabase';
 import { 
   ShieldAlert, Package, Tag, Edit2, Save, X, Plus, Image as ImageIcon,
@@ -7,6 +7,12 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
 import JoditEditor from 'jodit-react';
+
+type PurchasePriceEditor = {
+  productId: string;
+  productName: string;
+  value: string;
+};
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -25,6 +31,16 @@ const AdminDashboard: React.FC = () => {
   const [formData, setFormData] = useState<any>(initialFormState);
   const [editingRowId, setEditingRowId] = useState<string | null>(null);
   const [rowDraft, setRowDraft] = useState<any>({});
+  const [purchasePriceEditor, setPurchasePriceEditor] = useState<PurchasePriceEditor | null>(null);
+  const [savingPurchasePrice, setSavingPurchasePrice] = useState(false);
+  const [purchasePriceError, setPurchasePriceError] = useState('');
+  const [catalogError, setCatalogError] = useState('');
+  const purchasePriceInput = useRef<HTMLInputElement>(null);
+  const editedPurchasePriceId = purchasePriceEditor?.productId;
+
+  useEffect(() => {
+    if (editedPurchasePriceId && activeTab === 'products') purchasePriceInput.current?.focus();
+  }, [editedPurchasePriceId, activeTab]);
 
   // NOUVEAU : États pour le Blog
   const [blogPosts, setBlogPosts] = useState<any[]>([]);
@@ -41,9 +57,16 @@ const AdminDashboard: React.FC = () => {
       const { data: ordersData } = await supabase.from('orders').select('*').order('date', { ascending: false });
       if (ordersData) setAllOrders(ordersData);
 
-      const { data: productsData } = await supabase.from('products').select('*').order('name');
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*, product_purchase_prices(purchase_price)')
+        .order('name');
+      if (productsError) setCatalogError('Impossible de charger le catalogue et les prix d’achat.');
       if (productsData) {
-        setProducts(productsData);
+        setProducts(productsData.map(({ product_purchase_prices, ...product }) => ({
+          ...product,
+          purchasePrice: product_purchase_prices?.purchase_price ?? null,
+        })));
         const uniqueCategories = Array.from(new Set(productsData.map(p => p.category).filter(Boolean))) as string[];
         setCategories(uniqueCategories);
       }
@@ -123,7 +146,7 @@ const AdminDashboard: React.FC = () => {
     setRowDraft({
       name: product.name || '',
       image: product.image || '',
-      price: Number(product.price) || 0,
+      price: product.price == null ? null : Number(product.price),
       promo_price: Number(product.promo_price) || 0,
       instock: Boolean(product.instock),
       category: product.category || '',
@@ -148,6 +171,38 @@ const AdminDashboard: React.FC = () => {
       cancelRowEdit();
     } catch (error: any) {
       alert(`Erreur: ${error.message}`);
+    }
+  };
+
+  const savePurchasePrice = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!purchasePriceEditor || savingPurchasePrice) return;
+    const { productId, value } = purchasePriceEditor;
+    const purchasePrice = value === '' ? null : Number(value);
+    if (purchasePrice !== null && (!Number.isFinite(purchasePrice) || purchasePrice < 0)) {
+      setPurchasePriceError('Saisissez un montant positif ou nul.');
+      return;
+    }
+
+    setSavingPurchasePrice(true);
+    setPurchasePriceError('');
+    try {
+      const { data, error } = await supabase
+        .from('product_purchase_prices')
+        .upsert({ product_id: productId, purchase_price: purchasePrice })
+        .select('product_id');
+      if (error || !data?.length) {
+        setPurchasePriceError('Impossible d’enregistrer le prix d’achat.');
+        return;
+      }
+      setProducts(current => current.map(product =>
+        String(product.id) === productId ? { ...product, purchasePrice } : product,
+      ));
+      setPurchasePriceEditor(null);
+    } catch {
+      setPurchasePriceError('Impossible d’enregistrer le prix d’achat.');
+    } finally {
+      setSavingPurchasePrice(false);
     }
   };
 
@@ -319,8 +374,31 @@ const handleSaveBlog = async (e: React.FormEvent) => {
 
             {/* VUE PRODUITS */}
             {activeTab === 'products' && (
-              // ... (Le formulaire de produits intact) ...
               <div>
+                {catalogError && <p role="alert" className="mb-4 text-red-600">{catalogError}</p>}
+                {purchasePriceEditor && (
+                  <form onSubmit={savePurchasePrice} className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
+                    <h3 className="mb-3 font-bold">{purchasePriceEditor.productName}</h3>
+                    <label htmlFor="purchase-price" className="block font-semibold">Prix d’achat (FCFA)</label>
+                    <input
+                      id="purchase-price"
+                      ref={purchasePriceInput}
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={purchasePriceEditor.value}
+                      onChange={event => setPurchasePriceEditor({ ...purchasePriceEditor, value: event.target.value })}
+                      disabled={savingPurchasePrice}
+                      className="my-2 rounded-lg border border-gray-300 px-3 py-2"
+                    />
+                    <p className="text-sm text-gray-600">Laissez le champ vide pour retirer le prix d’achat.</p>
+                    {purchasePriceError && <p role="alert" className="mt-2 text-red-600">{purchasePriceError}</p>}
+                    <div className="mt-4 flex gap-3">
+                      <button type="submit" disabled={savingPurchasePrice} className="rounded-lg bg-brand-green-600 px-4 py-2 font-bold text-white disabled:opacity-50">Enregistrer le prix d’achat</button>
+                      <button type="button" disabled={savingPurchasePrice} onClick={() => setPurchasePriceEditor(null)} className="rounded-lg px-4 py-2">Annuler</button>
+                    </div>
+                  </form>
+                )}
                 <div className="flex justify-end mb-6"><button onClick={() => showForm ? setShowForm(false) : openAddForm()} className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-white shadow-md" style={{ backgroundColor: showForm ? '#4b5563' : BRAND_COLOR }}>{showForm ? <X size={18} /> : <Plus size={18} />} {showForm ? 'Fermer' : 'Ajouter un produit'}</button></div>
                 {showForm && (
                   <form onSubmit={handleSaveProduct} className="bg-white border border-gray-100 rounded-xl p-6 md:p-8 mb-8 shadow-md">
@@ -328,9 +406,9 @@ const handleSaveBlog = async (e: React.FormEvent) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div><label className="block text-sm font-semibold text-gray-700 mb-1.5">Nom du produit *</label><input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} /></div>
                       <div><label className="block text-sm font-semibold text-gray-700 mb-1.5">Catégorie *</label><select required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any}><option value="">Sélectionnez...</option>{categories.map(cat => <option key={cat} value={cat} className="capitalize">{cat}</option>)}<option value="NEW" className="font-bold" style={{ color: BRAND_COLOR }}>+ Nouvelle catégorie</option></select>{formData.category === 'NEW' && <input required type="text" placeholder="Nom de la catégorie" value={formData.newCategory} onChange={e => setFormData({...formData, newCategory: e.target.value})} className="mt-3 w-full px-4 py-2 border rounded-lg outline-none" style={{ borderColor: BRAND_COLOR, backgroundColor: `${BRAND_COLOR}10` }} />}</div>
-                      <div><label className="block text-sm font-semibold text-gray-700 mb-1.5">Prix normal (FCFA) *</label><input required type="number" min="0" value={formData.price} onChange={e => setFormData({...formData, price: Number(e.target.value)})} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} /></div>
+                      <div><label className="block text-sm font-semibold text-gray-700 mb-1.5">Prix catalogue (FCFA) *</label><input required type="number" min="0" step="0.01" value={formData.price ?? ''} onChange={e => setFormData({...formData, price: e.target.value === '' ? null : Number(e.target.value)})} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} /></div>
                       <div><label className="block text-sm font-semibold text-gray-700 mb-1.5">Prix promo (FCFA)</label><input type="number" min="0" value={formData.promo_price || ''} onChange={e => setFormData({...formData, promo_price: Number(e.target.value)})} placeholder="Optionnel" className="w-full px-4 py-2.5 bg-orange-50 border border-orange-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-400" /></div>
-                      <div className="md:col-span-2"><label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2"><ImageIcon size={16}/> Lien de l'image (URL) *</label><input required type="url" placeholder="https://..." value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} /></div>
+                      <div className="md:col-span-2"><label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2"><ImageIcon size={16}/> Lien de l'image (URL)</label><input type="url" placeholder="https://..." value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} /></div>
                       <div><label className="block text-sm font-semibold text-gray-700 mb-1.5">Marque</label><input type="text" value={formData.brand} onChange={e => setFormData({...formData, brand: e.target.value})} className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} /></div>
                       <div className="flex items-center mt-7"><label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 w-full transition-colors"><input type="checkbox" checked={formData.instock} onChange={e => setFormData({...formData, instock: e.target.checked})} className="w-5 h-5 rounded cursor-pointer" style={{ accentColor: BRAND_COLOR }} /><span className={`font-bold ${formData.instock ? 'text-green-600' : 'text-red-500'}`}>{formData.instock ? 'Produit en stock' : 'Rupture de stock'}</span></label></div>
                       <div className="md:col-span-2"><label className="block text-sm font-semibold text-gray-700 mb-1.5">Description complète</label><textarea rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2" style={{ '--tw-ring-color': BRAND_COLOR } as any} /></div>
@@ -343,7 +421,7 @@ const handleSaveBlog = async (e: React.FormEvent) => {
                 )}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                   <table className="w-full text-left border-collapse">
-                    <thead><tr className="bg-gray-50 border-b border-gray-100 text-sm uppercase tracking-wider text-gray-500"><th className="p-4 font-medium">Image</th><th className="p-4 font-medium">Nom</th><th className="p-4 font-medium text-right">Prix</th><th className="p-4 font-medium text-right">Prix promo</th><th className="p-4 font-medium text-center">Stock</th><th className="p-4 font-medium text-center">Action</th></tr></thead>
+                    <thead><tr className="bg-gray-50 border-b border-gray-100 text-sm uppercase tracking-wider text-gray-500"><th className="p-4 font-medium">Image</th><th className="p-4 font-medium">Nom</th><th className="p-4 font-medium text-right">Prix catalogue</th><th className="p-4 font-medium text-right">Prix d’achat</th><th className="p-4 font-medium text-right">Prix promo</th><th className="p-4 font-medium text-center">Stock</th><th className="p-4 font-medium text-center">Action</th></tr></thead>
                     <tbody className="divide-y divide-gray-100">
                       {products.map((product) => {
                         const isRowEditing = editingRowId === product.id;
@@ -358,7 +436,25 @@ const handleSaveBlog = async (e: React.FormEvent) => {
                             {isRowEditing ? <input value={rowDraft.name} onChange={e => setRowDraft({...rowDraft, name: e.target.value})} className="w-full px-3 py-2 border border-gray-200 rounded-lg" /> : <div className="font-bold text-gray-900">{product.name}</div>}
                           </td>
                           <td className="p-4 text-right">
-                            {isRowEditing ? <input type="number" min="0" value={rowDraft.price} onChange={e => setRowDraft({...rowDraft, price: Number(e.target.value)})} className="w-32 ml-auto px-3 py-2 border border-gray-200 rounded-lg" /> : <span className="font-bold text-gray-900 text-base">{product.price.toLocaleString('fr-FR')} FCFA</span>}
+                            {isRowEditing ? <input type="number" min="0" step="0.01" value={rowDraft.price ?? ''} onChange={e => setRowDraft({...rowDraft, price: e.target.value === '' ? null : Number(e.target.value)})} className="w-32 ml-auto px-3 py-2 border border-gray-200 rounded-lg" /> : <span className="font-bold text-gray-900 text-base">{product.price == null ? 'À renseigner' : `${Number(product.price).toLocaleString('fr-FR')} FCFA`}</span>}
+                          </td>
+                          <td className="p-4 text-right">
+                            <button
+                              type="button"
+                              disabled={savingPurchasePrice}
+                              aria-label={`Modifier le prix d’achat de ${product.name}`}
+                              className="rounded px-2 py-1 text-brand-green-700 hover:bg-gray-100"
+                              onClick={() => {
+                                setPurchasePriceError('');
+                                setPurchasePriceEditor({
+                                  productId: String(product.id),
+                                  productName: product.name,
+                                  value: product.purchasePrice == null ? '' : String(product.purchasePrice),
+                                });
+                              }}
+                            >
+                              {product.purchasePrice == null ? 'Ajouter' : `${Number(product.purchasePrice).toLocaleString('fr-FR')} FCFA`}
+                            </button>
                           </td>
                           <td className="p-4 text-right">
                             {isRowEditing ? <input type="number" min="0" value={rowDraft.promo_price || 0} onChange={e => setRowDraft({...rowDraft, promo_price: Number(e.target.value)})} className="w-32 ml-auto px-3 py-2 border border-gray-200 rounded-lg" /> : <span className="font-semibold text-orange-600">{product.promo_price ? `${product.promo_price.toLocaleString('fr-FR')} FCFA` : '-'}</span>}

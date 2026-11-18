@@ -5,6 +5,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .not('price', 'is', null)
     .order('category', { ascending: true });
 
   if (error) {

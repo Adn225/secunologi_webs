@@ -39,3 +39,17 @@ Cette application Vite + React fournit l'interface de SecunologieCI. Elle dispos
 ```bash
 npm run lint
 ```
+
+## Prix d’achat réservés à l’administration
+
+Appliquer la migration [prix d’achat](supabase/migrations/20261117000100_product_purchase_prices.sql) dans Supabase. Le prix catalogue reste dans `products.price`. Le prix d’achat est géré dans l’onglet Produits de l’administration et protégé par une politique de sécurité Supabase.
+
+Depuis l’éditeur SQL du projet, attribuer le rôle au compte administrateur existant en remplaçant `UUID_DU_COMPTE_ADMIN` par son identifiant dans **Authentication → Users**.
+
+```sql
+UPDATE auth.users
+SET raw_app_meta_data = coalesce(raw_app_meta_data, '{}'::jsonb) || '{"role":"admin"}'::jsonb
+WHERE id = 'UUID_DU_COMPTE_ADMIN'::uuid;
+```
+
+Demander à l’administrateur de se reconnecter pour renouveler son jeton. Le script d’import du tarif Hikvision requiert une colonne `products.price` capable de conserver deux décimales.

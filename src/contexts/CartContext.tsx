@@ -100,7 +100,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (cloudCart && cloudCart.length > 0) {
           // B. On va chercher les détails complets de ces produits dans la table products
           const productIds = cloudCart.map(c => c.product_id);
-          const { data: products } = await supabase.from('products').select('*').in('id', productIds);
+          const { data: products } = await supabase.from('products').select('*').in('id', productIds).not('price', 'is', null);
 
           if (products) {
             // C. On recrée le panier proprement

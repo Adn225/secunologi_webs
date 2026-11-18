@@ -7,7 +7,7 @@ interface AccountProps {
 }
 
 const Account: React.FC<AccountProps> = ({ onNavigate }) => {
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,8 +27,6 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   const [profileName, setProfileName] = useState(user?.user_metadata?.full_name || '');
   const [profilePhone, setProfilePhone] = useState(user?.user_metadata?.phone || '');
   const [profileSaving, setProfileSaving] = useState(false);
-
-  const ADMIN_EMAIL = 'anderson@label-ci.com';
 
   
   useEffect(() => {
@@ -149,7 +147,7 @@ const Account: React.FC<AccountProps> = ({ onNavigate }) => {
               </div>
             </div>
             <div className="flex gap-3">
-              {user.email === ADMIN_EMAIL && (
+              {isAdmin && (
                 <button onClick={() => onNavigate('admin')} className="bg-gray-900 text-white px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-black transition-all">
                   <ShieldCheck size={20} /> Administration
                 </button>
