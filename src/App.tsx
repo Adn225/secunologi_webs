@@ -107,7 +107,7 @@ const AppShell: React.FC = () => {
       case 'contact': return <Contact />;
       case 'cart': return <ProtectedRoute onNavigate={handleNavigate}><Cart onNavigate={handleNavigate} /></ProtectedRoute>;
       case 'account': return <Account onNavigate={handleNavigate} />;
-      case 'admin': return <ProtectedRoute onNavigate={handleNavigate}><AdminDashboard/></ProtectedRoute>;
+      case 'admin': return <ProtectedRoute onNavigate={handleNavigate} requireAdmin><AdminDashboard/></ProtectedRoute>;
       case 'signup': return <Signup onNavigate={handleNavigate} />;
       default: return <Home onNavigate={handleNavigate} onViewProduct={handleViewProduct} />;
     }

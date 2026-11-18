@@ -4,11 +4,12 @@ import { Lock } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requireAdmin?: boolean;
   onNavigate: (page: string) => void;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, onNavigate }) => {
-  const { user, loading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, onNavigate, requireAdmin = false }) => {
+  const { user, loading, isAdmin } = useAuth();
 
   // 1. Pendant qu'on vérifie l'identité, on fait patienter
   if (loading) {
@@ -42,7 +43,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, onNavigate })
     );
   }
 
-  // 3. Si tout est bon, on affiche la page demandée !
+  if (requireAdmin && !isAdmin) {
+    return (
+      <div className="mx-auto mt-16 max-w-md p-8 text-center">
+        <h2 className="mb-2 text-2xl font-bold">Accès restreint</h2>
+        <p>Cette page est réservée aux administrateurs.</p>
+      </div>
+    );
+  }
+
   return <>{children}</>;
 };
 
