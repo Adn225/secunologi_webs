@@ -53,3 +53,9 @@ WHERE id = 'UUID_DU_COMPTE_ADMIN'::uuid;
 ```
 
 Demander à l’administrateur de se reconnecter pour renouveler son jeton. Le script d’import du tarif Hikvision requiert une colonne `products.price` capable de conserver deux décimales.
+
+## Bannière d’accueil
+
+Appliquer la [migration de la bannière](supabase/migrations/20261119000100_home_banner_settings.sql) dans Supabase. Dans **Administration → Bannière d’accueil**, choisir le carrousel ou la bannière vidéo et enregistrer. Le carrousel s’affiche par défaut.
+
+Pour la bannière vidéo, utiliser le lien direct HTTPS d’un fichier MP4 ou WebM public, ou un chemin vers un fichier hébergé sur le site. Le titre, le texte, le bouton et l’image de secours se règlent dans le même formulaire. Les réglages vidéo sont conservés lors du retour au carrousel.

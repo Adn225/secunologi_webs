@@ -7,6 +7,7 @@ import {
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../contexts/AuthContext';
 import JoditEditor from 'jodit-react';
+import HomeBannerAdmin from '../components/HomeBannerAdmin';
 
 type PurchasePriceEditor = {
   productId: string;
@@ -14,10 +15,18 @@ type PurchasePriceEditor = {
   value: string;
 };
 
+const adminTabs = {
+  dashboard: 'Tableau de bord',
+  orders: 'Commandes',
+  products: 'Produits',
+  blog: 'Articles de blog',
+  banner: 'Bannière d’accueil',
+};
+
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
   // Ajout du nouvel onglet "blog"
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'orders' | 'products' | 'blog'>('dashboard');
+  const [activeTab, setActiveTab] = useState<keyof typeof adminTabs>('dashboard');
   const [loading, setLoading] = useState(true);
   
   const [allOrders, setAllOrders] = useState<any[]>([]);
@@ -290,6 +299,7 @@ const handleSaveBlog = async (e: React.FormEvent) => {
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 ml-2">Contenu</p>
           <nav className="space-y-1">
             <button onClick={() => setActiveTab('blog')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all ${activeTab === 'blog' ? 'bg-[#5BA486]/10 text-[#5BA486]' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}><FileText size={18} /> Articles de blog</button>
+            <button onClick={() => setActiveTab('banner')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all ${activeTab === 'banner' ? 'bg-[#5BA486]/10 text-[#5BA486]' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`}><ImageIcon size={18} /> Bannière d’accueil</button>
           </nav>
         </div>
       </aside>
@@ -302,6 +312,7 @@ const handleSaveBlog = async (e: React.FormEvent) => {
             {activeTab === 'orders' && 'Gestion des commandes'}
             {activeTab === 'products' && 'Catalogue de produits'}
             {activeTab === 'blog' && 'Gestion du Blog'}
+            {activeTab === 'banner' && adminTabs.banner}
           </h2>
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full text-white flex items-center justify-center font-bold shadow-md" style={{ backgroundColor: BRAND_COLOR }}>A</div>
@@ -309,8 +320,20 @@ const handleSaveBlog = async (e: React.FormEvent) => {
           </div>
         </header>
 
+        <div className="border-b border-gray-200 bg-white px-6 py-2 md:hidden">
+          <label htmlFor="admin-section" className="sr-only">Rubrique d’administration</label>
+          <select id="admin-section" value={activeTab} className="w-full rounded-lg border border-gray-300 p-2"
+            onChange={event => {
+              const tab = event.target.value;
+              if (Object.prototype.hasOwnProperty.call(adminTabs, tab)) setActiveTab(tab as keyof typeof adminTabs);
+            }}>
+            {Object.entries(adminTabs).map(([tab, label]) => <option key={tab} value={tab}>{label}</option>)}
+          </select>
+        </div>
+
         <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50/50">
           <div className="max-w-7xl mx-auto">
+            {activeTab === 'banner' && <HomeBannerAdmin />}
 
             {/* VUE TABLEAU DE BORD */}
             {activeTab === 'dashboard' && (
