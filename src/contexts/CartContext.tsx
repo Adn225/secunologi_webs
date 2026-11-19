@@ -24,6 +24,24 @@ const CartContext = createContext<{
 const calculateTotal = (items: CartItem[]) =>
   items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
+
+const mergeDuplicateItems = (items: CartItem[]): CartItem[] => {
+  const byProduct = new Map<string, CartItem>();
+
+  for (const item of items) {
+    const productId = String(item.product.id);
+    const existing = byProduct.get(productId);
+
+    if (existing) {
+      existing.quantity += item.quantity;
+    } else {
+      byProduct.set(productId, { ...item });
+    }
+  }
+
+  return Array.from(byProduct.values());
+};
+
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM': {
@@ -105,12 +123,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           if (products) {
             // C. On recrée le panier proprement
             const restoredCart: CartItem[] = cloudCart.map(cartRow => {
-              const product = products.find(p => String(p.id) === cartRow.product_id);
+              const product = products.find(p => String(p.id) === String(cartRow.product_id));
               return product ? { product: product as Product, quantity: cartRow.quantity } : null;
             }).filter(Boolean) as CartItem[];
 
             // D. On remplace le panier local par le panier du cloud !
-            dispatch({ type: 'SET_CART', payload: restoredCart });
+            dispatch({ type: 'SET_CART', payload: mergeDuplicateItems(restoredCart) });
           }
         } else if (state.items.length > 0) {
           // Cas spécial : Le cloud est vide, mais le visiteur avait commencé à remplir son panier en local AVANT de se connecter. On sauvegarde ça dans le cloud !
@@ -141,17 +159,35 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Fonction utilitaire pour écrire dans Supabase
   const syncCartToCloud = async (items: CartItem[], userId: string) => {
     try {
-      // Pour éviter les doublons complexes, on vide l'ancien panier et on insère le nouveau
-      await supabase.from('cart_items').delete().eq('user_id', userId);
+      const normalizedItems = mergeDuplicateItems(items);
 
-      if (items.length > 0) {
-        const rowsToInsert = items.map(item => ({
+      // Écriture idempotente : un seul enregistrement par produit et utilisateur
+      if (normalizedItems.length > 0) {
+        const rowsToUpsert = normalizedItems.map(item => ({
           user_id: userId,
           product_id: String(item.product.id),
           quantity: item.quantity
         }));
-        await supabase.from('cart_items').insert(rowsToInsert);
+
+        const { error: upsertError } = await supabase
+          .from('cart_items')
+          .upsert(rowsToUpsert, { onConflict: 'user_id,product_id' });
+
+        if (upsertError) throw upsertError;
       }
+
+      // Nettoyage des produits retirés du panier
+      const productIdsToKeep = normalizedItems.map(item => String(item.product.id));
+      let deleteQuery = supabase.from('cart_items').delete().eq('user_id', userId);
+      if (productIdsToKeep.length > 0) {
+        const keepIdsSql = productIdsToKeep
+          .map(id => `'${id.replace(/'/g, "''")}'`)
+          .join(',');
+        deleteQuery = deleteQuery.not('product_id', 'in', `(${keepIdsSql})`);
+      }
+
+      const { error: deleteError } = await deleteQuery;
+      if (deleteError) throw deleteError;
     } catch (error) {
       console.error("Erreur de synchronisation", error);
     }
